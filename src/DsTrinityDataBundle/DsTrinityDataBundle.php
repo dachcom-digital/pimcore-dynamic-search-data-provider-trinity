@@ -9,9 +9,9 @@ use Symfony\Component\DependencyInjection\ContainerBuilder;
 
 class DsTrinityDataBundle extends AbstractPimcoreBundle
 {
-    // use PackageVersionTrait;
+    use PackageVersionTrait;
 
-    const PACKAGE_NAME = 'dachcom-digital/dynamic-search-data-provider-trinity-data';
+    const PACKAGE_NAME = 'dachcom-digital/dynamic-search-data-provider-trinity';
 
     const PROVIDER_NAME = 'trinityData';
 
