@@ -1,0 +1,20 @@
+services:
+
+    _defaults:
+        autowire: true
+        autoconfigure: true
+        public: false
+
+    DsTrinityDataBundle\Registry\DataBuilderRegistry: ~
+
+    DsTrinityDataBundle\Service\Builder\DocumentListBuilder:
+        tags:
+            - {name: ds_trinity_data.data_builder, identifier: default, type: document }
+
+    DsTrinityDataBundle\Service\Builder\ObjectListBuilder:
+        tags:
+            - {name: ds_trinity_data.data_builder, identifier: default, type: object }
+
+    DsTrinityDataBundle\Service\Builder\AssetListBuilder:
+        tags:
+            - {name: ds_trinity_data.data_builder, identifier: default, type: asset }

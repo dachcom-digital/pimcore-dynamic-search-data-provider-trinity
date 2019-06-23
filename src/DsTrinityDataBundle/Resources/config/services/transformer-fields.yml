@@ -1,0 +1,18 @@
+services:
+
+    _defaults:
+        autowire: true
+        autoconfigure: true
+        public: false
+
+    DsTrinityDataBundle\Transformer\TrinityDataTransformer:
+        tags:
+            - { name: dynamic_search.transformer.dispatcher, priority: 10, identifier: trinity_data_transformer }
+
+    DsTrinityDataBundle\Transformer\Field\ElementIdExtractor:
+        tags:
+            - { name: dynamic_search.transformer.field, identifier: element_id_extractor, data_transformer: trinity_data_transformer }
+
+    DsTrinityDataBundle\Transformer\Field\ObjectGetterExtractor:
+        tags:
+            - { name: dynamic_search.transformer.field, identifier: object_getter_extractor, data_transformer: trinity_data_transformer }

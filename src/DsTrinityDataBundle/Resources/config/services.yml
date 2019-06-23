@@ -1,0 +1,13 @@
+imports:
+    - { resource: services/*.yml }
+
+services:
+
+    _defaults:
+        autowire: true
+        autoconfigure: true
+        public: false
+
+    DsTrinityDataBundle\Configuration\Configuration: ~
+
+    DsTrinityDataBundle\Service\DataProviderService: ~
