@@ -1,0 +1,14 @@
+services:
+
+    _defaults:
+        autowire: true
+        autoconfigure: true
+        public: false
+
+    DsTrinityDataBundle\Normalizer\ResourceNormalizer:
+        tags:
+            - { name: dynamic_search.resource_normalizer, identifier: 'trinityResourceNormalizer', data_provider: 'trinityData' }
+
+    DsTrinityDataBundle\Normalizer\ResourceIdBuilder:
+        tags:
+            - { name: dynamic_search.resource_id_builder, identifier: 'trinityResourceIdBuilder', data_provider: 'trinityData' }

@@ -6,15 +6,28 @@ use Pimcore\Model\Asset;
 
 class AssetListBuilder implements DataBuilderInterface
 {
-     public function build(array $options): array
+    /**
+     * {@inheritDoc}
+     */
+    public function build(array $options): array
     {
         $id = $options['id'];
         $allowedTypes = $options['asset_types'];
+        $limit = $options['asset_limit'];
+        $additionalParams = $options['asset_additional_params'];
 
         $list = new Asset\Listing();
 
         if ($id !== null) {
             $list->addConditionParam('id = ?', $id);
+        }
+
+        foreach ($additionalParams as $additionalParam => $additionalValue) {
+            $list->addConditionParam($additionalParam, $additionalValue);
+        }
+
+        if ($limit > 0) {
+            $list->setLimit($limit);
         }
 
         $this->addAssetTypeRestriction($list, $allowedTypes);
@@ -24,7 +37,7 @@ class AssetListBuilder implements DataBuilderInterface
 
     /**
      * @param Asset\Listing $listing
-     * @param array              $allowedTypes
+     * @param array         $allowedTypes
      *
      * @return Asset\Listing
      */

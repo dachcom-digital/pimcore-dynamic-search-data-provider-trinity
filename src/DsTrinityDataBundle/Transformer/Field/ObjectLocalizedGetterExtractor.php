@@ -8,7 +8,7 @@ use DynamicSearchBundle\Transformer\Container\FieldContainerInterface;
 use DynamicSearchBundle\Transformer\FieldTransformerInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
-class ObjectGetterExtractor implements FieldTransformerInterface
+class ObjectLocalizedGetterExtractor implements FieldTransformerInterface
 {
     /**
      * @var array
@@ -20,10 +20,11 @@ class ObjectGetterExtractor implements FieldTransformerInterface
      */
     public function configureOptions(OptionsResolver $resolver)
     {
-        $resolver->setRequired(['method']);
+        $resolver->setRequired(['method', 'locale']);
         $resolver->setAllowedTypes('method', ['string']);
+        $resolver->setAllowedTypes('locale', ['string']);
         $resolver->setDefaults([
-            'method' => 'id'
+            'locale' => 'en'
         ]);
     }
 
@@ -52,7 +53,7 @@ class ObjectGetterExtractor implements FieldTransformerInterface
             return null;
         }
 
-        $value = call_user_func([$data, $this->options['method']]);
+        $value = call_user_func([$data, $this->options['method']], $this->options['locale']);
         if (!is_string($value)) {
             return null;
         }

@@ -6,11 +6,16 @@ use Pimcore\Model\Document;
 
 class DocumentListBuilder implements DataBuilderInterface
 {
+    /**
+     * {@inheritDoc}
+     */
     public function build(array $options): array
     {
         $id = $options['id'];
         $allowedTypes = $options['document_types'];
         $includeUnpublished = $options['document_ignore_unpublished'] === false;
+        $limit = $options['document_limit'];
+        $additionalParams = $options['document_additional_params'];
 
         $list = new Document\Listing();
 
@@ -22,6 +27,14 @@ class DocumentListBuilder implements DataBuilderInterface
             $list->addConditionParam('id = ?', $id);
         }
 
+        foreach ($additionalParams as $additionalParam => $additionalValue) {
+            $list->addConditionParam($additionalParam, $additionalValue);
+        }
+
+        if ($limit > 0) {
+            $list->setLimit($limit);
+        }
+
         $this->addDocumentTypeRestriction($list, $allowedTypes);
 
         return $list->getDocuments();
@@ -29,7 +42,7 @@ class DocumentListBuilder implements DataBuilderInterface
 
     /**
      * @param Document\Listing $listing
-     * @param array              $allowedTypes
+     * @param array            $allowedTypes
      *
      * @return Document\Listing
      */

@@ -120,18 +120,26 @@ class TrinityDataProvider implements DataProviderInterface
     public function configureOptions(OptionsResolver $resolver)
     {
         $defaults = [
-            'index_asset'                      => false,
-            'asset_data_builder_identifier'    => 'default',
-            'asset_types'                      => Asset::$types,
-            'index_object'                     => false,
-            'object_data_builder_identifier'   => 'default',
-            'object_types'                     => DataObject::$types,
-            'object_class_names'               => [],
-            'object_ignore_unpublished'        => true,
+            'index_asset'                   => false,
+            'asset_data_builder_identifier' => 'default',
+            'asset_types'                   => Asset::$types,
+            'asset_limit'                   => 0,
+            'asset_additional_params'       => [],
+
+            'index_object'                   => false,
+            'object_data_builder_identifier' => 'default',
+            'object_types'                   => DataObject::$types,
+            'object_class_names'             => [],
+            'object_ignore_unpublished'      => true,
+            'object_limit'                   => 0,
+            'object_additional_params'       => [],
+
             'index_document'                   => false,
             'document_data_builder_identifier' => 'default',
             'document_types'                   => Document::$types,
             'document_ignore_unpublished'      => true,
+            'document_limit'                   => 0,
+            'document_additional_params'       => [],
         ];
 
         $resolver->setDefaults($defaults);

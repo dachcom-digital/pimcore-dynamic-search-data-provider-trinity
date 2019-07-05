@@ -14,7 +14,9 @@ class ObjectListBuilder implements DataBuilderInterface
         $id = $options['id'];
         $allowedTypes = $options['object_types'];
         $allowedClasses = $options['object_class_names'];
-        $includeUnpublished = $options['asset_ignore_unpublished'] === false;
+        $includeUnpublished = $options['object_ignore_unpublished'] === false;
+        $limit = $options['object_limit'];
+        $additionalParams = $options['object_additional_params'];
 
         $list = new DataObject\Listing();
 
@@ -24,6 +26,14 @@ class ObjectListBuilder implements DataBuilderInterface
 
         if ($id !== null) {
             $list->addConditionParam('o_id = ?', $id);
+        }
+
+        foreach ($additionalParams as $additionalParam => $additionalValue) {
+            $list->addConditionParam($additionalParam, $additionalValue);
+        }
+
+        if ($limit > 0) {
+            $list->setLimit($limit);
         }
 
         $this->addObjectTypeRestriction($list, $allowedTypes);
