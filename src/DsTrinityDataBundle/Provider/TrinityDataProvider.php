@@ -97,19 +97,19 @@ class TrinityDataProvider implements DataProviderInterface
      */
     public function execute(ContextDataInterface $contextData)
     {
-        $runtimeOptions = $this->validateRuntimeOptions($contextData->getDispatchType(), $contextData->getRuntimeOptions());
+        $runtimeValues = $this->validateRuntimeValues($contextData->getContextDispatchType(), $contextData->getRuntimeValues());
 
         $this->dataProvider->setLogger($this->logger);
         $this->dataProvider->setContextName($contextData->getName());
-        $this->dataProvider->setContextDispatchType($contextData->getDispatchType());
+        $this->dataProvider->setContextDispatchType($contextData->getContextDispatchType());
         $this->dataProvider->setIndexOptions($this->configuration);
-        $this->dataProvider->setRuntimeOptions($runtimeOptions);
+        $this->dataProvider->setRuntimeValues($runtimeValues);
 
-        if ($contextData->getDispatchType() === ContextDataInterface::CONTEXT_DISPATCH_TYPE_INDEX) {
+        if ($contextData->getContextDispatchType() === ContextDataInterface::CONTEXT_DISPATCH_TYPE_INDEX) {
             $this->dataProvider->fetchIndexData();
-        } elseif ($contextData->getDispatchType() === ContextDataInterface::CONTEXT_DISPATCH_TYPE_INSERT) {
+        } elseif ($contextData->getContextDispatchType() === ContextDataInterface::CONTEXT_DISPATCH_TYPE_INSERT) {
             $this->dataProvider->fetchInsertData();
-        } elseif ($contextData->getDispatchType() === ContextDataInterface::CONTEXT_DISPATCH_TYPE_UPDATE) {
+        } elseif ($contextData->getContextDispatchType() === ContextDataInterface::CONTEXT_DISPATCH_TYPE_UPDATE) {
             $this->dataProvider->fetchUpdateData();
         }
     }
@@ -140,28 +140,28 @@ class TrinityDataProvider implements DataProviderInterface
 
     /**
      * @param string $contextDispatchType
-     * @param array  $runtimeOptions
+     * @param array  $runtimeValues
      *
      * @return array
      * @throws ProviderException
      */
-    protected function validateRuntimeOptions(string $contextDispatchType, array $runtimeOptions = [])
+    protected function validateRuntimeValues(string $contextDispatchType, array $runtimeValues = [])
     {
         $errorMessage = null;
 
         switch ($contextDispatchType) {
             case ContextDataInterface::CONTEXT_DISPATCH_TYPE_UPDATE:
-                if (!isset($runtimeOptions['id']) || empty($runtimeOptions['id'])) {
+                if (!isset($runtimeValues['id']) || empty($runtimeValues['id'])) {
                     $errorMessage = 'no "id" runtime option given. value cannot be empty';
                 }
                 break;
             case ContextDataInterface::CONTEXT_DISPATCH_TYPE_INSERT:
-                if (!isset($runtimeOptions['path']) || !is_string($runtimeOptions['path'])) {
+                if (!isset($runtimeValues['path']) || !is_string($runtimeValues['path'])) {
                     $errorMessage = 'no "path" runtime option given. needs to be a valid string';
                 }
                 break;
             case ContextDataInterface::CONTEXT_DISPATCH_TYPE_DELETE:
-                if (!isset($runtimeOptions['id']) || empty($runtimeOptions['id'])) {
+                if (!isset($runtimeValues['id']) || empty($runtimeValues['id'])) {
                     $errorMessage = 'no "id" runtime option given. value cannot be empty';
                 }
                 break;
@@ -171,7 +171,7 @@ class TrinityDataProvider implements DataProviderInterface
             throw new ProviderException(sprintf('Runtime Options validation failed. Error was: %s', $errorMessage), DsTrinityDataBundle::PROVIDER_NAME);
         }
 
-        return $runtimeOptions;
+        return $runtimeValues;
     }
 
 }

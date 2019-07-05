@@ -4,14 +4,14 @@ namespace DsTrinityDataBundle\Transformer;
 
 use DynamicSearchBundle\Context\ContextDataInterface;
 use DynamicSearchBundle\Logger\LoggerInterface;
-use DynamicSearchBundle\Transformer\Container\DataContainer;
-use DynamicSearchBundle\Transformer\Container\DataContainerInterface;
-use DynamicSearchBundle\Transformer\DispatchTransformerInterface;
+use DynamicSearchBundle\Transformer\Container\DocumentContainer;
+use DynamicSearchBundle\Transformer\Container\DocumentContainerInterface;
+use DynamicSearchBundle\Transformer\DocumentTransformerInterface;
 use Pimcore\Model\Asset;
 use Pimcore\Model\DataObject;
 use Pimcore\Model\Document;
 
-class TrinityDataTransformer implements DispatchTransformerInterface
+class TrinityDataTransformer implements DocumentTransformerInterface
 {
     /**
      * @var ContextDataInterface
@@ -26,17 +26,17 @@ class TrinityDataTransformer implements DispatchTransformerInterface
     /**
      * {@inheritDoc}
      */
-    public function isApplicable($data): bool
+    public function isApplicable($resource): bool
     {
-        if ($data instanceof Asset) {
+        if ($resource instanceof Asset) {
             return true;
-        } elseif ($data instanceof Document) {
+        } elseif ($resource instanceof Document) {
             return true;
-        } elseif ($data instanceof DataObject\Concrete) {
+        } elseif ($resource instanceof DataObject\Concrete) {
             return true;
         }
 
-        return true;
+        return false;
     }
 
     /**
@@ -50,28 +50,27 @@ class TrinityDataTransformer implements DispatchTransformerInterface
     /**
      * {@inheritDoc}
      */
-    public function transformData(ContextDataInterface $contextData, $data): ?DataContainerInterface
+    public function transformData(ContextDataInterface $contextData, $resource): ?DocumentContainerInterface
     {
         $this->contextData = $contextData;
 
         $type = null;
         $dataType = null;
 
-        if ($data instanceof Asset) {
+        if ($resource instanceof Asset) {
             $type = 'asset';
-            $dataType = $data->getType();
-        } elseif ($data instanceof Document) {
+            $dataType = $resource->getType();
+        } elseif ($resource instanceof Document) {
             $type = 'document';
-            $dataType = $data->getType();
-        } elseif ($data instanceof DataObject\Concrete) {
+            $dataType = $resource->getType();
+        } elseif ($resource instanceof DataObject\Concrete) {
             $type = 'object';
-            $dataType = $data->getType();
+            $dataType = $resource->getType();
         }
 
-        return new DataContainer([
+        return new DocumentContainer($resource, [
             'type'      => $type,
-            'data_type' => $dataType,
-            'data'      => $data
+            'data_type' => $dataType
         ]);
     }
 

@@ -2,7 +2,7 @@
 
 namespace DsTrinityDataBundle\Transformer\Field;
 
-use DynamicSearchBundle\Transformer\Container\DataContainerInterface;
+use DynamicSearchBundle\Transformer\Container\DocumentContainerInterface;
 use DynamicSearchBundle\Transformer\Container\FieldContainer;
 use DynamicSearchBundle\Transformer\Container\FieldContainerInterface;
 use DynamicSearchBundle\Transformer\FieldTransformerInterface;
@@ -11,6 +11,11 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
 
 class ElementIdExtractor implements FieldTransformerInterface
 {
+    /**
+     * @var array
+     */
+    protected $options;
+
     /**
      * {@inheritDoc}
      */
@@ -22,15 +27,23 @@ class ElementIdExtractor implements FieldTransformerInterface
     /**
      * {@inheritDoc}
      */
-    public function transformData(array $options, string $dispatchTransformerName, DataContainerInterface $transformedData): ?FieldContainerInterface
+    public function setOptions(array $options)
     {
-        if (!$transformedData->hasDataAttribute('type')) {
+        $this->options = $options;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function transformData(string $dispatchTransformerName, DocumentContainerInterface $transformedData): ?FieldContainerInterface
+    {
+        if (!$transformedData->hasAttribute('type')) {
             return null;
         }
 
-        $data = $transformedData->getDataAttribute('data');
-        $type = $transformedData->getDataAttribute('type');
-        $dataType = $transformedData->getDataAttribute('data_type');
+        $data = $transformedData->getAttribute('data');
+        $type = $transformedData->getAttribute('type');
+        $dataType = $transformedData->getAttribute('data_type');
 
         if (!$data instanceof ElementInterface) {
             return null;

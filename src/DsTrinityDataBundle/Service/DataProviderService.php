@@ -45,7 +45,7 @@ class DataProviderService implements DataProviderServiceInterface
     /**
      * @var array
      */
-    protected $runtimeOptions;
+    protected $runtimeValues;
 
     /**
      * @param EventDispatcherInterface     $eventDispatcher
@@ -94,9 +94,9 @@ class DataProviderService implements DataProviderServiceInterface
     /**
      * {@inheritDoc}
      */
-    public function setRuntimeOptions(array $runtimeOptions)
+    public function setRuntimeValues(array $runtimeValues)
     {
-        $this->runtimeOptions = $runtimeOptions;
+        $this->runtimeValues = $runtimeValues;
     }
 
     /**
@@ -115,7 +115,7 @@ class DataProviderService implements DataProviderServiceInterface
      */
     public function fetchInsertData()
     {
-        $id = $this->runtimeOptions['id'];
+        $id = $this->runtimeValues['id'];
         $indexId = explode('_', $id);
 
         $elementType = $indexId[0];
@@ -135,7 +135,7 @@ class DataProviderService implements DataProviderServiceInterface
      */
     public function fetchUpdateData()
     {
-        $id = $this->runtimeOptions['id'];
+        $id = $this->runtimeValues['id'];
         $indexId = explode('_', $id);
 
         $elementType = $indexId[0];
@@ -192,7 +192,7 @@ class DataProviderService implements DataProviderServiceInterface
     protected function dispatchData(array $elements)
     {
         foreach ($elements as $element) {
-            $newDataEvent = new NewDataEvent($this->contextDispatchType, $this->contextName, $element, $this->runtimeOptions);
+            $newDataEvent = new NewDataEvent($this->contextDispatchType, $this->contextName, $element, $this->runtimeValues);
             $this->eventDispatcher->dispatch(DynamicSearchEvents::NEW_DATA_AVAILABLE, $newDataEvent);
         }
     }

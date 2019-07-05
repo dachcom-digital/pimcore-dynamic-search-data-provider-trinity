@@ -14,7 +14,7 @@ interface DataProviderServiceInterface
 
     public function setIndexOptions(array $indexOptions);
 
-    public function setRuntimeOptions(array $runtimeOptions);
+    public function setRuntimeValues(array $runtimeValues);
 
     public function fetchIndexData();
 
