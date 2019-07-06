@@ -7,4 +7,4 @@ services:
 
     DsTrinityDataBundle\Normalizer\ResourceNormalizer:
         tags:
-            - { name: dynamic_search.resource_normalizer, identifier: 'trinityResourceNormalizer', data_provider: 'trinityData' }
+            - { name: dynamic_search.resource_normalizer, identifier: trinity_resource_normalizer, data_provider: trinity_data }

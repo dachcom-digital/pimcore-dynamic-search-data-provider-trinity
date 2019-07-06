@@ -2,10 +2,8 @@
 
 namespace DsTrinityDataBundle\Transformer\Field;
 
-use DynamicSearchBundle\Transformer\Container\DocumentContainerInterface;
-use DynamicSearchBundle\Transformer\Container\FieldContainer;
-use DynamicSearchBundle\Transformer\Container\FieldContainerInterface;
 use DynamicSearchBundle\Transformer\FieldTransformerInterface;
+use DynamicSearchBundle\Transformer\Container\ResourceContainerInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
 class ObjectLocalizedGetterExtractor implements FieldTransformerInterface
@@ -39,15 +37,15 @@ class ObjectLocalizedGetterExtractor implements FieldTransformerInterface
     /**
      * {@inheritDoc}
      */
-    public function transformData(string $dispatchTransformerName, DocumentContainerInterface $transformedData): ?FieldContainerInterface
+    public function transformData(string $dispatchTransformerName, ResourceContainerInterface $resourceContainer)
     {
-        if (!$transformedData->hasAttribute('type')) {
+        if (!$resourceContainer->hasAttribute('type')) {
             return null;
         }
 
-        $data = $transformedData->getResource();
-        $type = $transformedData->getAttribute('type');
-        $dataType = $transformedData->getAttribute('data_type');
+        $data = $resourceContainer->getResource();
+        $type = $resourceContainer->getAttribute('type');
+        $dataType = $resourceContainer->getAttribute('data_type');
 
         if (!method_exists($data, $this->options['method'])) {
             return null;
@@ -58,7 +56,7 @@ class ObjectLocalizedGetterExtractor implements FieldTransformerInterface
             return null;
         }
 
-        return new FieldContainer($value);
+        return $value;
 
     }
 }

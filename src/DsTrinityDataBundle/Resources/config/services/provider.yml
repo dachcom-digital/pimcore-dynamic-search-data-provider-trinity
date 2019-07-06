@@ -10,4 +10,4 @@ services:
     #
     DsTrinityDataBundle\Provider\TrinityDataProvider:
         tags:
-            - { name: 'dynamic_search.data_provider', identifier: 'trinityData' }
+            - { name: 'dynamic_search.data_provider', identifier: trinity_data }

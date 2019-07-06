@@ -2,9 +2,7 @@
 
 namespace DsTrinityDataBundle\Transformer\Field;
 
-use DynamicSearchBundle\Transformer\Container\DocumentContainerInterface;
-use DynamicSearchBundle\Transformer\Container\FieldContainer;
-use DynamicSearchBundle\Transformer\Container\FieldContainerInterface;
+use DynamicSearchBundle\Transformer\Container\ResourceContainerInterface;
 use DynamicSearchBundle\Transformer\FieldTransformerInterface;
 use Pimcore\Model\Element\ElementInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
@@ -35,15 +33,15 @@ class ElementIdExtractor implements FieldTransformerInterface
     /**
      * {@inheritDoc}
      */
-    public function transformData(string $dispatchTransformerName, DocumentContainerInterface $transformedData): ?FieldContainerInterface
+    public function transformData(string $dispatchTransformerName, ResourceContainerInterface $resourceContainer)
     {
-        if (!$transformedData->hasAttribute('type')) {
+        if (!$resourceContainer->hasAttribute('type')) {
             return null;
         }
 
-        $data = $transformedData->getAttribute('data');
-        $type = $transformedData->getAttribute('type');
-        $dataType = $transformedData->getAttribute('data_type');
+        $data = $resourceContainer->getAttribute('data');
+        $type = $resourceContainer->getAttribute('type');
+        $dataType = $resourceContainer->getAttribute('data_type');
 
         if (!$data instanceof ElementInterface) {
             return null;
@@ -51,7 +49,7 @@ class ElementIdExtractor implements FieldTransformerInterface
 
         $value = sprintf('%s_%d', $type, $data->getId());
 
-        return new FieldContainer($value);
+        return $value;
 
     }
 }

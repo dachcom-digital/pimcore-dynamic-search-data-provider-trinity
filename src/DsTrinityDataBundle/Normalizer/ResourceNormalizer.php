@@ -8,7 +8,7 @@ use DynamicSearchBundle\Manager\DataManagerInterface;
 use DynamicSearchBundle\Manager\TransformerManagerInterface;
 use DynamicSearchBundle\Normalizer\Resource\NormalizedDataResource;
 use DynamicSearchBundle\Normalizer\ResourceNormalizerInterface;
-use DynamicSearchBundle\Transformer\Container\DocumentContainerInterface;
+use DynamicSearchBundle\Transformer\Container\ResourceContainerInterface;
 use Pimcore\Model\Asset;
 use Pimcore\Model\DataObject;
 use Pimcore\Model\Document\Page;
@@ -64,23 +64,23 @@ class ResourceNormalizer implements ResourceNormalizerInterface
     /**
      * {@inheritDoc}
      */
-    public function normalizeToResourceStack(ContextDataInterface $contextData, DocumentContainerInterface $documentContainer): array
+    public function normalizeToResourceStack(ContextDataInterface $contextData, ResourceContainerInterface $resourceContainer): array
     {
         if ($contextData->getContextDispatchType() === ContextDataInterface::CONTEXT_DISPATCH_TYPE_DELETE) {
-            return $this->onDeletion($documentContainer);
+            return $this->onDeletion($resourceContainer);
         } else {
-            return $this->onModification($documentContainer, $contextData);
+            return $this->onModification($resourceContainer, $contextData);
         }
     }
 
     /**
-     * @param DocumentContainerInterface $documentContainer
+     * @param ResourceContainerInterface $resourceContainer
      *
      * @return array
      */
-    protected function onDeletion(DocumentContainerInterface $documentContainer)
+    protected function onDeletion(ResourceContainerInterface $resourceContainer)
     {
-        $resource = $documentContainer->getResource();
+        $resource = $resourceContainer->getResource();
 
         if (!$resource instanceof ElementInterface) {
             return [];
@@ -100,14 +100,14 @@ class ResourceNormalizer implements ResourceNormalizerInterface
                 }
             }
 
-            $resourceId = $this->generateResourceId($documentContainer, $buildOptions);
+            $resourceId = $this->generateResourceId($resourceContainer, $buildOptions);
 
             return [new NormalizedDataResource(null, $resourceId, $buildOptions)];
         }
 
         if ($resource instanceof Asset) {
 
-            $resourceId = $this->generateResourceId($documentContainer);
+            $resourceId = $this->generateResourceId($resourceContainer);
 
             return [new NormalizedDataResource(null, $resourceId)];
         }
@@ -117,11 +117,11 @@ class ResourceNormalizer implements ResourceNormalizerInterface
             $normalizedResources = [];
             if ($this->options['locale_aware_resources'] === true) {
                 foreach (\Pimcore\Tool::getValidLanguages() as $language) {
-                    $resourceId = $this->generateResourceId($documentContainer, ['locale' => $language]);
+                    $resourceId = $this->generateResourceId($resourceContainer, ['locale' => $language]);
                     $normalizedResources[] = new NormalizedDataResource(null, $resourceId);
                 }
             } else {
-                $resourceId = $this->generateResourceId($documentContainer);
+                $resourceId = $this->generateResourceId($resourceContainer);
                 $normalizedResources[] = new NormalizedDataResource(null, $resourceId);
             }
 
@@ -132,14 +132,14 @@ class ResourceNormalizer implements ResourceNormalizerInterface
     }
 
     /**
-     * @param DocumentContainerInterface $documentContainer
+     * @param ResourceContainerInterface $resourceContainer
      * @param ContextDataInterface       $contextData
      *
      * @return array
      */
-    protected function onModification(DocumentContainerInterface $documentContainer, ContextDataInterface $contextData)
+    protected function onModification(ResourceContainerInterface $resourceContainer, ContextDataInterface $contextData)
     {
-        $resource = $documentContainer->getResource();
+        $resource = $resourceContainer->getResource();
 
         if (!$resource instanceof ElementInterface) {
             return [];
@@ -159,16 +159,16 @@ class ResourceNormalizer implements ResourceNormalizerInterface
                 }
             }
 
-            $resourceId = $this->generateResourceId($documentContainer, $buildOptions);
+            $resourceId = $this->generateResourceId($resourceContainer, $buildOptions);
 
-            return [new NormalizedDataResource($documentContainer, $resourceId, $buildOptions)];
+            return [new NormalizedDataResource($resourceContainer, $resourceId, $buildOptions)];
         }
 
         if ($resource instanceof Asset) {
 
-            $resourceId = $this->generateResourceId($documentContainer);
+            $resourceId = $this->generateResourceId($resourceContainer);
 
-            return [new NormalizedDataResource($documentContainer, $resourceId)];
+            return [new NormalizedDataResource($resourceContainer, $resourceId)];
         }
 
         if ($resource instanceof DataObject) {
@@ -176,12 +176,12 @@ class ResourceNormalizer implements ResourceNormalizerInterface
             $normalizedResources = [];
             if ($this->options['locale_aware_resources'] === true) {
                 foreach (\Pimcore\Tool::getValidLanguages() as $language) {
-                    $resourceId = $this->generateResourceId($documentContainer, ['locale' => $language]);
-                    $normalizedResources[] = new NormalizedDataResource($documentContainer, $resourceId, ['locale' => $language]);
+                    $resourceId = $this->generateResourceId($resourceContainer, ['locale' => $language]);
+                    $normalizedResources[] = new NormalizedDataResource($resourceContainer, $resourceId, ['locale' => $language]);
                 }
             } else {
-                $resourceId = $this->generateResourceId($documentContainer);
-                $normalizedResources[] = new NormalizedDataResource($documentContainer, $resourceId);
+                $resourceId = $this->generateResourceId($resourceContainer);
+                $normalizedResources[] = new NormalizedDataResource($resourceContainer, $resourceId);
             }
 
             return $normalizedResources;
@@ -192,18 +192,18 @@ class ResourceNormalizer implements ResourceNormalizerInterface
     }
 
     /**
-     * @param DocumentContainerInterface $documentContainer
+     * @param ResourceContainerInterface $resourceContainer
      * @param array                      $buildOptions
      *
      * @return string|null
      */
-    protected function generateResourceId(DocumentContainerInterface $documentContainer, array $buildOptions = [])
+    protected function generateResourceId(ResourceContainerInterface $resourceContainer, array $buildOptions = [])
     {
-        if (!$documentContainer->getResource() instanceof ElementInterface) {
+        if (!$resourceContainer->getResource() instanceof ElementInterface) {
             return null;
         }
 
-        $resource = $documentContainer->getResource();
+        $resource = $resourceContainer->getResource();
 
         $locale = isset($buildOptions['locale']) ? $buildOptions['locale'] : null;
         $documentType = null;

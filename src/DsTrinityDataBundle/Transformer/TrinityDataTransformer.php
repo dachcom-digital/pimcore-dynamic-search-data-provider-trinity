@@ -4,8 +4,6 @@ namespace DsTrinityDataBundle\Transformer;
 
 use DynamicSearchBundle\Context\ContextDataInterface;
 use DynamicSearchBundle\Logger\LoggerInterface;
-use DynamicSearchBundle\Transformer\Container\DocumentContainer;
-use DynamicSearchBundle\Transformer\Container\DocumentContainerInterface;
 use DynamicSearchBundle\Transformer\DocumentTransformerInterface;
 use Pimcore\Model\Asset;
 use Pimcore\Model\DataObject;
@@ -50,7 +48,7 @@ class TrinityDataTransformer implements DocumentTransformerInterface
     /**
      * {@inheritDoc}
      */
-    public function transformData(ContextDataInterface $contextData, $resource): ?DocumentContainerInterface
+    public function transformData(ContextDataInterface $contextData, $resource): array
     {
         $this->contextData = $contextData;
 
@@ -68,10 +66,10 @@ class TrinityDataTransformer implements DocumentTransformerInterface
             $dataType = $resource->getType();
         }
 
-        return new DocumentContainer($resource, [
+        return [
             'type'      => $type,
             'data_type' => $dataType
-        ]);
+        ];
     }
 
     /**
