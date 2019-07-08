@@ -7,11 +7,13 @@ use DynamicSearchBundle\Exception\RuntimeException;
 use DynamicSearchBundle\Manager\DataManagerInterface;
 use DynamicSearchBundle\Manager\TransformerManagerInterface;
 use DynamicSearchBundle\Normalizer\Resource\NormalizedDataResource;
+use DynamicSearchBundle\Normalizer\Resource\ResourceMeta;
+use DynamicSearchBundle\Normalizer\Resource\ResourceMetaInterface;
 use DynamicSearchBundle\Normalizer\ResourceNormalizerInterface;
 use DynamicSearchBundle\Transformer\Container\ResourceContainerInterface;
 use Pimcore\Model\Asset;
 use Pimcore\Model\DataObject;
-use Pimcore\Model\Document\Page;
+use Pimcore\Model\Document;
 use Pimcore\Model\Element\ElementInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
@@ -66,140 +68,134 @@ class ResourceNormalizer implements ResourceNormalizerInterface
      */
     public function normalizeToResourceStack(ContextDataInterface $contextData, ResourceContainerInterface $resourceContainer): array
     {
-        if ($contextData->getContextDispatchType() === ContextDataInterface::CONTEXT_DISPATCH_TYPE_DELETE) {
-            return $this->onDeletion($resourceContainer);
-        } else {
-            return $this->onModification($resourceContainer, $contextData);
-        }
-    }
-
-    /**
-     * @param ResourceContainerInterface $resourceContainer
-     *
-     * @return array
-     */
-    protected function onDeletion(ResourceContainerInterface $resourceContainer)
-    {
         $resource = $resourceContainer->getResource();
 
         if (!$resource instanceof ElementInterface) {
             return [];
         }
 
-        if ($resource instanceof Page) {
-
-            // @todo: Hardlink data detection!
-            // @todo: Related document detection! (some content parts could be inherited)
-
-            $buildOptions = [];
-            if ($this->options['locale_aware_resources'] === true) {
-                $documentLocale = $resource->getProperty('language');
-                if (empty($documentLocale)) {
-                    throw new RuntimeException(sprintf('Cannot determinate locale aware document id "%s": no language property given.', $resource->getId()));
-                } else {
-                    $buildOptions['locale'] = $documentLocale;
-                }
-            }
-
-            $resourceId = $this->generateResourceId($resourceContainer, $buildOptions);
-
-            return [new NormalizedDataResource(null, $resourceId, $buildOptions)];
+        if ($resource instanceof Document) {
+            return $this->normalizeDocument($contextData, $resourceContainer);
         }
 
         if ($resource instanceof Asset) {
-
-            $resourceId = $this->generateResourceId($resourceContainer);
-
-            return [new NormalizedDataResource(null, $resourceId)];
+            return $this->normalizeAsset($contextData, $resourceContainer);
         }
 
         if ($resource instanceof DataObject) {
-
-            $normalizedResources = [];
-            if ($this->options['locale_aware_resources'] === true) {
-                foreach (\Pimcore\Tool::getValidLanguages() as $language) {
-                    $resourceId = $this->generateResourceId($resourceContainer, ['locale' => $language]);
-                    $normalizedResources[] = new NormalizedDataResource(null, $resourceId);
-                }
-            } else {
-                $resourceId = $this->generateResourceId($resourceContainer);
-                $normalizedResources[] = new NormalizedDataResource(null, $resourceId);
-            }
-
-            return $normalizedResources;
+            return $this->normalizeDataObject($contextData, $resourceContainer);
         }
 
         return [];
+
     }
 
     /**
-     * @param ResourceContainerInterface $resourceContainer
      * @param ContextDataInterface       $contextData
+     * @param ResourceContainerInterface $resourceContainer
      *
      * @return array
      */
-    protected function onModification(ResourceContainerInterface $resourceContainer, ContextDataInterface $contextData)
+    protected function normalizeDocument(ContextDataInterface $contextData, ResourceContainerInterface $resourceContainer)
     {
         $resource = $resourceContainer->getResource();
 
-        if (!$resource instanceof ElementInterface) {
+        if (!method_exists($resource, 'getProperty')) {
             return [];
         }
 
-        if ($resource instanceof Page) {
+        // @todo: Hardlink data detection!
+        // @todo: Related document detection! (some content parts could be inherited)
 
-            // @todo: Hardlink data detection!
-            // @todo: Related document detection! (some content parts could be inherited)
-
-            $buildOptions = [];
-            if ($this->options['locale_aware_resources'] === true) {
-                $documentLocale = $resource->getProperty('language');
-                if (empty($documentLocale)) {
-                    throw new RuntimeException(sprintf('Cannot determinate locale aware document id "%s": no language property given.', $resource->getId()));
-                } else {
-                    $buildOptions['locale'] = $documentLocale;
-                }
-            }
-
-            $resourceId = $this->generateResourceId($resourceContainer, $buildOptions);
-
-            return [new NormalizedDataResource($resourceContainer, $resourceId, $buildOptions)];
-        }
-
-        if ($resource instanceof Asset) {
-
-            $resourceId = $this->generateResourceId($resourceContainer);
-
-            return [new NormalizedDataResource($resourceContainer, $resourceId)];
-        }
-
-        if ($resource instanceof DataObject) {
-
-            $normalizedResources = [];
-            if ($this->options['locale_aware_resources'] === true) {
-                foreach (\Pimcore\Tool::getValidLanguages() as $language) {
-                    $resourceId = $this->generateResourceId($resourceContainer, ['locale' => $language]);
-                    $normalizedResources[] = new NormalizedDataResource($resourceContainer, $resourceId, ['locale' => $language]);
-                }
+        $buildOptions = [];
+        if ($this->options['locale_aware_resources'] === true) {
+            $documentLocale = $resource->getProperty('language');
+            if (empty($documentLocale)) {
+                throw new RuntimeException(sprintf('Cannot determinate locale aware document id "%s": no language property given.', $resource->getId()));
             } else {
-                $resourceId = $this->generateResourceId($resourceContainer);
-                $normalizedResources[] = new NormalizedDataResource($resourceContainer, $resourceId);
+                $buildOptions['locale'] = $documentLocale;
             }
-
-            return $normalizedResources;
         }
 
-        return [];
+        $resource = $this->generateDataResource($resourceContainer, $buildOptions);
 
+        if ($resource === null) {
+            return [];
+        }
+
+        return [$resource];
+    }
+
+    /**
+     * @param ContextDataInterface       $contextData
+     * @param ResourceContainerInterface $resourceContainer
+     *
+     * @return array
+     */
+    protected function normalizeAsset(ContextDataInterface $contextData, ResourceContainerInterface $resourceContainer)
+    {
+        $resource = $this->generateDataResource($resourceContainer);;
+        if ($resource === null) {
+            return [];
+        }
+
+        return [$resource];
+    }
+
+    /**
+     * @param ContextDataInterface       $contextData
+     * @param ResourceContainerInterface $resourceContainer
+     *
+     * @return array
+     */
+    protected function normalizeDataObject(ContextDataInterface $contextData, ResourceContainerInterface $resourceContainer)
+    {
+        $normalizedResources = [];
+        if ($this->options['locale_aware_resources'] === true) {
+            foreach (\Pimcore\Tool::getValidLanguages() as $language) {
+                $resource = $this->generateDataResource($resourceContainer, ['locale' => $language]);
+                if ($resource !== null) {
+                    $normalizedResources[] = $resource;
+                }
+            }
+        } else {
+            $resource = $this->generateDataResource($resourceContainer);
+            if ($resource !== null) {
+                $normalizedResources[] = $resource;
+            }
+        }
+
+        return $normalizedResources;
     }
 
     /**
      * @param ResourceContainerInterface $resourceContainer
      * @param array                      $buildOptions
      *
-     * @return string|null
+     * @return NormalizedDataResource|null
      */
-    protected function generateResourceId(ResourceContainerInterface $resourceContainer, array $buildOptions = [])
+    protected function generateDataResource(ResourceContainerInterface $resourceContainer, $buildOptions = [])
+    {
+        $resourceMeta = $this->generateResourceMeta($resourceContainer, $buildOptions);
+
+        if ($resourceMeta === null) {
+            return null;
+        }
+
+        return new NormalizedDataResource(
+            $resourceContainer,
+            $resourceMeta,
+            $buildOptions
+        );
+    }
+
+    /**
+     * @param ResourceContainerInterface $resourceContainer
+     * @param array                      $buildOptions
+     *
+     * @return ResourceMetaInterface|null
+     */
+    protected function generateResourceMeta(ResourceContainerInterface $resourceContainer, array $buildOptions = [])
     {
         if (!$resourceContainer->getResource() instanceof ElementInterface) {
             return null;
@@ -208,25 +204,36 @@ class ResourceNormalizer implements ResourceNormalizerInterface
         $resource = $resourceContainer->getResource();
 
         $locale = isset($buildOptions['locale']) ? $buildOptions['locale'] : null;
-        $documentType = null;
-        $id = null;
+
+        $documentId = null;
+        $resourceId = null;
+        $resourceCollectionType = null;
+        $resourceType = null;
 
         if ($resource instanceof DataObject) {
-            $documentType = 'object';
-            $id = $resource->getId();
-        } elseif ($resource instanceof Page) {
-            $documentType = 'page';
-            $id = $resource->getId();
+            $resourceCollectionType = 'object';
+            $resourceType = $resource->getType();
+            $resourceId = $resource->getId();
+        } elseif ($resource instanceof Asset) {
+            $resourceCollectionType = 'asset';
+            $resourceType = $resource->getType();
+            $resourceId = $resource->getId();
+        } elseif ($resource instanceof Document) {
+            $resourceCollectionType = 'document';
+            $resourceType = $resource->getType();
+            $resourceId = $resource->getId();
         }
 
-        if ($documentType === null) {
+        if ($resourceCollectionType === null) {
             return null;
         }
 
         if ($locale !== null) {
-            return sprintf('%s_%s_%d', $documentType, $locale, $id);
+            $documentId = sprintf('%s_%s_%d', $resourceCollectionType, $locale, $resourceId);
+        } else {
+            $documentId = sprintf('%s_%d', $resourceCollectionType, $resourceId);
         }
 
-        return sprintf('%s_%d', $documentType, $id);
+        return new ResourceMeta($documentId, $resourceId, $resourceCollectionType, $resourceType);
     }
 }
