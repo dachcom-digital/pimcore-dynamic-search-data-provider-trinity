@@ -9,9 +9,8 @@ class DocumentListBuilder implements DataBuilderInterface
     /**
      * {@inheritDoc}
      */
-    public function build(array $options): array
+    public function buildByList(array $options): array
     {
-        $id = $options['id'];
         $allowedTypes = $options['document_types'];
         $includeUnpublished = $options['document_ignore_unpublished'] === false;
         $limit = $options['document_limit'];
@@ -21,10 +20,6 @@ class DocumentListBuilder implements DataBuilderInterface
 
         if ($includeUnpublished === true) {
             $list->setUnpublished(true);
-        }
-
-        if ($id !== null) {
-            $list->addConditionParam('id = ?', $id);
         }
 
         foreach ($additionalParams as $additionalParam => $additionalValue) {
@@ -38,6 +33,14 @@ class DocumentListBuilder implements DataBuilderInterface
         $this->addDocumentTypeRestriction($list, $allowedTypes);
 
         return $list->getDocuments();
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function buildById(int $id)
+    {
+        return Document::getById($id);
     }
 
     /**

@@ -5,6 +5,10 @@ services:
         autoconfigure: true
         public: false
 
-    DsTrinityDataBundle\Normalizer\ResourceNormalizer:
+    DsTrinityDataBundle\Normalizer\DefaultResourceNormalizer:
         tags:
-            - { name: dynamic_search.resource_normalizer, identifier: trinity_resource_normalizer, data_provider: trinity_data }
+            - { name: dynamic_search.resource_normalizer, identifier: trinity_default_resource_normalizer, data_provider: trinity_data }
+
+    DsTrinityDataBundle\Normalizer\LocalizedResourceNormalizer:
+        tags:
+            - { name: dynamic_search.resource_normalizer, identifier: trinity_localized_resource_normalizer, data_provider: trinity_data }

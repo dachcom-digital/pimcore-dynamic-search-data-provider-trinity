@@ -5,18 +5,18 @@ services:
         autoconfigure: true
         public: false
 
-    DsTrinityDataBundle\Transformer\TrinityDataTransformer:
+    DsTrinityDataBundle\Resource\Scaffolder\TrinityDataScaffolder:
         tags:
-            - { name: dynamic_search.transformer.dispatcher, priority: 10, identifier: trinity_data_transformer }
+            - { name: dynamic_search.resource.scaffolder, priority: 10, identifier: trinity_data, data_provider: trinity_data }
 
-    DsTrinityDataBundle\Transformer\Field\ElementIdExtractor:
+    DsTrinityDataBundle\Resource\FieldTransformer\ElementIdExtractor:
         tags:
-            - { name: dynamic_search.transformer.field, identifier: element_id_extractor, data_transformer: trinity_data_transformer }
+            - { name: dynamic_search.resource.field_transformer, identifier: element_id_extractor, resource_scaffolder: trinity_data }
 
-    DsTrinityDataBundle\Transformer\Field\ObjectGetterExtractor:
+    DsTrinityDataBundle\Resource\FieldTransformer\ObjectGetterExtractor:
         tags:
-            - { name: dynamic_search.transformer.field, identifier: object_getter_extractor, data_transformer: trinity_data_transformer }
+            - { name: dynamic_search.resource.field_transformer, identifier: object_getter_extractor, resource_scaffolder: trinity_data }
 
-    DsTrinityDataBundle\Transformer\Field\ObjectLocalizedGetterExtractor:
+    DsTrinityDataBundle\Resource\FieldTransformer\ObjectLocalizedGetterExtractor:
         tags:
-            - { name: dynamic_search.transformer.field, identifier: object_localized_getter_extractor, data_transformer: trinity_data_transformer }
+            - { name: dynamic_search.resource.field_transformer, identifier: object_localized_getter_extractor, resource_scaffolder: trinity_data }

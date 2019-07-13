@@ -2,12 +2,10 @@
 
 namespace DsTrinityDataBundle\Provider;
 
-use DsTrinityDataBundle\DsTrinityDataBundle;
 use DsTrinityDataBundle\Service\DataProviderServiceInterface;
 use DynamicSearchBundle\Context\ContextDataInterface;
 use DynamicSearchBundle\EventDispatcher\DynamicSearchEventDispatcherInterface;
-use DynamicSearchBundle\Exception\ProviderException;
-use DynamicSearchBundle\Logger\LoggerInterface;
+use DynamicSearchBundle\Normalizer\Resource\ResourceMetaInterface;
 use DynamicSearchBundle\Provider\DataProviderInterface;
 use Pimcore\Model\Asset;
 use Pimcore\Model\DataObject;
@@ -16,11 +14,6 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
 
 class TrinityDataProvider implements DataProviderInterface
 {
-    /**
-     * @var LoggerInterface
-     */
-    protected $logger;
-
     /**
      * @var array
      */
@@ -46,14 +39,6 @@ class TrinityDataProvider implements DataProviderInterface
     ) {
         $this->eventDispatcher = $eventDispatcher;
         $this->dataProvider = $dataProvider;
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    public function setLogger(LoggerInterface $logger)
-    {
-        $this->logger = $logger;
     }
 
     /**
@@ -95,51 +80,56 @@ class TrinityDataProvider implements DataProviderInterface
     /**
      * {@inheritDoc}
      */
-    public function execute(ContextDataInterface $contextData)
+    public function provideAll(ContextDataInterface $contextData)
     {
-        $runtimeValues = $this->validateRuntimeValues($contextData->getContextDispatchType(), $contextData->getRuntimeValues());
-
-        $this->dataProvider->setLogger($this->logger);
         $this->dataProvider->setContextName($contextData->getName());
         $this->dataProvider->setContextDispatchType($contextData->getContextDispatchType());
         $this->dataProvider->setIndexOptions($this->configuration);
-        $this->dataProvider->setRuntimeValues($runtimeValues);
 
-        if ($contextData->getContextDispatchType() === ContextDataInterface::CONTEXT_DISPATCH_TYPE_INDEX) {
-            $this->dataProvider->fetchIndexData();
-        } elseif ($contextData->getContextDispatchType() === ContextDataInterface::CONTEXT_DISPATCH_TYPE_INSERT) {
-            $this->dataProvider->fetchInsertData();
-        } elseif ($contextData->getContextDispatchType() === ContextDataInterface::CONTEXT_DISPATCH_TYPE_UPDATE) {
-            $this->dataProvider->fetchUpdateData();
-        }
+        $this->dataProvider->fetchListData();
     }
 
     /**
      * {@inheritDoc}
      */
-    public function configureOptions(OptionsResolver $resolver)
+    public function provideSingle(ContextDataInterface $contextData, ResourceMetaInterface $resourceMeta)
+    {
+        $this->dataProvider->setContextName($contextData->getName());
+        $this->dataProvider->setContextDispatchType($contextData->getContextDispatchType());
+        $this->dataProvider->setIndexOptions($this->configuration);
+
+        $this->dataProvider->fetchSingleData($resourceMeta);
+
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function configureOptions(OptionsResolver $resolver, string $providerBehaviour)
+    {
+        $this->configureAlwaysOptions($resolver);
+
+        if ($providerBehaviour === self::PROVIDER_BEHAVIOUR_FULL_DISPATCH) {
+            $this->configureFullDispatchOptions($resolver);
+        } elseif ($providerBehaviour === self::PROVIDER_BEHAVIOUR_SINGLE_DISPATCH) {
+            $this->configureSingleDispatchOptions($resolver);
+        }
+    }
+
+    /**
+     * @param OptionsResolver $resolver
+     */
+    protected function configureAlwaysOptions(OptionsResolver $resolver)
     {
         $defaults = [
             'index_asset'                   => false,
             'asset_data_builder_identifier' => 'default',
-            'asset_types'                   => Asset::$types,
-            'asset_limit'                   => 0,
-            'asset_additional_params'       => [],
 
             'index_object'                   => false,
             'object_data_builder_identifier' => 'default',
-            'object_types'                   => DataObject::$types,
-            'object_class_names'             => [],
-            'object_ignore_unpublished'      => true,
-            'object_limit'                   => 0,
-            'object_additional_params'       => [],
 
             'index_document'                   => false,
             'document_data_builder_identifier' => 'default',
-            'document_types'                   => Document::$types,
-            'document_ignore_unpublished'      => true,
-            'document_limit'                   => 0,
-            'document_additional_params'       => [],
         ];
 
         $resolver->setDefaults($defaults);
@@ -147,39 +137,43 @@ class TrinityDataProvider implements DataProviderInterface
     }
 
     /**
-     * @param string $contextDispatchType
-     * @param array  $runtimeValues
-     *
-     * @return array
-     * @throws ProviderException
+     * @param OptionsResolver $resolver
      */
-    protected function validateRuntimeValues(string $contextDispatchType, array $runtimeValues = [])
+    protected function configureFullDispatchOptions(OptionsResolver $resolver)
     {
-        $errorMessage = null;
+        $defaults = [
+            'asset_types'             => Asset::$types,
+            'asset_limit'             => 0,
+            'asset_additional_params' => [],
 
-        switch ($contextDispatchType) {
-            case ContextDataInterface::CONTEXT_DISPATCH_TYPE_UPDATE:
-                if (!isset($runtimeValues['id']) || empty($runtimeValues['id'])) {
-                    $errorMessage = 'no "id" runtime option given. value cannot be empty';
-                }
-                break;
-            case ContextDataInterface::CONTEXT_DISPATCH_TYPE_INSERT:
-                if (!isset($runtimeValues['path']) || !is_string($runtimeValues['path'])) {
-                    $errorMessage = 'no "path" runtime option given. needs to be a valid string';
-                }
-                break;
-            case ContextDataInterface::CONTEXT_DISPATCH_TYPE_DELETE:
-                if (!isset($runtimeValues['id']) || empty($runtimeValues['id'])) {
-                    $errorMessage = 'no "id" runtime option given. value cannot be empty';
-                }
-                break;
-        }
+            'object_types'              => DataObject::$types,
+            'object_class_names'        => [],
+            'object_ignore_unpublished' => true,
+            'object_limit'              => 0,
+            'object_additional_params'  => [],
 
-        if ($errorMessage !== null) {
-            throw new ProviderException(sprintf('Runtime Options validation failed. Error was: %s', $errorMessage), DsTrinityDataBundle::PROVIDER_NAME);
-        }
+            'document_types'              => Document::$types,
+            'document_ignore_unpublished' => true,
+            'document_limit'              => 0,
+            'document_additional_params'  => [],
+        ];
 
-        return $runtimeValues;
+        $resolver->setDefaults($defaults);
+        $resolver->setRequired(array_keys($defaults));
     }
 
+    /**
+     * @param OptionsResolver $resolver
+     */
+    protected function configureSingleDispatchOptions(OptionsResolver $resolver)
+    {
+        $defaults = [
+            'id' => null
+        ];
+
+        $resolver->setDefaults($defaults);
+        $resolver->setRequired(array_keys($defaults));
+
+        $resolver->setAllowedTypes('id', ['string', 'int']);
+    }
 }

@@ -8,6 +8,8 @@ use DsTrinityDataBundle\Service\Builder\DataBuilderInterface;
 use DynamicSearchBundle\DynamicSearchEvents;
 use DynamicSearchBundle\Event\NewDataEvent;
 use DynamicSearchBundle\Logger\LoggerInterface;
+use DynamicSearchBundle\Normalizer\Resource\ResourceMetaInterface;
+use DynamicSearchBundle\Provider\DataProviderInterface;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 
 class DataProviderService implements DataProviderServiceInterface
@@ -43,28 +45,18 @@ class DataProviderService implements DataProviderServiceInterface
     protected $indexOptions;
 
     /**
-     * @var array
-     */
-    protected $runtimeValues;
-
-    /**
+     * @param LoggerInterface              $logger
      * @param EventDispatcherInterface     $eventDispatcher
      * @param DataBuilderRegistryInterface $dataBuilderRegistry
      */
     public function __construct(
+        LoggerInterface $logger,
         EventDispatcherInterface $eventDispatcher,
         DataBuilderRegistryInterface $dataBuilderRegistry
     ) {
+        $this->logger = $logger;
         $this->eventDispatcher = $eventDispatcher;
         $this->dataBuilderRegistry = $dataBuilderRegistry;
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    public function setLogger(LoggerInterface $logger)
-    {
-        $this->logger = $logger;
     }
 
     /**
@@ -94,66 +86,35 @@ class DataProviderService implements DataProviderServiceInterface
     /**
      * {@inheritDoc}
      */
-    public function setRuntimeValues(array $runtimeValues)
-    {
-        $this->runtimeValues = $runtimeValues;
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    public function fetchIndexData()
+    public function fetchListData()
     {
         foreach (['asset', 'document', 'object'] as $type) {
-            $this->fetchByType($type);
+            $this->fetchByType($type, DataProviderInterface::PROVIDER_BEHAVIOUR_FULL_DISPATCH);
         }
-
     }
 
     /**
      * {@inheritDoc}
      */
-    public function fetchInsertData()
+    public function fetchSingleData(ResourceMetaInterface $resourceMeta)
     {
-        $id = $this->runtimeValues['id'];
-        $indexId = explode('_', $id);
-
-        $elementType = $indexId[0];
-        $elementId = (int) $indexId[1];
+        $elementType = $resourceMeta->getResourceType();
+        $elementId = $resourceMeta->getResourceId();
 
         if (!in_array($elementType, ['asset', 'document', 'object'])) {
-            $this->log('error', sprintf('cannot insert data from identifier "%s". wrong type "%s" given', $id, $elementType));
+            $this->log('error', sprintf('cannot insert data from identifier "%s". wrong type "%s" given', $elementId, $elementType));
             return;
         }
 
-        $this->fetchByType($elementType, $elementId);
+        $this->fetchByTypeAndId($elementType, DataProviderInterface::PROVIDER_BEHAVIOUR_SINGLE_DISPATCH, $elementId, $resourceMeta);
 
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    public function fetchUpdateData()
-    {
-        $id = $this->runtimeValues['id'];
-        $indexId = explode('_', $id);
-
-        $elementType = $indexId[0];
-        $elementId = (int) $indexId[1];
-
-        if (!in_array($elementType, ['asset', 'document', 'object'])) {
-            $this->log('error', sprintf('cannot insert data from identifier "%s". wrong type "%s" given', $id, $elementType));
-            return;
-        }
-
-        $this->fetchByType($elementType, $elementId);
     }
 
     /**
      * @param string $type
-     * @param null   $id
+     * @param string $providerBehaviour
      */
-    protected function fetchByType(string $type, $id = null)
+    protected function fetchByType(string $type, string $providerBehaviour)
     {
         $builder = null;
 
@@ -170,11 +131,36 @@ class DataProviderService implements DataProviderServiceInterface
         }
 
         $options = $this->getTypeOptions($type);
-        $options['id'] = $id;
+        $elements = $builder->buildByList($options);
 
-        $elements = $builder->build($options);
+        $this->dispatchData($elements, $providerBehaviour);
+    }
 
-        $this->dispatchData($elements);
+    /**
+     * @param string                $type
+     * @param string                $providerBehaviour
+     * @param int                   $id
+     * @param ResourceMetaInterface $resourceMeta
+     */
+    protected function fetchByTypeAndId(string $type, string $providerBehaviour, $id, ?ResourceMetaInterface $resourceMeta)
+    {
+        $builder = null;
+
+        if ($this->indexOptions[sprintf('index_%s', $type)] === false) {
+            return;
+        }
+
+        $builderIdentifier = sprintf('%s_data_builder_identifier', $type);
+        $builder = $this->dataBuilderRegistry->getByTypeAndIdentifier($type, $this->indexOptions[$builderIdentifier]);
+
+        if (!$builder instanceof DataBuilderInterface) {
+            $this->log('error', sprintf('could not resolve data builder for type "%s"', $type));
+            return;
+        }
+
+        $element = $builder->buildById((int) $id);
+
+        $this->dispatchData([$element], $providerBehaviour, $resourceMeta);
     }
 
     /**
@@ -187,12 +173,14 @@ class DataProviderService implements DataProviderServiceInterface
     }
 
     /**
-     * @param $elements
+     * @param array                      $elements
+     * @param string                     $providerBehaviour
+     * @param ResourceMetaInterface|null $resourceMeta
      */
-    protected function dispatchData(array $elements)
+    protected function dispatchData(array $elements, string $providerBehaviour, ?ResourceMetaInterface $resourceMeta = null)
     {
         foreach ($elements as $element) {
-            $newDataEvent = new NewDataEvent($this->contextDispatchType, $this->contextName, $element, $this->runtimeValues);
+            $newDataEvent = new NewDataEvent($this->contextDispatchType, $this->contextName, $element, $providerBehaviour, $resourceMeta);
             $this->eventDispatcher->dispatch(DynamicSearchEvents::NEW_DATA_AVAILABLE, $newDataEvent);
         }
     }

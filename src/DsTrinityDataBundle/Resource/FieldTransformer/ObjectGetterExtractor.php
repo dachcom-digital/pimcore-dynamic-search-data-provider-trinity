@@ -1,9 +1,9 @@
 <?php
 
-namespace DsTrinityDataBundle\Transformer\Field;
+namespace DsTrinityDataBundle\Resource\FieldTransformer;
 
-use DynamicSearchBundle\Transformer\Container\ResourceContainerInterface;
-use DynamicSearchBundle\Transformer\FieldTransformerInterface;
+use DynamicSearchBundle\Resource\Container\ResourceContainerInterface;
+use DynamicSearchBundle\Resource\FieldTransformerInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
 class ObjectGetterExtractor implements FieldTransformerInterface

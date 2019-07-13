@@ -2,23 +2,33 @@
 
 namespace DsTrinityDataBundle\Service;
 
-use DynamicSearchBundle\Logger\LoggerInterface;
+use DynamicSearchBundle\Normalizer\Resource\ResourceMetaInterface;
 
 interface DataProviderServiceInterface
 {
-    public function setLogger(LoggerInterface $logger);
-
+    /**
+     * @param string $contextName
+     */
     public function setContextName(string $contextName);
 
+    /**
+     * @param string $dispatchType
+     */
     public function setContextDispatchType(string $dispatchType);
 
+    /**
+     * @param array $indexOptions
+     */
     public function setIndexOptions(array $indexOptions);
 
-    public function setRuntimeValues(array $runtimeValues);
+    /**
+     * @return void
+     */
+    public function fetchListData();
 
-    public function fetchIndexData();
+    /**
+     * @param ResourceMetaInterface $resourceMeta
+     */
+    public function fetchSingleData(ResourceMetaInterface $resourceMeta);
 
-    public function fetchInsertData();
-
-    public function fetchUpdateData();
 }

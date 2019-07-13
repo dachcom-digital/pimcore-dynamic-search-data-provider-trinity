@@ -9,18 +9,13 @@ class AssetListBuilder implements DataBuilderInterface
     /**
      * {@inheritDoc}
      */
-    public function build(array $options): array
+    public function buildByList(array $options): array
     {
-        $id = $options['id'];
         $allowedTypes = $options['asset_types'];
         $limit = $options['asset_limit'];
         $additionalParams = $options['asset_additional_params'];
 
         $list = new Asset\Listing();
-
-        if ($id !== null) {
-            $list->addConditionParam('id = ?', $id);
-        }
 
         foreach ($additionalParams as $additionalParam => $additionalValue) {
             $list->addConditionParam($additionalParam, $additionalValue);
@@ -33,6 +28,14 @@ class AssetListBuilder implements DataBuilderInterface
         $this->addAssetTypeRestriction($list, $allowedTypes);
 
         return $list->getAssets();
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function buildById(int $id)
+    {
+        return Asset::getById($id);
     }
 
     /**

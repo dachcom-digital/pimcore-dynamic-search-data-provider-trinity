@@ -1,15 +1,14 @@
 <?php
 
-namespace DsTrinityDataBundle\Transformer;
+namespace DsTrinityDataBundle\Resource\Scaffolder;
 
 use DynamicSearchBundle\Context\ContextDataInterface;
-use DynamicSearchBundle\Logger\LoggerInterface;
-use DynamicSearchBundle\Transformer\DocumentTransformerInterface;
+use DynamicSearchBundle\Resource\ResourceScaffolderInterface;
 use Pimcore\Model\Asset;
 use Pimcore\Model\DataObject;
 use Pimcore\Model\Document;
 
-class TrinityDataTransformer implements DocumentTransformerInterface
+class TrinityDataScaffolder implements ResourceScaffolderInterface
 {
     /**
      * @var ContextDataInterface
@@ -17,9 +16,12 @@ class TrinityDataTransformer implements DocumentTransformerInterface
     protected $contextData;
 
     /**
-     * @var LoggerInterface
+     * {@inheritDoc}
      */
-    protected $logger;
+    public function isBaseResource($resource)
+    {
+        return true;
+    }
 
     /**
      * {@inheritDoc}
@@ -40,15 +42,7 @@ class TrinityDataTransformer implements DocumentTransformerInterface
     /**
      * {@inheritDoc}
      */
-    public function setLogger(LoggerInterface $logger): void
-    {
-        $this->logger = $logger;
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    public function transformData(ContextDataInterface $contextData, $resource): array
+    public function setup(ContextDataInterface $contextData, $resource): array
     {
         $this->contextData = $contextData;
 
@@ -70,14 +64,5 @@ class TrinityDataTransformer implements DocumentTransformerInterface
             'type'      => $type,
             'data_type' => $dataType
         ];
-    }
-
-    /**
-     * @param string $level
-     * @param string $message
-     */
-    protected function log($level, $message)
-    {
-        $this->logger->log($level, $message, 'trinity_data_transformer', $this->contextData->getName());
     }
 }

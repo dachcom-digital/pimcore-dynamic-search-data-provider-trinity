@@ -9,9 +9,8 @@ class ObjectListBuilder implements DataBuilderInterface
     /**
      * {@inheritDoc}
      */
-    public function build(array $options): array
+    public function buildByList(array $options): array
     {
-        $id = $options['id'];
         $allowedTypes = $options['object_types'];
         $allowedClasses = $options['object_class_names'];
         $includeUnpublished = $options['object_ignore_unpublished'] === false;
@@ -22,10 +21,6 @@ class ObjectListBuilder implements DataBuilderInterface
 
         if ($includeUnpublished === true) {
             $list->setUnpublished(true);
-        }
-
-        if ($id !== null) {
-            $list->addConditionParam('o_id = ?', $id);
         }
 
         foreach ($additionalParams as $additionalParam => $additionalValue) {
@@ -40,6 +35,14 @@ class ObjectListBuilder implements DataBuilderInterface
         $this->addClassNameRestriction($list, $allowedClasses);
 
         return $list->getObjects();
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function buildById(int $id)
+    {
+        return DataObject::getById($id);
     }
 
     /**

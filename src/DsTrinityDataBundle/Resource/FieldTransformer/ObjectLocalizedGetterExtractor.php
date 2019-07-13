@@ -1,13 +1,12 @@
 <?php
 
-namespace DsTrinityDataBundle\Transformer\Field;
+namespace DsTrinityDataBundle\Resource\FieldTransformer;
 
-use DynamicSearchBundle\Transformer\Container\ResourceContainerInterface;
-use DynamicSearchBundle\Transformer\FieldTransformerInterface;
-use Pimcore\Model\Element\ElementInterface;
+use DynamicSearchBundle\Resource\Container\ResourceContainerInterface;
+use DynamicSearchBundle\Resource\FieldTransformerInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
-class ElementIdExtractor implements FieldTransformerInterface
+class ObjectLocalizedGetterExtractor implements FieldTransformerInterface
 {
     /**
      * @var array
@@ -19,7 +18,12 @@ class ElementIdExtractor implements FieldTransformerInterface
      */
     public function configureOptions(OptionsResolver $resolver)
     {
-        return false;
+        $resolver->setRequired(['method', 'locale']);
+        $resolver->setAllowedTypes('method', ['string']);
+        $resolver->setAllowedTypes('locale', ['string']);
+        $resolver->setDefaults([
+            'locale' => 'en'
+        ]);
     }
 
     /**
@@ -39,15 +43,18 @@ class ElementIdExtractor implements FieldTransformerInterface
             return null;
         }
 
-        $data = $resourceContainer->getAttribute('data');
+        $data = $resourceContainer->getResource();
         $type = $resourceContainer->getAttribute('type');
         $dataType = $resourceContainer->getAttribute('data_type');
 
-        if (!$data instanceof ElementInterface) {
+        if (!method_exists($data, $this->options['method'])) {
             return null;
         }
 
-        $value = sprintf('%s_%d', $type, $data->getId());
+        $value = call_user_func([$data, $this->options['method']], $this->options['locale']);
+        if (!is_string($value)) {
+            return null;
+        }
 
         return $value;
 
