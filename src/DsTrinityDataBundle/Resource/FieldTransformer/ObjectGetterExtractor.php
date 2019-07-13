@@ -14,7 +14,7 @@ class ObjectGetterExtractor implements FieldTransformerInterface
     protected $options;
 
     /**
-     * {@inheritDoc}
+     * {@inheritdoc}
      */
     public function configureOptions(OptionsResolver $resolver)
     {
@@ -26,7 +26,7 @@ class ObjectGetterExtractor implements FieldTransformerInterface
     }
 
     /**
-     * {@inheritDoc}
+     * {@inheritdoc}
      */
     public function setOptions(array $options)
     {
@@ -34,7 +34,7 @@ class ObjectGetterExtractor implements FieldTransformerInterface
     }
 
     /**
-     * {@inheritDoc}
+     * {@inheritdoc}
      */
     public function transformData(string $dispatchTransformerName, ResourceContainerInterface $resourceContainer)
     {
@@ -56,6 +56,5 @@ class ObjectGetterExtractor implements FieldTransformerInterface
         }
 
         return $value;
-
     }
 }

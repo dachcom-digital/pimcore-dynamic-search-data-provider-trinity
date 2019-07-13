@@ -4,5 +4,4 @@ namespace DsTrinityDataBundle;
 
 final class DsTrinityDataEvents
 {
-
 }

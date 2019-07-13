@@ -19,14 +19,14 @@ class DefaultResourceNormalizer extends AbstractResourceNormalizer
     protected $options;
 
     /**
-     * {@inheritDoc}
+     * {@inheritdoc}
      */
     public function configureOptions(OptionsResolver $resolver)
     {
     }
 
     /**
-     * {@inheritDoc}
+     * {@inheritdoc}
      */
     public function setOptions(array $options)
     {
@@ -53,7 +53,6 @@ class DefaultResourceNormalizer extends AbstractResourceNormalizer
         $returnResourceContainer = $contextData->getContextDispatchType() === ContextDataInterface::CONTEXT_DISPATCH_TYPE_DELETE ? null : $resourceContainer;
 
         return [new NormalizedDataResource($returnResourceContainer, $resourceMeta)];
-
     }
 
     /**

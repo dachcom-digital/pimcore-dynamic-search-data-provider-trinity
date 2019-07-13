@@ -42,7 +42,7 @@ class TrinityDataProvider implements DataProviderInterface
     }
 
     /**
-     * {@inheritDoc}
+     * {@inheritdoc}
      */
     public function setOptions(array $configuration)
     {
@@ -50,35 +50,35 @@ class TrinityDataProvider implements DataProviderInterface
     }
 
     /**
-     * {@inheritDoc}
+     * {@inheritdoc}
      */
     public function warmUp(ContextDataInterface $contextData)
     {
     }
 
     /**
-     * {@inheritDoc}
+     * {@inheritdoc}
      */
     public function coolDown(ContextDataInterface $contextData)
     {
     }
 
     /**
-     * {@inheritDoc}
+     * {@inheritdoc}
      */
     public function cancelledShutdown(ContextDataInterface $contextData)
     {
     }
 
     /**
-     * {@inheritDoc}
+     * {@inheritdoc}
      */
     public function emergencyShutdown(ContextDataInterface $contextData)
     {
     }
 
     /**
-     * {@inheritDoc}
+     * {@inheritdoc}
      */
     public function provideAll(ContextDataInterface $contextData)
     {
@@ -90,7 +90,7 @@ class TrinityDataProvider implements DataProviderInterface
     }
 
     /**
-     * {@inheritDoc}
+     * {@inheritdoc}
      */
     public function provideSingle(ContextDataInterface $contextData, ResourceMetaInterface $resourceMeta)
     {
@@ -99,11 +99,10 @@ class TrinityDataProvider implements DataProviderInterface
         $this->dataProvider->setIndexOptions($this->configuration);
 
         $this->dataProvider->fetchSingleData($resourceMeta);
-
     }
 
     /**
-     * {@inheritDoc}
+     * {@inheritdoc}
      */
     public function configureOptions(OptionsResolver $resolver, string $providerBehaviour)
     {

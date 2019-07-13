@@ -42,7 +42,7 @@ abstract class AbstractResourceNormalizer implements ResourceNormalizerInterface
     }
 
     /**
-     * {@inheritDoc}
+     * {@inheritdoc}
      */
     public function normalizeToResourceStack(ContextDataInterface $contextData, ResourceContainerInterface $resourceContainer): array
     {
@@ -65,7 +65,6 @@ abstract class AbstractResourceNormalizer implements ResourceNormalizerInterface
         }
 
         return [];
-
     }
 
     /**
@@ -74,7 +73,7 @@ abstract class AbstractResourceNormalizer implements ResourceNormalizerInterface
      *
      * @return array
      */
-    protected abstract function normalizeDocument(ContextDataInterface $contextData, ResourceContainerInterface $resourceContainer);
+    abstract protected function normalizeDocument(ContextDataInterface $contextData, ResourceContainerInterface $resourceContainer);
 
     /**
      * @param ContextDataInterface       $contextData
@@ -82,7 +81,7 @@ abstract class AbstractResourceNormalizer implements ResourceNormalizerInterface
      *
      * @return array
      */
-    protected abstract function normalizeAsset(ContextDataInterface $contextData, ResourceContainerInterface $resourceContainer);
+    abstract protected function normalizeAsset(ContextDataInterface $contextData, ResourceContainerInterface $resourceContainer);
 
     /**
      * @param ContextDataInterface       $contextData
@@ -90,6 +89,5 @@ abstract class AbstractResourceNormalizer implements ResourceNormalizerInterface
      *
      * @return array
      */
-    protected abstract function normalizeDataObject(ContextDataInterface $contextData, ResourceContainerInterface $resourceContainer);
-
+    abstract protected function normalizeDataObject(ContextDataInterface $contextData, ResourceContainerInterface $resourceContainer);
 }

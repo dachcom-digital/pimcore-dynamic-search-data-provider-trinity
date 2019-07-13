@@ -7,7 +7,7 @@ use Pimcore\Model\Document;
 class DocumentListBuilder implements DataBuilderInterface
 {
     /**
-     * {@inheritDoc}
+     * {@inheritdoc}
      */
     public function buildByList(array $options): array
     {
@@ -36,7 +36,7 @@ class DocumentListBuilder implements DataBuilderInterface
     }
 
     /**
-     * {@inheritDoc}
+     * {@inheritdoc}
      */
     public function buildById(int $id)
     {

@@ -7,7 +7,7 @@ use Pimcore\Model\Asset;
 class AssetListBuilder implements DataBuilderInterface
 {
     /**
-     * {@inheritDoc}
+     * {@inheritdoc}
      */
     public function buildByList(array $options): array
     {
@@ -31,7 +31,7 @@ class AssetListBuilder implements DataBuilderInterface
     }
 
     /**
-     * {@inheritDoc}
+     * {@inheritdoc}
      */
     public function buildById(int $id)
     {

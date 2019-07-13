@@ -12,5 +12,5 @@ interface DataBuilderRegistryInterface
      *
      * @return DataBuilderInterface
      */
-   public function getByTypeAndIdentifier(string $type, string $identifier);
+    public function getByTypeAndIdentifier(string $type, string $identifier);
 }

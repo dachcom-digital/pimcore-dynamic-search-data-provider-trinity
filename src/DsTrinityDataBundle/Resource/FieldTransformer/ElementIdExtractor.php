@@ -15,7 +15,7 @@ class ElementIdExtractor implements FieldTransformerInterface
     protected $options;
 
     /**
-     * {@inheritDoc}
+     * {@inheritdoc}
      */
     public function configureOptions(OptionsResolver $resolver)
     {
@@ -23,7 +23,7 @@ class ElementIdExtractor implements FieldTransformerInterface
     }
 
     /**
-     * {@inheritDoc}
+     * {@inheritdoc}
      */
     public function setOptions(array $options)
     {
@@ -31,7 +31,7 @@ class ElementIdExtractor implements FieldTransformerInterface
     }
 
     /**
-     * {@inheritDoc}
+     * {@inheritdoc}
      */
     public function transformData(string $dispatchTransformerName, ResourceContainerInterface $resourceContainer)
     {
@@ -50,6 +50,5 @@ class ElementIdExtractor implements FieldTransformerInterface
         $value = sprintf('%s_%d', $type, $data->getId());
 
         return $value;
-
     }
 }

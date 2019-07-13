@@ -20,7 +20,7 @@ class LocalizedResourceNormalizer extends AbstractResourceNormalizer
     protected $options;
 
     /**
-     * {@inheritDoc}
+     * {@inheritdoc}
      */
     public function configureOptions(OptionsResolver $resolver)
     {
@@ -34,7 +34,7 @@ class LocalizedResourceNormalizer extends AbstractResourceNormalizer
     }
 
     /**
-     * {@inheritDoc}
+     * {@inheritdoc}
      */
     public function setOptions(array $options)
     {
@@ -46,6 +46,7 @@ class LocalizedResourceNormalizer extends AbstractResourceNormalizer
      * @param ResourceContainerInterface $resourceContainer
      *
      * @return array
+     *
      * @throws NormalizerException
      */
     protected function normalizeDocument(ContextDataInterface $contextData, ResourceContainerInterface $resourceContainer)
@@ -75,7 +76,6 @@ class LocalizedResourceNormalizer extends AbstractResourceNormalizer
         $returnResourceContainer = $contextData->getContextDispatchType() === ContextDataInterface::CONTEXT_DISPATCH_TYPE_DELETE ? null : $resourceContainer;
 
         return [new NormalizedDataResource($returnResourceContainer, $resourceMeta)];
-
     }
 
     /**

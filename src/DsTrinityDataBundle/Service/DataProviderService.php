@@ -62,7 +62,7 @@ class DataProviderService implements DataProviderServiceInterface
     }
 
     /**
-     * {@inheritDoc}
+     * {@inheritdoc}
      */
     public function setContextName(string $contextName)
     {
@@ -70,7 +70,7 @@ class DataProviderService implements DataProviderServiceInterface
     }
 
     /**
-     * {@inheritDoc}
+     * {@inheritdoc}
      */
     public function setContextDispatchType(string $dispatchType)
     {
@@ -78,7 +78,7 @@ class DataProviderService implements DataProviderServiceInterface
     }
 
     /**
-     * {@inheritDoc}
+     * {@inheritdoc}
      */
     public function setIndexOptions(array $indexOptions)
     {
@@ -86,7 +86,7 @@ class DataProviderService implements DataProviderServiceInterface
     }
 
     /**
-     * {@inheritDoc}
+     * {@inheritdoc}
      */
     public function fetchListData()
     {
@@ -98,7 +98,7 @@ class DataProviderService implements DataProviderServiceInterface
     }
 
     /**
-     * {@inheritDoc}
+     * {@inheritdoc}
      */
     public function fetchSingleData(ResourceMetaInterface $resourceMeta)
     {
@@ -107,11 +107,11 @@ class DataProviderService implements DataProviderServiceInterface
 
         if (!in_array($elementType, ['asset', 'document', 'object'])) {
             $this->log('error', sprintf('cannot insert data from identifier "%s". wrong type "%s" given', $elementId, $elementType));
+
             return;
         }
 
         $this->fetchByTypeAndId($elementType, DataProviderInterface::PROVIDER_BEHAVIOUR_SINGLE_DISPATCH, $elementId, $resourceMeta);
-
     }
 
     /**
@@ -131,6 +131,7 @@ class DataProviderService implements DataProviderServiceInterface
 
         if (!$builder instanceof DataBuilderInterface) {
             $this->log('error', sprintf('could not resolve data builder for type "%s"', $type));
+
             return;
         }
 
@@ -159,6 +160,7 @@ class DataProviderService implements DataProviderServiceInterface
 
         if (!$builder instanceof DataBuilderInterface) {
             $this->log('error', sprintf('could not resolve data builder for type "%s"', $type));
+
             return;
         }
 
@@ -184,12 +186,10 @@ class DataProviderService implements DataProviderServiceInterface
     protected function dispatchData(array $elements, string $providerBehaviour, ?ResourceMetaInterface $resourceMeta = null)
     {
         foreach ($elements as $element) {
-
             $newDataEvent = new NewDataEvent($this->contextDispatchType, $this->contextName, $element, $providerBehaviour, $resourceMeta);
             $this->eventDispatcher->dispatch(DynamicSearchEvents::NEW_DATA_AVAILABLE, $newDataEvent);
 
             $this->dispatchProcessControlSignal();
-
         }
     }
 
@@ -209,7 +209,6 @@ class DataProviderService implements DataProviderServiceInterface
         pcntl_signal(SIGINT, [$this, 'handleSignal']);
         pcntl_signal(SIGHUP, [$this, 'handleSignal']);
         pcntl_signal(SIGQUIT, [$this, 'handleSignal']);
-
     }
 
     protected function dispatchProcessControlSignal()

@@ -7,7 +7,7 @@ use Pimcore\Model\DataObject;
 class ObjectListBuilder implements DataBuilderInterface
 {
     /**
-     * {@inheritDoc}
+     * {@inheritdoc}
      */
     public function buildByList(array $options): array
     {
@@ -38,7 +38,7 @@ class ObjectListBuilder implements DataBuilderInterface
     }
 
     /**
-     * {@inheritDoc}
+     * {@inheritdoc}
      */
     public function buildById(int $id)
     {

@@ -21,14 +21,10 @@ interface DataProviderServiceInterface
      */
     public function setIndexOptions(array $indexOptions);
 
-    /**
-     * @return void
-     */
     public function fetchListData();
 
     /**
      * @param ResourceMetaInterface $resourceMeta
      */
     public function fetchSingleData(ResourceMetaInterface $resourceMeta);
-
 }

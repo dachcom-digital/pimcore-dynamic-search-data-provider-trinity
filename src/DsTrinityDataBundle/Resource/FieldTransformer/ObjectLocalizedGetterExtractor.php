@@ -14,7 +14,7 @@ class ObjectLocalizedGetterExtractor implements FieldTransformerInterface
     protected $options;
 
     /**
-     * {@inheritDoc}
+     * {@inheritdoc}
      */
     public function configureOptions(OptionsResolver $resolver)
     {
@@ -27,7 +27,7 @@ class ObjectLocalizedGetterExtractor implements FieldTransformerInterface
     }
 
     /**
-     * {@inheritDoc}
+     * {@inheritdoc}
      */
     public function setOptions(array $options)
     {
@@ -35,7 +35,7 @@ class ObjectLocalizedGetterExtractor implements FieldTransformerInterface
     }
 
     /**
-     * {@inheritDoc}
+     * {@inheritdoc}
      */
     public function transformData(string $dispatchTransformerName, ResourceContainerInterface $resourceContainer)
     {
@@ -57,6 +57,5 @@ class ObjectLocalizedGetterExtractor implements FieldTransformerInterface
         }
 
         return $value;
-
     }
 }
