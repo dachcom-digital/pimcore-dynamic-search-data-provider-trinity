@@ -5,7 +5,9 @@ namespace DsTrinityDataBundle\Service;
 use DsTrinityDataBundle\DsTrinityDataBundle;
 use DsTrinityDataBundle\Registry\DataBuilderRegistryInterface;
 use DsTrinityDataBundle\Service\Builder\DataBuilderInterface;
+use DsWebCrawlerBundle\DsWebCrawlerBundle;
 use DynamicSearchBundle\DynamicSearchEvents;
+use DynamicSearchBundle\Event\ErrorEvent;
 use DynamicSearchBundle\Event\NewDataEvent;
 use DynamicSearchBundle\Logger\LoggerInterface;
 use DynamicSearchBundle\Normalizer\Resource\ResourceMetaInterface;
@@ -88,6 +90,8 @@ class DataProviderService implements DataProviderServiceInterface
      */
     public function fetchListData()
     {
+        $this->addSignalListener();
+
         foreach (['asset', 'document', 'object'] as $type) {
             $this->fetchByType($type, DataProviderInterface::PROVIDER_BEHAVIOUR_FULL_DISPATCH);
         }
@@ -98,7 +102,7 @@ class DataProviderService implements DataProviderServiceInterface
      */
     public function fetchSingleData(ResourceMetaInterface $resourceMeta)
     {
-        $elementType = $resourceMeta->getResourceType();
+        $elementType = $resourceMeta->getResourceCollectionType();
         $elementId = $resourceMeta->getResourceId();
 
         if (!in_array($elementType, ['asset', 'document', 'object'])) {
@@ -180,9 +184,47 @@ class DataProviderService implements DataProviderServiceInterface
     protected function dispatchData(array $elements, string $providerBehaviour, ?ResourceMetaInterface $resourceMeta = null)
     {
         foreach ($elements as $element) {
+
             $newDataEvent = new NewDataEvent($this->contextDispatchType, $this->contextName, $element, $providerBehaviour, $resourceMeta);
             $this->eventDispatcher->dispatch(DynamicSearchEvents::NEW_DATA_AVAILABLE, $newDataEvent);
+
+            $this->dispatchProcessControlSignal();
+
         }
+    }
+
+    protected function addSignalListener()
+    {
+        if (php_sapi_name() !== 'cli') {
+            return;
+        }
+
+        if (!function_exists('pcntl_signal')) {
+            return;
+        }
+
+        declare(ticks=1);
+
+        pcntl_signal(SIGTERM, [$this, 'handleSignal']);
+        pcntl_signal(SIGINT, [$this, 'handleSignal']);
+        pcntl_signal(SIGHUP, [$this, 'handleSignal']);
+        pcntl_signal(SIGQUIT, [$this, 'handleSignal']);
+
+    }
+
+    protected function dispatchProcessControlSignal()
+    {
+        if (!function_exists('pcntl_signal')) {
+            return;
+        }
+
+        pcntl_signal_dispatch();
+    }
+
+    public function handleSignal($signal)
+    {
+        $newDataEvent = new ErrorEvent($this->contextName, sprintf('crawler has been stopped by user (signal: %s)', $signal), DsWebCrawlerBundle::PROVIDER_NAME);
+        $this->eventDispatcher->dispatch(DynamicSearchEvents::ERROR_DISPATCH_ABORT, $newDataEvent);
     }
 
     /**

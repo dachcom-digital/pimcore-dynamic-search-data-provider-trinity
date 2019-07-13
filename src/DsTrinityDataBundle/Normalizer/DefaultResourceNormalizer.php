@@ -44,14 +44,12 @@ class DefaultResourceNormalizer extends AbstractResourceNormalizer
         /** @var Document $document */
         $document = $resourceContainer->getResource();
 
-        if (!method_exists($document, 'getProperty')) {
-            return [];
-        }
-
+        // @todo: Hardlink data detection!
         // @todo: Related document detection! (some content parts could be inherited)
+        // @todo: How to handle Snippets?
 
         $documentId = sprintf('%s_%d', 'document', $document->getId());
-        $resourceMeta = new ResourceMeta($documentId, $document->getId(), 'document', $document->getType());
+        $resourceMeta = new ResourceMeta($documentId, $document->getId(), 'document', $document->getType(), ['id' => $document->getId()]);
         $returnResourceContainer = $contextData->getContextDispatchType() === ContextDataInterface::CONTEXT_DISPATCH_TYPE_DELETE ? null : $resourceContainer;
 
         return [new NormalizedDataResource($returnResourceContainer, $resourceMeta)];
@@ -70,7 +68,7 @@ class DefaultResourceNormalizer extends AbstractResourceNormalizer
         $asset = $resourceContainer->getResource();
 
         $documentId = sprintf('%s_%d', 'asset', $asset->getId());
-        $resourceMeta = new ResourceMeta($documentId, $asset->getId(), 'asset', $asset->getType());
+        $resourceMeta = new ResourceMeta($documentId, $asset->getId(), 'asset', $asset->getType(), ['id' => $asset->getId()]);
         $returnResourceContainer = $contextData->getContextDispatchType() === ContextDataInterface::CONTEXT_DISPATCH_TYPE_DELETE ? null : $resourceContainer;
 
         return [new NormalizedDataResource($returnResourceContainer, $resourceMeta)];
@@ -88,7 +86,7 @@ class DefaultResourceNormalizer extends AbstractResourceNormalizer
         $object = $resourceContainer->getResource();
 
         $documentId = sprintf('%s_%d', 'object', $object->getId());
-        $resourceMeta = new ResourceMeta($documentId, $object->getId(), 'object', $object->getType());
+        $resourceMeta = new ResourceMeta($documentId, $object->getId(), 'object', $object->getType(), ['id' => $object->getId()]);
         $returnResourceContainer = $contextData->getContextDispatchType() === ContextDataInterface::CONTEXT_DISPATCH_TYPE_DELETE ? null : $resourceContainer;
 
         return [new NormalizedDataResource($returnResourceContainer, $resourceMeta)];
