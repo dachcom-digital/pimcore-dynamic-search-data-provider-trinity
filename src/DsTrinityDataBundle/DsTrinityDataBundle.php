@@ -13,7 +13,7 @@ class DsTrinityDataBundle extends AbstractPimcoreBundle
 
     const PACKAGE_NAME = 'dachcom-digital/dynamic-search-data-provider-trinity';
 
-    const PROVIDER_NAME = 'trinityData';
+    const PROVIDER_NAME = 'trinity_data';
 
     /**
      * @param ContainerBuilder $container
