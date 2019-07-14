@@ -166,13 +166,9 @@ class TrinityDataProvider implements DataProviderInterface
      */
     protected function configureSingleDispatchOptions(OptionsResolver $resolver)
     {
-        $defaults = [
-            'id' => null
-        ];
+        $defaults = [ ];
 
         $resolver->setDefaults($defaults);
         $resolver->setRequired(array_keys($defaults));
-
-        $resolver->setAllowedTypes('id', ['string', 'int']);
     }
 }
