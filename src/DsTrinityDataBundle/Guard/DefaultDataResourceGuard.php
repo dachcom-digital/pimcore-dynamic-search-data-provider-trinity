@@ -3,6 +3,7 @@
 namespace DsTrinityDataBundle\Guard;
 
 use DsTrinityDataBundle\DsTrinityDataBundle;
+use DynamicSearchBundle\Exception\OmitGuardException;
 use DynamicSearchBundle\Guard\ContextGuardInterface;
 use DynamicSearchBundle\Normalizer\Resource\ResourceMetaInterface;
 use Pimcore\Model\Asset;
@@ -18,7 +19,7 @@ class DefaultDataResourceGuard implements ContextGuardInterface
     public function isValidateDataResource(string $contextName, string $dataProviderName, array $dataProviderOptions, ResourceMetaInterface $resourceMeta, $resource)
     {
         if ($dataProviderName !== DsTrinityDataBundle::PROVIDER_NAME) {
-            return true;
+            throw new OmitGuardException();
         }
 
         if (!$resource instanceof ElementInterface) {
