@@ -14,6 +14,14 @@ interface DataBuilderInterface
     public function buildByList(array $options): array;
 
     /**
+     * @param int   $id
+     * @param array $options
+     *
+     * @return ElementInterface|null
+     */
+    public function buildByIdList(int $id, array $options);
+
+    /**
      * @param int $id
      *
      * @return ElementInterface|null

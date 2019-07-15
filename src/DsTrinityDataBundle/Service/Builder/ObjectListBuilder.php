@@ -11,6 +11,49 @@ class ObjectListBuilder implements DataBuilderInterface
      */
     public function buildByList(array $options): array
     {
+        $list = $this->getList($options);
+
+        return $list->getObjects();
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function buildByIdList(int $id, array $options)
+    {
+        $list = $this->getList($options);
+
+        $list->addConditionParam('o_id = ?', $id);
+        $list->setLimit(1);
+
+        $objects = $list->getObjects();
+
+        if (!is_array($objects)) {
+            return null;
+        }
+
+        if (count($objects) === 0) {
+            return null;
+        }
+
+        return $objects[0];
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function buildById(int $id)
+    {
+        return DataObject::getById($id);
+    }
+
+    /**
+     * @param array $options
+     *
+     * @return DataObject\Listing
+     */
+    protected function getList(array $options)
+    {
         $allowedTypes = $options['object_types'];
         $allowedClasses = $options['object_class_names'];
         $includeUnpublished = $options['object_ignore_unpublished'] === false;
@@ -34,15 +77,7 @@ class ObjectListBuilder implements DataBuilderInterface
         $this->addObjectTypeRestriction($list, $allowedTypes);
         $this->addClassNameRestriction($list, $allowedClasses);
 
-        return $list->getObjects();
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function buildById(int $id)
-    {
-        return DataObject::getById($id);
+        return $list;
     }
 
     /**
@@ -79,7 +114,7 @@ class ObjectListBuilder implements DataBuilderInterface
             $quotedClassNames[] = \Pimcore\Db::get()->quote($cName);
         }
 
-        $listing->addConditionParam(sprintf('o_className in(%s)', implode(',', $quotedClassNames)), '');
+        $listing->addConditionParam(sprintf('o_className IN (%s)', implode(',', $quotedClassNames)), '');
 
         return $listing;
     }

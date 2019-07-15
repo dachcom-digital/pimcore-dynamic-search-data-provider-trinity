@@ -3,6 +3,7 @@
 namespace DsTrinityDataBundle\Service;
 
 use DynamicSearchBundle\Normalizer\Resource\ResourceMetaInterface;
+use Pimcore\Model\Element\ElementInterface;
 
 interface DataProviderServiceInterface
 {
@@ -20,6 +21,13 @@ interface DataProviderServiceInterface
      * @param array $indexOptions
      */
     public function setIndexOptions(array $indexOptions);
+
+    /**
+     * @param ElementInterface $resource
+     *
+     * @return bool
+     */
+    public function validate($resource);
 
     public function fetchListData();
 

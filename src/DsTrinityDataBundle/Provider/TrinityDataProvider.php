@@ -80,6 +80,18 @@ class TrinityDataProvider implements DataProviderInterface
     /**
      * {@inheritdoc}
      */
+    public function validateUntrustedResource(ContextDataInterface $contextData, $resource)
+    {
+        $this->dataProvider->setContextName($contextData->getName());
+        $this->dataProvider->setContextDispatchType($contextData->getContextDispatchType());
+        $this->dataProvider->setIndexOptions($this->configuration);
+
+        return $this->dataProvider->validate($resource);
+    }
+
+    /**
+     * {@inheritdoc}
+     */
     public function provideAll(ContextDataInterface $contextData)
     {
         $this->dataProvider->setContextName($contextData->getName());
@@ -123,12 +135,21 @@ class TrinityDataProvider implements DataProviderInterface
         $defaults = [
             'index_asset'                   => false,
             'asset_data_builder_identifier' => 'default',
+            'asset_types'                   => Asset::$types,
+            'asset_additional_params'       => [],
 
             'index_object'                   => false,
+            'object_ignore_unpublished'      => true,
             'object_data_builder_identifier' => 'default',
+            'object_types'                   => DataObject::$types,
+            'object_class_names'             => [],
+            'object_additional_params'       => [],
 
             'index_document'                   => false,
+            'document_ignore_unpublished'      => true,
             'document_data_builder_identifier' => 'default',
+            'document_types'                   => Document::$types,
+            'document_additional_params'       => [],
         ];
 
         $resolver->setDefaults($defaults);
@@ -141,20 +162,9 @@ class TrinityDataProvider implements DataProviderInterface
     protected function configureFullDispatchOptions(OptionsResolver $resolver)
     {
         $defaults = [
-            'asset_types'             => Asset::$types,
-            'asset_limit'             => 0,
-            'asset_additional_params' => [],
-
-            'object_types'              => DataObject::$types,
-            'object_class_names'        => [],
-            'object_ignore_unpublished' => true,
-            'object_limit'              => 0,
-            'object_additional_params'  => [],
-
-            'document_types'              => Document::$types,
-            'document_ignore_unpublished' => true,
-            'document_limit'              => 0,
-            'document_additional_params'  => [],
+            'asset_limit'    => 0,
+            'object_limit'   => 0,
+            'document_limit' => 0,
         ];
 
         $resolver->setDefaults($defaults);
@@ -166,7 +176,7 @@ class TrinityDataProvider implements DataProviderInterface
      */
     protected function configureSingleDispatchOptions(OptionsResolver $resolver)
     {
-        $defaults = [ ];
+        $defaults = [];
 
         $resolver->setDefaults($defaults);
         $resolver->setRequired(array_keys($defaults));

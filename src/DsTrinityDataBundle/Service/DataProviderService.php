@@ -12,6 +12,10 @@ use DynamicSearchBundle\Event\NewDataEvent;
 use DynamicSearchBundle\Logger\LoggerInterface;
 use DynamicSearchBundle\Normalizer\Resource\ResourceMetaInterface;
 use DynamicSearchBundle\Provider\DataProviderInterface;
+use Pimcore\Model\Asset;
+use Pimcore\Model\DataObject;
+use Pimcore\Model\Document;
+use Pimcore\Model\Element\ElementInterface;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 
 class DataProviderService implements DataProviderServiceInterface
@@ -83,6 +87,48 @@ class DataProviderService implements DataProviderServiceInterface
     public function setIndexOptions(array $indexOptions)
     {
         $this->indexOptions = $indexOptions;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function validate($resource)
+    {
+        if (!$resource instanceof ElementInterface) {
+            return false;
+        }
+
+        $builder = null;
+        $type = null;
+
+        if ($resource instanceof Document) {
+            $type = 'document';
+        } elseif ($resource instanceof Asset) {
+            $type = 'asset';
+        } elseif ($resource instanceof DataObject) {
+            $type = 'object';
+        }
+
+        if ($type === null) {
+            return false;
+        }
+
+        if ($this->indexOptions[sprintf('index_%s', $type)] === false) {
+            return false;
+        }
+
+        $builderIdentifier = sprintf('%s_data_builder_identifier', $type);
+        $builder = $this->dataBuilderRegistry->getByTypeAndIdentifier($type, $this->indexOptions[$builderIdentifier]);
+
+        if (!$builder instanceof DataBuilderInterface) {
+            return false;
+        }
+
+        $options = $this->getTypeOptions($type);
+        $element = $builder->buildByIdList((int) $resource->getId(), $options);
+
+        return $element instanceof ElementInterface;
+
     }
 
     /**
@@ -186,6 +232,7 @@ class DataProviderService implements DataProviderServiceInterface
     protected function dispatchData(array $elements, string $providerBehaviour, ?ResourceMetaInterface $resourceMeta = null)
     {
         foreach ($elements as $element) {
+
             $newDataEvent = new NewDataEvent($this->contextDispatchType, $this->contextName, $element, $providerBehaviour, $resourceMeta);
             $this->eventDispatcher->dispatch(DynamicSearchEvents::NEW_DATA_AVAILABLE, $newDataEvent);
 
