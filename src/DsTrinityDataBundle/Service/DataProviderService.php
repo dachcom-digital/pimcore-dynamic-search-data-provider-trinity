@@ -5,7 +5,6 @@ namespace DsTrinityDataBundle\Service;
 use DsTrinityDataBundle\DsTrinityDataBundle;
 use DsTrinityDataBundle\Registry\DataBuilderRegistryInterface;
 use DsTrinityDataBundle\Service\Builder\DataBuilderInterface;
-use DsWebCrawlerBundle\DsWebCrawlerBundle;
 use DynamicSearchBundle\DynamicSearchEvents;
 use DynamicSearchBundle\Event\ErrorEvent;
 use DynamicSearchBundle\Event\NewDataEvent;
@@ -269,7 +268,7 @@ class DataProviderService implements DataProviderServiceInterface
 
     public function handleSignal($signal)
     {
-        $newDataEvent = new ErrorEvent($this->contextName, sprintf('crawler has been stopped by user (signal: %s)', $signal), DsWebCrawlerBundle::PROVIDER_NAME);
+        $newDataEvent = new ErrorEvent($this->contextName, sprintf('crawler has been stopped by user (signal: %s)', $signal), DsTrinityDataBundle::PROVIDER_NAME);
         $this->eventDispatcher->dispatch(DynamicSearchEvents::ERROR_DISPATCH_ABORT, $newDataEvent);
     }
 
