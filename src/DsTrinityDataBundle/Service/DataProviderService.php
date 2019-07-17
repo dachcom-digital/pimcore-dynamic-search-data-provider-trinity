@@ -127,7 +127,6 @@ class DataProviderService implements DataProviderServiceInterface
         $element = $builder->buildByIdList((int) $resource->getId(), $options);
 
         return $element instanceof ElementInterface;
-
     }
 
     /**
@@ -231,7 +230,6 @@ class DataProviderService implements DataProviderServiceInterface
     protected function dispatchData(array $elements, string $providerBehaviour, ?ResourceMetaInterface $resourceMeta = null)
     {
         foreach ($elements as $element) {
-
             $newDataEvent = new NewDataEvent($this->contextDispatchType, $this->contextName, $element, $providerBehaviour, $resourceMeta);
             $this->eventDispatcher->dispatch(DynamicSearchEvents::NEW_DATA_AVAILABLE, $newDataEvent);
 

@@ -28,5 +28,4 @@ class DsTrinityDataBundle extends Bundle implements ProviderBundleInterface
     {
         return self::PROVIDER_NAME;
     }
-
 }
