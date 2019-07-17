@@ -1,6 +1,6 @@
 {
     "name": "dachcom-digital/dynamic-search-data-provider-trinity",
-    "type": "pimcore-bundle",
+    "type": "dynamic-search-provider-bundle",
     "license": "GPL-3.0+",
     "description": "",
     "keywords": ["pimcore", "search", "dynamic-search", "data-provider","trinity", "assets", "documents", "objects"],
@@ -16,14 +16,6 @@
     "autoload": {
         "psr-4": {
             "DsTrinityDataBundle\\": "src/DsTrinityDataBundle"
-        }
-    },
-
-    "extra": {
-        "pimcore": {
-            "bundles": [
-                "DsTrinityDataBundle\\DsTrinityDataBundle"
-            ]
         }
     },
     "require": {

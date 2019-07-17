@@ -3,16 +3,12 @@
 namespace DsTrinityDataBundle;
 
 use DsTrinityDataBundle\DependencyInjection\Compiler\DataBuilderPass;
-use Pimcore\Extension\Bundle\AbstractPimcoreBundle;
-use Pimcore\Extension\Bundle\Traits\PackageVersionTrait;
+use DynamicSearchBundle\Provider\Extension\ProviderBundleInterface;
+use Symfony\Component\HttpKernel\Bundle\Bundle;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 
-class DsTrinityDataBundle extends AbstractPimcoreBundle
+class DsTrinityDataBundle extends Bundle implements ProviderBundleInterface
 {
-    use PackageVersionTrait;
-
-    const PACKAGE_NAME = 'dachcom-digital/dynamic-search-data-provider-trinity';
-
     const PROVIDER_NAME = 'trinity_data';
 
     /**
@@ -28,8 +24,9 @@ class DsTrinityDataBundle extends AbstractPimcoreBundle
     /**
      * {@inheritdoc}
      */
-    protected function getComposerPackageName(): string
+    public function getProviderName(): string
     {
-        return self::PACKAGE_NAME;
+        return self::PROVIDER_NAME;
     }
+
 }
