@@ -135,20 +135,26 @@ class TrinityDataProvider implements DataProviderInterface
         $defaults = [
             'index_asset'                   => false,
             'asset_data_builder_identifier' => 'default',
-            'asset_types'                   => Asset::$types,
+            'asset_types'                   => array_filter(Asset::$types, function ($type) {
+                return $type !== 'folder';
+            }),
             'asset_additional_params'       => [],
 
             'index_object'                   => false,
             'object_ignore_unpublished'      => true,
             'object_data_builder_identifier' => 'default',
-            'object_types'                   => DataObject::$types,
+            'object_types'                   => array_filter(DataObject::$types, function ($type) {
+                return $type !== 'folder';
+            }),
             'object_class_names'             => [],
             'object_additional_params'       => [],
 
             'index_document'                   => false,
             'document_ignore_unpublished'      => true,
             'document_data_builder_identifier' => 'default',
-            'document_types'                   => Document::$types,
+            'document_types'                   => array_filter(Document::$types, function ($type) {
+                return $type !== 'folder';
+            }),
             'document_additional_params'       => [],
         ];
 
