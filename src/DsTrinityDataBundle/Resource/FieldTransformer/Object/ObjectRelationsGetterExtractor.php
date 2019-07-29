@@ -1,12 +1,12 @@
 <?php
 
-namespace DsTrinityDataBundle\Resource\FieldTransformer;
+namespace DsTrinityDataBundle\Resource\FieldTransformer\Object;
 
 use DynamicSearchBundle\Resource\Container\ResourceContainerInterface;
 use DynamicSearchBundle\Resource\FieldTransformerInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
-class ObjectGetterExtractor implements FieldTransformerInterface
+class ObjectRelationsGetterExtractor implements FieldTransformerInterface
 {
     /**
      * @var array
@@ -18,7 +18,8 @@ class ObjectGetterExtractor implements FieldTransformerInterface
      */
     public function configureOptions(OptionsResolver $resolver)
     {
-        $resolver->setRequired(['method']);
+        $resolver->setRequired(['relations', 'method']);
+        $resolver->setAllowedTypes('relations', ['string']);
         $resolver->setAllowedTypes('method', ['string']);
         $resolver->setDefaults([
             'method' => 'id'
@@ -38,23 +39,29 @@ class ObjectGetterExtractor implements FieldTransformerInterface
      */
     public function transformData(string $dispatchTransformerName, ResourceContainerInterface $resourceContainer)
     {
-        if (!$resourceContainer->hasAttribute('type')) {
-            return null;
-        }
-
         $data = $resourceContainer->getResource();
-        $type = $resourceContainer->getAttribute('type');
-        $dataType = $resourceContainer->getAttribute('data_type');
 
-        if (!method_exists($data, $this->options['method'])) {
+        $relationsGetter = sprintf('get%s', ucfirst($this->options['relations']));
+
+        if (!method_exists($data, $relationsGetter)) {
             return null;
         }
 
-        $value = call_user_func([$data, $this->options['method']]);
-        if (!is_string($value)) {
+        $relations = call_user_func([$data, $relationsGetter]);
+        if (!is_array($relations)) {
             return null;
         }
 
-        return $value;
+        $values = [];
+        foreach ($relations as $relation) {
+
+            if (!method_exists($relation, $this->options['method'])) {
+                return null;
+            }
+
+            $values[] = call_user_func([$relation, $this->options['method']]);
+        }
+
+        return $values;
     }
 }

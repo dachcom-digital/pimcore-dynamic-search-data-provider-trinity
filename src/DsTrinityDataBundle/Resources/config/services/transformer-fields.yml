@@ -5,18 +5,38 @@ services:
         autoconfigure: true
         public: false
 
+    # Scaffolder
     DsTrinityDataBundle\Resource\Scaffolder\TrinityDataScaffolder:
         tags:
             - { name: dynamic_search.resource.scaffolder, priority: 10, identifier: trinity_data, data_provider: trinity_data }
 
-    DsTrinityDataBundle\Resource\FieldTransformer\ElementIdExtractor:
+    # Common
+    DsTrinityDataBundle\Resource\FieldTransformer\Common\ElementIdExtractor:
         tags:
             - { name: dynamic_search.resource.field_transformer, identifier: element_id_extractor, resource_scaffolder: trinity_data }
 
-    DsTrinityDataBundle\Resource\FieldTransformer\ObjectGetterExtractor:
+    DsTrinityDataBundle\Resource\FieldTransformer\Common\NormalizerValueCallback:
+        tags:
+            - { name: dynamic_search.resource.field_transformer, identifier: normalizer_value_callback, resource_scaffolder: trinity_data }
+
+    # Object
+    DsTrinityDataBundle\Resource\FieldTransformer\Object\ObjectGetterExtractor:
         tags:
             - { name: dynamic_search.resource.field_transformer, identifier: object_getter_extractor, resource_scaffolder: trinity_data }
 
-    DsTrinityDataBundle\Resource\FieldTransformer\ObjectLocalizedGetterExtractor:
+    DsTrinityDataBundle\Resource\FieldTransformer\Object\ObjectRelationsGetterExtractor:
         tags:
-            - { name: dynamic_search.resource.field_transformer, identifier: object_localized_getter_extractor, resource_scaffolder: trinity_data }
+            - { name: dynamic_search.resource.field_transformer, identifier: object_relations_getter_extractor, resource_scaffolder: trinity_data }
+
+    DsTrinityDataBundle\Resource\FieldTransformer\Object\ObjectPathGenerator:
+        tags:
+            - { name: dynamic_search.resource.field_transformer, identifier: object_path_generator, resource_scaffolder: trinity_data }
+
+    # Document
+    DsTrinityDataBundle\Resource\FieldTransformer\Document\DocumentMetaExtractor:
+        tags:
+            - { name: dynamic_search.resource.field_transformer, identifier: document_meta_extractor, resource_scaffolder: trinity_data }
+
+    DsTrinityDataBundle\Resource\FieldTransformer\Document\DocumentPathGenerator:
+        tags:
+            - { name: dynamic_search.resource.field_transformer, identifier: document_path_generator, resource_scaffolder: trinity_data }

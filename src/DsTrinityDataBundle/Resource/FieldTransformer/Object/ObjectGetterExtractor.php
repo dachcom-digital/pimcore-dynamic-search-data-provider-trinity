@@ -1,13 +1,12 @@
 <?php
 
-namespace DsTrinityDataBundle\Resource\FieldTransformer;
+namespace DsTrinityDataBundle\Resource\FieldTransformer\Object;
 
 use DynamicSearchBundle\Resource\Container\ResourceContainerInterface;
 use DynamicSearchBundle\Resource\FieldTransformerInterface;
-use Pimcore\Model\Element\ElementInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
-class ElementIdExtractor implements FieldTransformerInterface
+class ObjectGetterExtractor implements FieldTransformerInterface
 {
     /**
      * @var array
@@ -19,7 +18,13 @@ class ElementIdExtractor implements FieldTransformerInterface
      */
     public function configureOptions(OptionsResolver $resolver)
     {
-        return false;
+        $resolver->setRequired(['method', 'arguments']);
+        $resolver->setAllowedTypes('method', ['string']);
+        $resolver->setAllowedTypes('arguments', ['array']);
+        $resolver->setDefaults([
+            'method'    => 'id',
+            'arguments' => []
+        ]);
     }
 
     /**
@@ -39,15 +44,15 @@ class ElementIdExtractor implements FieldTransformerInterface
             return null;
         }
 
-        $data = $resourceContainer->getAttribute('data');
-        $type = $resourceContainer->getAttribute('type');
-        $dataType = $resourceContainer->getAttribute('data_type');
-
-        if (!$data instanceof ElementInterface) {
+        $data = $resourceContainer->getResource();
+        if (!method_exists($data, $this->options['method'])) {
             return null;
         }
 
-        $value = sprintf('%s_%d', $type, $data->getId());
+        $value = call_user_func_array([$data, $this->options['method']], $this->options['arguments']);
+        if (!is_string($value)) {
+            return null;
+        }
 
         return $value;
     }
