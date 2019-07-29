@@ -72,7 +72,7 @@ class LocalizedResourceNormalizer extends AbstractResourceNormalizer
         }
 
         $documentId = sprintf('%s_%s_%d', 'document', $documentLocale, $document->getId());
-        $resourceMeta = new ResourceMeta($documentId, $document->getId(), 'document', $document->getType(), ['id' => $document->getId()], ['locale' => $documentLocale]);
+        $resourceMeta = new ResourceMeta($documentId, $document->getId(), 'document', $document->getType(), null, [], ['locale' => $documentLocale]);
         $returnResourceContainer = $contextData->getContextDispatchType() === ContextDataInterface::CONTEXT_DISPATCH_TYPE_DELETE ? null : $resourceContainer;
 
         return [new NormalizedDataResource($returnResourceContainer, $resourceMeta)];
@@ -90,7 +90,7 @@ class LocalizedResourceNormalizer extends AbstractResourceNormalizer
         $asset = $resourceContainer->getResource();
 
         $documentId = sprintf('%s_%d', 'asset', $asset->getId());
-        $resourceMeta = new ResourceMeta($documentId, $asset->getId(), 'asset', $asset->getType(), ['id' => $asset->getId()], ['locale' => null]);
+        $resourceMeta = new ResourceMeta($documentId, $asset->getId(), 'asset', $asset->getType(), null, [], ['locale' => null]);
         $returnResourceContainer = $contextData->getContextDispatchType() === ContextDataInterface::CONTEXT_DISPATCH_TYPE_DELETE ? null : $resourceContainer;
 
         return [new NormalizedDataResource($returnResourceContainer, $resourceMeta)];
@@ -110,7 +110,7 @@ class LocalizedResourceNormalizer extends AbstractResourceNormalizer
         $normalizedResources = [];
         foreach ($this->options['locales'] as $locale) {
             $documentId = sprintf('%s_%s_%d', 'object', $locale, $object->getId());
-            $resourceMeta = new ResourceMeta($documentId, $object->getId(), 'object', $object->getType(), ['id' => $object->getId()], ['locale' => $locale]);
+            $resourceMeta = new ResourceMeta($documentId, $object->getId(), 'object', $object->getType(), $object->getClassName(), [], ['locale' => $locale]);
             $returnResourceContainer = $contextData->getContextDispatchType() === ContextDataInterface::CONTEXT_DISPATCH_TYPE_DELETE ? null : $resourceContainer;
             $normalizedResources[] = new NormalizedDataResource($returnResourceContainer, $resourceMeta);
         }

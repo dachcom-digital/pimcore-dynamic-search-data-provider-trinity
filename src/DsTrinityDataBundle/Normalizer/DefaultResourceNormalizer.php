@@ -49,7 +49,7 @@ class DefaultResourceNormalizer extends AbstractResourceNormalizer
         // @todo: How to handle Snippets?
 
         $documentId = sprintf('%s_%d', 'document', $document->getId());
-        $resourceMeta = new ResourceMeta($documentId, $document->getId(), 'document', $document->getType(), ['id' => $document->getId()]);
+        $resourceMeta = new ResourceMeta($documentId, $document->getId(), 'document', $document->getType(), null, []);
         $returnResourceContainer = $contextData->getContextDispatchType() === ContextDataInterface::CONTEXT_DISPATCH_TYPE_DELETE ? null : $resourceContainer;
 
         return [new NormalizedDataResource($returnResourceContainer, $resourceMeta)];
@@ -67,7 +67,7 @@ class DefaultResourceNormalizer extends AbstractResourceNormalizer
         $asset = $resourceContainer->getResource();
 
         $documentId = sprintf('%s_%d', 'asset', $asset->getId());
-        $resourceMeta = new ResourceMeta($documentId, $asset->getId(), 'asset', $asset->getType(), ['id' => $asset->getId()]);
+        $resourceMeta = new ResourceMeta($documentId, $asset->getId(), 'asset', $asset->getType(), null, []);
         $returnResourceContainer = $contextData->getContextDispatchType() === ContextDataInterface::CONTEXT_DISPATCH_TYPE_DELETE ? null : $resourceContainer;
 
         return [new NormalizedDataResource($returnResourceContainer, $resourceMeta)];
@@ -85,7 +85,7 @@ class DefaultResourceNormalizer extends AbstractResourceNormalizer
         $object = $resourceContainer->getResource();
 
         $documentId = sprintf('%s_%d', 'object', $object->getId());
-        $resourceMeta = new ResourceMeta($documentId, $object->getId(), 'object', $object->getType(), ['id' => $object->getId()]);
+        $resourceMeta = new ResourceMeta($documentId, $object->getId(), 'object', $object->getType(), $object->getClassName(), []);
         $returnResourceContainer = $contextData->getContextDispatchType() === ContextDataInterface::CONTEXT_DISPATCH_TYPE_DELETE ? null : $resourceContainer;
 
         return [new NormalizedDataResource($returnResourceContainer, $resourceMeta)];
