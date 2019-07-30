@@ -2,10 +2,10 @@
 
 namespace DsTrinityDataBundle\Resource\FieldTransformer\Object;
 
-use CoreShop\Component\Pimcore\Routing\LinkGeneratorInterface;
 use DynamicSearchBundle\Resource\Container\ResourceContainerInterface;
 use DynamicSearchBundle\Resource\FieldTransformerInterface;
 use Pimcore\Model\DataObject\AbstractObject;
+use Pimcore\Model\DataObject\ClassDefinition\LinkGeneratorInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 
