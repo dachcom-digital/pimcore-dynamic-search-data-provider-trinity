@@ -2,14 +2,10 @@
 
 namespace DsTrinityDataBundle\Resource\FieldTransformer\Document;
 
-use AppBundle\CoreShop\Model\ProductInterface;
-use CoreShop\Component\Pimcore\Routing\LinkGeneratorInterface;
 use DynamicSearchBundle\Resource\Container\ResourceContainerInterface;
 use DynamicSearchBundle\Resource\FieldTransformerInterface;
-use Pimcore\Model\DataObject\AbstractObject;
 use Pimcore\Model\Document;
 use Symfony\Component\OptionsResolver\OptionsResolver;
-use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 
 class DocumentPathGenerator implements FieldTransformerInterface
 {

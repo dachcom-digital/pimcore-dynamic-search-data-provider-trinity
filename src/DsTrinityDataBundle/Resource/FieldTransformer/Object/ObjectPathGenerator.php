@@ -4,30 +4,18 @@ namespace DsTrinityDataBundle\Resource\FieldTransformer\Object;
 
 use DynamicSearchBundle\Resource\Container\ResourceContainerInterface;
 use DynamicSearchBundle\Resource\FieldTransformerInterface;
+use Pimcore\Model\DataObject;
 use Pimcore\Model\DataObject\AbstractObject;
 use Pimcore\Model\DataObject\ClassDefinition\LinkGeneratorInterface;
+use Pimcore\Model\DataObject\Concrete;
 use Symfony\Component\OptionsResolver\OptionsResolver;
-use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 
 class ObjectPathGenerator implements FieldTransformerInterface
 {
     /**
-     * @var LinkGeneratorInterface
-     */
-    protected $linkGenerator;
-
-    /**
      * @var array
      */
     protected $options;
-
-    /**
-     * @param LinkGeneratorInterface $linkGenerator
-     */
-    public function __construct(LinkGeneratorInterface $linkGenerator)
-    {
-        $this->linkGenerator = $linkGenerator;
-    }
 
     /**
      * {@inheritdoc}
@@ -36,20 +24,15 @@ class ObjectPathGenerator implements FieldTransformerInterface
     {
         $resolver->setRequired([
             'arguments',
-            'route_name',
             'fetch_object_for_variant',
-            'reference_type'
         ]);
 
         $resolver->setAllowedTypes('arguments', ['array']);
         $resolver->setAllowedTypes('fetch_object_for_variant', ['bool']);
-        $resolver->setAllowedTypes('reference_type', ['int']);
-        $resolver->setAllowedTypes('route_name', ['string']);
 
         $resolver->setDefaults([
             'arguments'                => [],
             'fetch_object_for_variant' => false,
-            'reference_type'           => UrlGeneratorInterface::RELATIVE_PATH
         ]);
     }
 
@@ -67,7 +50,7 @@ class ObjectPathGenerator implements FieldTransformerInterface
     public function transformData(string $dispatchTransformerName, ResourceContainerInterface $resourceContainer)
     {
         $object = $resourceContainer->getResource();
-        if (!$object instanceof AbstractObject) {
+        if (!$object instanceof DataObject) {
             return null;
         }
 
@@ -77,6 +60,16 @@ class ObjectPathGenerator implements FieldTransformerInterface
             }
         }
 
-        return $this->linkGenerator->generate($object, $this->options['route_name'], $this->options['arguments'], $this->options['reference_type']);
+        if (!$object instanceof Concrete) {
+            return null;
+        }
+
+        $linkGenerator = $object->getClass()->getLinkGenerator();
+
+        if (!$linkGenerator instanceof LinkGeneratorInterface) {
+            return null;
+        }
+
+        return $linkGenerator->generate($object, $this->options['arguments']);
     }
 }

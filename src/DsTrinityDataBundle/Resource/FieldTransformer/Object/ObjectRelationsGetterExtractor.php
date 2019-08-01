@@ -54,7 +54,6 @@ class ObjectRelationsGetterExtractor implements FieldTransformerInterface
 
         $values = [];
         foreach ($relations as $relation) {
-
             if (!method_exists($relation, $this->options['method'])) {
                 return null;
             }
