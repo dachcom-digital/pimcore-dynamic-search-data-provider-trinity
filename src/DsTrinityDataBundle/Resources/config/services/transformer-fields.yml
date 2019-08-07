@@ -15,6 +15,10 @@ services:
         tags:
             - { name: dynamic_search.resource.field_transformer, identifier: element_id_extractor, resource_scaffolder: trinity_data }
 
+    DsTrinityDataBundle\Resource\FieldTransformer\Common\ElementPropertyExtractor:
+        tags:
+            - { name: dynamic_search.resource.field_transformer, identifier: element_property_extractor, resource_scaffolder: trinity_data }
+
     DsTrinityDataBundle\Resource\FieldTransformer\Common\NormalizerValueCallback:
         tags:
             - { name: dynamic_search.resource.field_transformer, identifier: normalizer_value_callback, resource_scaffolder: trinity_data }
@@ -40,3 +44,12 @@ services:
     DsTrinityDataBundle\Resource\FieldTransformer\Document\DocumentPathGenerator:
         tags:
             - { name: dynamic_search.resource.field_transformer, identifier: document_path_generator, resource_scaffolder: trinity_data }
+
+    # Asset
+    DsTrinityDataBundle\Resource\FieldTransformer\Asset\PdfDataExtractor:
+        tags:
+            - { name: dynamic_search.resource.field_transformer, identifier: asset_pdf_extractor, resource_scaffolder: trinity_data }
+
+    DsTrinityDataBundle\Resource\FieldTransformer\Asset\AssetPathGenerator:
+        tags:
+            - { name: dynamic_search.resource.field_transformer, identifier: asset_path_generator, resource_scaffolder: trinity_data }

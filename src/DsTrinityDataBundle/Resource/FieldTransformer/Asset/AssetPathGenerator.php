@@ -1,13 +1,13 @@
 <?php
 
-namespace DsTrinityDataBundle\Resource\FieldTransformer\Common;
+namespace DsTrinityDataBundle\Resource\FieldTransformer\Asset;
 
 use DynamicSearchBundle\Resource\Container\ResourceContainerInterface;
 use DynamicSearchBundle\Resource\FieldTransformerInterface;
-use Pimcore\Model\Element\ElementInterface;
+use Pimcore\Model\Asset\Document;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
-class ElementIdExtractor implements FieldTransformerInterface
+class AssetPathGenerator implements FieldTransformerInterface
 {
     /**
      * @var array
@@ -35,17 +35,11 @@ class ElementIdExtractor implements FieldTransformerInterface
      */
     public function transformData(string $dispatchTransformerName, ResourceContainerInterface $resourceContainer)
     {
-        if (!$resourceContainer->hasAttribute('type')) {
+        $document = $resourceContainer->getResource();
+        if (!$document instanceof Document) {
             return null;
         }
 
-        $element = $resourceContainer->getResource();
-        if (!$element instanceof ElementInterface) {
-            return null;
-        }
-
-        $value = $element->getId();
-
-        return $value;
+        return $document->getRealFullPath();
     }
 }
