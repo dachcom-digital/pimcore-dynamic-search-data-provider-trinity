@@ -57,7 +57,7 @@ class ObjectGetterExtractor implements FieldTransformerInterface
         }
 
         if ($this->options['clean_string'] === true) {
-            return preg_replace('/\s+/', '', strip_tags($value));
+            return preg_replace('/\s+/', ' ', strip_tags($value));
         }
 
         return $value;
