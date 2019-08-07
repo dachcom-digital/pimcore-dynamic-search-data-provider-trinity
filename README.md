@@ -94,7 +94,7 @@ Options:
 ### Scaffolder
 
 ##### TrinityDataScaffolder
-Identifier: `trinity_data`   
+Identifier: `trinity_data_scaffolder`   
 Simple object scaffolder.   
 Supported types: `Asset`, `Document`, `DataObject\Concrete`.
 
