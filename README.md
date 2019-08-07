@@ -118,7 +118,7 @@ Options:
 |:-----------------------------|:--------------|:---------------|:------------|
 |`property`                    | null          | string         |             |
 |`object_getter`               | null          | null|string    |             |
-|`allow_inherited_value`       | bool          | bool           |             |
+|`allow_inherited_value`       | true          | bool           |             |
 
 
 ##### NormalizerValueCallback
