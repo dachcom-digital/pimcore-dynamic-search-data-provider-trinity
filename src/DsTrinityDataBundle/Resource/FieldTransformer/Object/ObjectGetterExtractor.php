@@ -18,12 +18,14 @@ class ObjectGetterExtractor implements FieldTransformerInterface
      */
     public function configureOptions(OptionsResolver $resolver)
     {
-        $resolver->setRequired(['method', 'arguments']);
+        $resolver->setRequired(['method', 'arguments', 'clean_string']);
         $resolver->setAllowedTypes('method', ['string']);
         $resolver->setAllowedTypes('arguments', ['array']);
+        $resolver->setAllowedTypes('clean_string', ['boolean']);
         $resolver->setDefaults([
-            'method'    => 'id',
-            'arguments' => []
+            'method'           => 'id',
+            'clean_string' => true,
+            'arguments'        => []
         ]);
     }
 
@@ -52,6 +54,10 @@ class ObjectGetterExtractor implements FieldTransformerInterface
         $value = call_user_func_array([$data, $this->options['method']], $this->options['arguments']);
         if (!is_string($value)) {
             return null;
+        }
+
+        if ($this->options['clean_string'] === true) {
+            return preg_replace('/\s+/', '', strip_tags($value));
         }
 
         return $value;
