@@ -51,7 +51,7 @@ class AssetMetaExtractor implements FieldTransformerInterface
             return null;
         }
 
-        $metaData = $asset->getMetadata($this->options['name']);
+        $metaData = $asset->getMetadata($this->options['name'], $this->options['locale']);
 
         return $metaData;
 
