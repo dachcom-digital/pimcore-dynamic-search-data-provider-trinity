@@ -23,6 +23,9 @@ class AssetMetaExtractor implements FieldTransformerInterface
         $resolver->setRequired(['name', 'locale']);
         $resolver->setAllowedTypes('name', ['string']);
         $resolver->setAllowedTypes('locale', ['string', 'null']);
+        $resolver->setDefaults([
+            'clean_string' => true
+        ]);
     }
 
     /**
@@ -52,6 +55,10 @@ class AssetMetaExtractor implements FieldTransformerInterface
         }
 
         $metaData = $asset->getMetadata($this->options['name'], $this->options['locale']);
+
+        if ($this->options['clean_string'] === true) {
+            $metaData = trim(preg_replace('/\s+/', ' ', strip_tags($metaData)));
+        }
 
         return $metaData;
 
