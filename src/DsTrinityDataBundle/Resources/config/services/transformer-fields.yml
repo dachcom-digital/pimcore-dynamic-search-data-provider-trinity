@@ -15,6 +15,10 @@ services:
         tags:
             - { name: dynamic_search.resource.field_transformer, identifier: element_id_extractor, resource_scaffolder: trinity_data_scaffolder }
 
+    DsTrinityDataBundle\Resource\FieldTransformer\Common\ElementKeyExtractor:
+        tags:
+            - { name: dynamic_search.resource.field_transformer, identifier: element_key_extractor, resource_scaffolder: trinity_data_scaffolder }
+
     DsTrinityDataBundle\Resource\FieldTransformer\Common\ElementPropertyExtractor:
         tags:
             - { name: dynamic_search.resource.field_transformer, identifier: element_property_extractor, resource_scaffolder: trinity_data_scaffolder }
