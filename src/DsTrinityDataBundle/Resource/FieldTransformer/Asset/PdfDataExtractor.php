@@ -20,12 +20,7 @@ class PdfDataExtractor implements FieldTransformerInterface
      */
     public function configureOptions(OptionsResolver $resolver)
     {
-        $resolver->setRequired(['type']);
-        $resolver->setAllowedTypes('type', ['string']);
-        $resolver->setAllowedValues('type', ['description', 'title']);
-        $resolver->setDefaults([
-            'type' => 'title'
-        ]);
+
     }
 
     /**
