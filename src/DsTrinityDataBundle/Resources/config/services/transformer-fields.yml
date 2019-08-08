@@ -53,3 +53,7 @@ services:
     DsTrinityDataBundle\Resource\FieldTransformer\Asset\AssetPathGenerator:
         tags:
             - { name: dynamic_search.resource.field_transformer, identifier: asset_path_generator, resource_scaffolder: trinity_data_scaffolder }
+
+    DsTrinityDataBundle\Resource\FieldTransformer\Asset\AssetMetaExtractor:
+        tags:
+            - { name: dynamic_search.resource.field_transformer, identifier: asset_meta_extractor, resource_scaffolder: trinity_data_scaffolder }
