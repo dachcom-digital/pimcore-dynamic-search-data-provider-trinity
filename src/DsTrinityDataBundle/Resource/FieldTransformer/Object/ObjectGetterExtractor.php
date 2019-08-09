@@ -24,7 +24,7 @@ class ObjectGetterExtractor implements FieldTransformerInterface
         $resolver->setAllowedTypes('clean_string', ['boolean']);
         $resolver->setDefaults([
             'method'           => 'id',
-            'clean_string' => true,
+            'clean_string'     => true,
             'arguments'        => []
         ]);
     }

@@ -14,7 +14,6 @@ class AssetMetaExtractor implements FieldTransformerInterface
      */
     protected $options;
 
-
     /**
      * {@inheritdoc}
      */
@@ -50,7 +49,7 @@ class AssetMetaExtractor implements FieldTransformerInterface
             return null;
         }
 
-        if(!$asset->getHasMetaData()) {
+        if (!$asset->getHasMetaData()) {
             return null;
         }
 
@@ -61,6 +60,5 @@ class AssetMetaExtractor implements FieldTransformerInterface
         }
 
         return $metaData;
-
     }
 }

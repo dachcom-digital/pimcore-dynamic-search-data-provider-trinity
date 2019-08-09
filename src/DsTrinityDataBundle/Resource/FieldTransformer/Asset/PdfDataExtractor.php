@@ -20,7 +20,6 @@ class PdfDataExtractor implements FieldTransformerInterface
      */
     public function configureOptions(OptionsResolver $resolver)
     {
-
     }
 
     /**
