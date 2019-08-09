@@ -2,10 +2,34 @@
 
 namespace DsTrinityDataBundle\Service\Builder;
 
+use DsTrinityDataBundle\DsTrinityDataEvents;
+use DsTrinityDataBundle\Event\ObjectListingQueryEvent;
+use Pimcore\Db\Connection;
 use Pimcore\Model\DataObject;
+use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 
 class ObjectListBuilder implements DataBuilderInterface
 {
+    /**
+     * @var Connection
+     */
+    protected $db;
+
+    /**
+     * @var EventDispatcherInterface
+     */
+    protected $eventDispatcher;
+
+    /**
+     * @param Connection               $db
+     * @param EventDispatcherInterface $eventDispatcher
+     */
+    public function __construct(Connection $db, EventDispatcherInterface $eventDispatcher)
+    {
+        $this->db = $db;
+        $this->eventDispatcher = $eventDispatcher;
+    }
+
     /**
      * {@inheritdoc}
      */
@@ -77,7 +101,10 @@ class ObjectListBuilder implements DataBuilderInterface
         $this->addObjectTypeRestriction($list, $allowedTypes);
         $this->addClassNameRestriction($list, $allowedClasses);
 
-        return $list;
+        $event = new ObjectListingQueryEvent($list, $options);
+        $this->eventDispatcher->dispatch(DsTrinityDataEvents::LISTING_QUERY_OBJECTS, $event);
+
+        return $event->getListing();
     }
 
     /**
@@ -111,7 +138,7 @@ class ObjectListBuilder implements DataBuilderInterface
 
         $quotedClassNames = [];
         foreach ($allowedClasses as $cName) {
-            $quotedClassNames[] = \Pimcore\Db::get()->quote($cName);
+            $quotedClassNames[] = $this->db->quote($cName);
         }
 
         $listing->addConditionParam(sprintf('o_className IN (%s)', implode(',', $quotedClassNames)), '');

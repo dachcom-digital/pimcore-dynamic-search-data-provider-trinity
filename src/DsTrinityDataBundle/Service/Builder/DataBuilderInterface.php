@@ -22,6 +22,9 @@ interface DataBuilderInterface
     public function buildByIdList(int $id, array $options);
 
     /**
+     * This method does not validate if element is allowed to be indexed.
+     * This has to be done via buildByList or buildByIdList.
+     *
      * @param int $id
      *
      * @return ElementInterface|null

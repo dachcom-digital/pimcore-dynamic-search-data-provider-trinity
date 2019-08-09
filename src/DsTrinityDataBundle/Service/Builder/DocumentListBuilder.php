@@ -2,10 +2,34 @@
 
 namespace DsTrinityDataBundle\Service\Builder;
 
+use DsTrinityDataBundle\DsTrinityDataEvents;
+use DsTrinityDataBundle\Event\DocumentListingQueryEvent;
+use Pimcore\Db\Connection;
 use Pimcore\Model\Document;
+use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 
 class DocumentListBuilder implements DataBuilderInterface
 {
+    /**
+     * @var Connection
+     */
+    protected $db;
+
+    /**
+     * @var EventDispatcherInterface
+     */
+    protected $eventDispatcher;
+
+    /**
+     * @param Connection               $db
+     * @param EventDispatcherInterface $eventDispatcher
+     */
+    public function __construct(Connection $db, EventDispatcherInterface $eventDispatcher)
+    {
+        $this->db = $db;
+        $this->eventDispatcher = $eventDispatcher;
+    }
+
     /**
      * {@inheritdoc}
      */
@@ -75,6 +99,9 @@ class DocumentListBuilder implements DataBuilderInterface
 
         $this->addDocumentTypeRestriction($list, $allowedTypes);
 
+        $event = new DocumentListingQueryEvent($list, $options);
+        $this->eventDispatcher->dispatch(DsTrinityDataEvents::LISTING_QUERY_DOCUMENTS, $event);
+
         return $list;
     }
 
@@ -92,7 +119,7 @@ class DocumentListBuilder implements DataBuilderInterface
 
         $quotedTypes = [];
         foreach ($allowedTypes as $cName) {
-            $quotedTypes[] = \Pimcore\Db::get()->quote($cName);
+            $quotedTypes[] = $this->db->quote($cName);
         }
 
         $listing->addConditionParam(sprintf('type in(%s)', implode(',', $quotedTypes)), '');

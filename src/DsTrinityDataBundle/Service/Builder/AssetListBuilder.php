@@ -2,10 +2,34 @@
 
 namespace DsTrinityDataBundle\Service\Builder;
 
+use DsTrinityDataBundle\DsTrinityDataEvents;
+use DsTrinityDataBundle\Event\AssetListingQueryEvent;
+use Pimcore\Db\Connection;
 use Pimcore\Model\Asset;
+use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 
 class AssetListBuilder implements DataBuilderInterface
 {
+    /**
+     * @var Connection
+     */
+    protected $db;
+
+    /**
+     * @var EventDispatcherInterface
+     */
+    protected $eventDispatcher;
+
+    /**
+     * @param Connection               $db
+     * @param EventDispatcherInterface $eventDispatcher
+     */
+    public function __construct(Connection $db, EventDispatcherInterface $eventDispatcher)
+    {
+        $this->db = $db;
+        $this->eventDispatcher = $eventDispatcher;
+    }
+
     /**
      * {@inheritdoc}
      */
@@ -70,6 +94,9 @@ class AssetListBuilder implements DataBuilderInterface
 
         $this->addAssetTypeRestriction($list, $allowedTypes);
 
+        $event = new AssetListingQueryEvent($list, $options);
+        $this->eventDispatcher->dispatch(DsTrinityDataEvents::LISTING_QUERY_ASSETS, $event);
+
         return $list;
     }
 
@@ -87,7 +114,7 @@ class AssetListBuilder implements DataBuilderInterface
 
         $quotedTypes = [];
         foreach ($allowedTypes as $cName) {
-            $quotedTypes[] = \Pimcore\Db::get()->quote($cName);
+            $quotedTypes[] = $this->db->quote($cName);
         }
 
         $listing->addConditionParam(sprintf('type in(%s)', implode(',', $quotedTypes)), '');
