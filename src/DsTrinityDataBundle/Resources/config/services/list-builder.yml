@@ -5,6 +5,7 @@ services:
         autoconfigure: true
         public: false
 
+    DsTrinityDataBundle\Registry\DataBuilderRegistryInterface: '@DsTrinityDataBundle\Registry\DataBuilderRegistry'
     DsTrinityDataBundle\Registry\DataBuilderRegistry: ~
 
     DsTrinityDataBundle\Service\Builder\DocumentListBuilder:
