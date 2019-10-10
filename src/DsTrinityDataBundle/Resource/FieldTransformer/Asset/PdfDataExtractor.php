@@ -85,7 +85,7 @@ class PdfDataExtractor implements FieldTransformerInterface
         if (is_file($tmpFile)) {
             $fileContent = file_get_contents($tmpFile);
             $pdfContent = preg_replace("/\r|\n/", ' ', $fileContent);
-            $pdfContent = preg_replace('/[^\p{Latin}\d ]/u', '', $pdfContent);
+            $pdfContent = preg_replace('/[^\p{L}\d ]/u', '', $pdfContent);
             $pdfContent = preg_replace('/\n[\s]*/', "\n", $pdfContent);
 
             if (file_exists($tmpFile)) {
