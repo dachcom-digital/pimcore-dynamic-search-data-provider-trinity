@@ -20,9 +20,11 @@ class ObjectRelationsGetterExtractor implements FieldTransformerInterface
     {
         $resolver->setRequired(['relations', 'method']);
         $resolver->setAllowedTypes('relations', ['string']);
+        $resolver->setAllowedTypes('arguments', ['array']);
         $resolver->setAllowedTypes('method', ['string']);
         $resolver->setDefaults([
-            'method' => 'id'
+            'method'    => 'id',
+            'arguments' => []
         ]);
     }
 
@@ -58,7 +60,7 @@ class ObjectRelationsGetterExtractor implements FieldTransformerInterface
                 return null;
             }
 
-            $values[] = call_user_func([$relation, $this->options['method']]);
+            $values[] = call_user_func([$relation, $this->options['method'], $this->options['arguments']]);
         }
 
         return $values;
