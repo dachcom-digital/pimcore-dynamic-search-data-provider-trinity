@@ -18,7 +18,7 @@ class ObjectRelationsGetterExtractor implements FieldTransformerInterface
      */
     public function configureOptions(OptionsResolver $resolver)
     {
-        $resolver->setRequired(['relations', 'method']);
+        $resolver->setRequired(['relations', 'arguments', 'method']);
         $resolver->setAllowedTypes('relations', ['string']);
         $resolver->setAllowedTypes('arguments', ['array']);
         $resolver->setAllowedTypes('method', ['string']);
