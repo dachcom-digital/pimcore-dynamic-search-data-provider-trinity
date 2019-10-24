@@ -40,7 +40,7 @@ class AssetListBuilder implements DataBuilderInterface
         $idList = $list->getAssets();
 
         foreach ($idList as $id) {
-            if ($asset = Model\Asset::getById($id)) {
+            if ($asset = Asset::getById($id)) {
                 yield $asset;
             }
         }
