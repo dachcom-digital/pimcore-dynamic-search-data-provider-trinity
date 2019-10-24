@@ -33,11 +33,17 @@ class ObjectListBuilder implements DataBuilderInterface
     /**
      * {@inheritdoc}
      */
-    public function buildByList(array $options): array
+    public function buildByList(array $options): \Generator
     {
         $list = $this->getList($options);
 
-        return $list->getObjects();
+        $idList = $list->loadIdList();
+
+        foreach ($idList as $id) {
+            if ($object = DataObject::getById($id)) {
+                yield $object;
+            }
+        }
     }
 
     /**

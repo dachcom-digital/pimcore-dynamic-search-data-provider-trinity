@@ -210,7 +210,9 @@ class DataProviderService implements DataProviderServiceInterface
 
         $element = $builder->buildById((int) $id);
 
-        $this->dispatchData([$element], $providerBehaviour, $resourceMeta);
+        if ($element instanceof ElementInterface) {
+            $this->dispatchElement($element, $providerBehaviour, $resourceMeta);
+        }
     }
 
     /**
@@ -223,18 +225,28 @@ class DataProviderService implements DataProviderServiceInterface
     }
 
     /**
-     * @param array                      $elements
+     * @param \Generator                 $elements
      * @param string                     $providerBehaviour
      * @param ResourceMetaInterface|null $resourceMeta
      */
-    protected function dispatchData(array $elements, string $providerBehaviour, ?ResourceMetaInterface $resourceMeta = null)
+    protected function dispatchData(\Generator $elements, string $providerBehaviour, ?ResourceMetaInterface $resourceMeta = null)
     {
         foreach ($elements as $element) {
-            $newDataEvent = new NewDataEvent($this->contextDispatchType, $this->contextName, $element, $providerBehaviour, $resourceMeta);
-            $this->eventDispatcher->dispatch(DynamicSearchEvents::NEW_DATA_AVAILABLE, $newDataEvent);
-
-            $this->dispatchProcessControlSignal();
+            $this->dispatchElement($element, $providerBehaviour, $resourceMeta);
         }
+    }
+
+    /**
+     * @param ElementInterface           $element
+     * @param string                     $providerBehaviour
+     * @param ResourceMetaInterface|null $resourceMeta
+     */
+    protected function dispatchElement(ElementInterface $element, string $providerBehaviour, ?ResourceMetaInterface $resourceMeta = null)
+    {
+        $newDataEvent = new NewDataEvent($this->contextDispatchType, $this->contextName, $element, $providerBehaviour, $resourceMeta);
+        $this->eventDispatcher->dispatch(DynamicSearchEvents::NEW_DATA_AVAILABLE, $newDataEvent);
+
+        $this->dispatchProcessControlSignal();
     }
 
     protected function addSignalListener()

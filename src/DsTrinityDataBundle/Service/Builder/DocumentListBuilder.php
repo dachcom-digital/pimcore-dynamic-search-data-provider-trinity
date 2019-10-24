@@ -33,11 +33,17 @@ class DocumentListBuilder implements DataBuilderInterface
     /**
      * {@inheritdoc}
      */
-    public function buildByList(array $options): array
+    public function buildByList(array $options): \Generator
     {
         $list = $this->getList($options);
 
-        return $list->getDocuments();
+        $idList = $list->loadIdList();
+
+        foreach ($idList as $id) {
+            if ($doc = Document::getById($id)) {
+                yield $doc;
+            }
+        }
     }
 
     /**

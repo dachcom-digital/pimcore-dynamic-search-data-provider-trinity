@@ -9,9 +9,9 @@ interface DataBuilderInterface
     /**
      * @param array $options
      *
-     * @return array
+     * @return \Generator
      */
-    public function buildByList(array $options): array;
+    public function buildByList(array $options): \Generator;
 
     /**
      * @param int   $id
