@@ -35,13 +35,21 @@ class ObjectListBuilder implements DataBuilderInterface
      */
     public function buildByList(array $options): \Generator
     {
-        $list = $this->getList($options);
+        if ($options['object_limit_per_class']) {
+            foreach ($options['object_class_names'] as $className) {
+                $newOptions = $options;
+                $newOptions['object_class_names'] = [$className];
+                $newOptions['object_limit'] = $options['object_limit_per_class'];
 
-        $idList = $list->loadIdList();
+                $list = $this->getList($newOptions);
 
-        foreach ($idList as $id) {
-            if ($object = DataObject::getById($id)) {
-                yield $object;
+                $idList = $list->loadIdList();
+
+                foreach ($idList as $id) {
+                    if ($object = DataObject::getById($id)) {
+                        yield $object;
+                    }
+                }
             }
         }
     }

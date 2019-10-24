@@ -168,9 +168,10 @@ class TrinityDataProvider implements DataProviderInterface
     protected function configureFullDispatchOptions(OptionsResolver $resolver)
     {
         $defaults = [
-            'asset_limit'    => 0,
-            'object_limit'   => 0,
-            'document_limit' => 0,
+            'asset_limit'               => 0,
+            'object_limit'              => 0,
+            'object_limit_per_class'    => 0,
+            'document_limit'            => 0,
         ];
 
         $resolver->setDefaults($defaults);
