@@ -23,6 +23,17 @@ interface DataProviderServiceInterface
     public function setIndexOptions(array $indexOptions);
 
     /**
+     * This method only gets executed on untrusted events like insert, update or delete
+     *
+     * @param ElementInterface $resource
+     *
+     * @return ElementInterface
+     */
+    public function checkResourceProxy($resource);
+
+    /**
+     * This method only gets executed on untrusted events like insert, update or delete
+     *
      * @param ElementInterface $resource
      *
      * @return bool

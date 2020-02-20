@@ -4,6 +4,8 @@ namespace DsTrinityDataBundle\Service;
 
 use DsTrinityDataBundle\DsTrinityDataBundle;
 use DsTrinityDataBundle\Registry\DataBuilderRegistryInterface;
+use DsTrinityDataBundle\Registry\ProxyResolverRegistryInterface;
+use DsTrinityDataBundle\Resource\ProxyResolver\ProxyResolverInterface;
 use DsTrinityDataBundle\Service\Builder\DataBuilderInterface;
 use DynamicSearchBundle\DynamicSearchEvents;
 use DynamicSearchBundle\Event\ErrorEvent;
@@ -16,6 +18,7 @@ use Pimcore\Model\DataObject;
 use Pimcore\Model\Document;
 use Pimcore\Model\Element\ElementInterface;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
+use Symfony\Component\OptionsResolver\OptionsResolver;
 
 class DataProviderService implements DataProviderServiceInterface
 {
@@ -35,6 +38,11 @@ class DataProviderService implements DataProviderServiceInterface
     protected $dataBuilderRegistry;
 
     /**
+     * @var ProxyResolverRegistryInterface
+     */
+    protected $proxyResolverRegistry;
+
+    /**
      * @var string
      */
     protected $contextName;
@@ -50,18 +58,21 @@ class DataProviderService implements DataProviderServiceInterface
     protected $indexOptions;
 
     /**
-     * @param LoggerInterface              $logger
-     * @param EventDispatcherInterface     $eventDispatcher
-     * @param DataBuilderRegistryInterface $dataBuilderRegistry
+     * @param LoggerInterface                $logger
+     * @param EventDispatcherInterface       $eventDispatcher
+     * @param DataBuilderRegistryInterface   $dataBuilderRegistry
+     * @param ProxyResolverRegistryInterface $proxyResolverRegistry
      */
     public function __construct(
         LoggerInterface $logger,
         EventDispatcherInterface $eventDispatcher,
-        DataBuilderRegistryInterface $dataBuilderRegistry
+        DataBuilderRegistryInterface $dataBuilderRegistry,
+        ProxyResolverRegistryInterface $proxyResolverRegistry
     ) {
         $this->logger = $logger;
         $this->eventDispatcher = $eventDispatcher;
         $this->dataBuilderRegistry = $dataBuilderRegistry;
+        $this->proxyResolverRegistry = $proxyResolverRegistry;
     }
 
     /**
@@ -91,6 +102,52 @@ class DataProviderService implements DataProviderServiceInterface
     /**
      * {@inheritdoc}
      */
+    public function checkResourceProxy($resource)
+    {
+        if (!$resource instanceof ElementInterface) {
+            return $resource;
+        }
+
+        $proxyResolver = null;
+        $type = $this->getResourceType($resource);
+
+        if ($type === null) {
+            return $resource;
+        }
+
+        if ($this->indexOptions[sprintf('index_%s', $type)] === false) {
+            return $resource;
+        }
+
+        $proxyIdentifier = sprintf('%s_proxy_identifier', $type);
+        $proxyOptionsIdentifier = sprintf('%s_proxy_settings', $type);
+
+        if (!isset($this->indexOptions[$proxyIdentifier])) {
+            return $resource;
+        }
+
+        $options = $this->getTypeOptions($type);
+        if (!isset($options[$proxyOptionsIdentifier])) {
+            return $resource;
+        }
+
+        $proxyResolver = $this->proxyResolverRegistry->getByTypeAndIdentifier($type, $this->indexOptions[$proxyIdentifier]);
+
+        if (!$proxyResolver instanceof ProxyResolverInterface) {
+            return $resource;
+        }
+
+        $optionsResolver = new OptionsResolver();
+        $proxyResolver->configureOptions($optionsResolver);
+
+        $options = $optionsResolver->resolve($options['object_proxy_settings']);
+
+        return $proxyResolver->resolveProxy($resource, $options);
+    }
+
+    /**
+     * {@inheritdoc}
+     */
     public function validate($resource)
     {
         if (!$resource instanceof ElementInterface) {
@@ -98,15 +155,7 @@ class DataProviderService implements DataProviderServiceInterface
         }
 
         $builder = null;
-        $type = null;
-
-        if ($resource instanceof Document) {
-            $type = 'document';
-        } elseif ($resource instanceof Asset) {
-            $type = 'asset';
-        } elseif ($resource instanceof DataObject) {
-            $type = 'object';
-        }
+        $type = $this->getResourceType($resource);
 
         if ($type === null) {
             return false;
@@ -268,6 +317,26 @@ class DataProviderService implements DataProviderServiceInterface
     {
         $newDataEvent = new ErrorEvent($this->contextName, sprintf('crawler has been stopped by user (signal: %s)', $signal), DsTrinityDataBundle::PROVIDER_NAME);
         $this->eventDispatcher->dispatch(DynamicSearchEvents::ERROR_DISPATCH_ABORT, $newDataEvent);
+    }
+
+    /**
+     * @param ElementInterface $resource
+     *
+     * @return string|null
+     */
+    protected function getResourceType(ElementInterface $resource)
+    {
+        $type = null;
+
+        if ($resource instanceof Document) {
+            $type = 'document';
+        } elseif ($resource instanceof Asset) {
+            $type = 'asset';
+        } elseif ($resource instanceof DataObject) {
+            $type = 'object';
+        }
+
+        return $type;
     }
 
     /**

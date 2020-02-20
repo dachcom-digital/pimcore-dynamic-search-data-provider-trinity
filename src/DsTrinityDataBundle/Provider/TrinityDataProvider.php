@@ -80,11 +80,19 @@ class TrinityDataProvider implements DataProviderInterface
     /**
      * {@inheritdoc}
      */
+    public function checkUntrustedResourceProxy(ContextDataInterface $contextData, $resource)
+    {
+        $this->setupDataProvider($contextData);
+
+        return $this->dataProvider->checkResourceProxy($resource);
+    }
+
+    /**
+     * {@inheritdoc}
+     */
     public function validateUntrustedResource(ContextDataInterface $contextData, $resource)
     {
-        $this->dataProvider->setContextName($contextData->getName());
-        $this->dataProvider->setContextDispatchType($contextData->getContextDispatchType());
-        $this->dataProvider->setIndexOptions($this->configuration);
+        $this->setupDataProvider($contextData);
 
         return $this->dataProvider->validate($resource);
     }
@@ -94,9 +102,7 @@ class TrinityDataProvider implements DataProviderInterface
      */
     public function provideAll(ContextDataInterface $contextData)
     {
-        $this->dataProvider->setContextName($contextData->getName());
-        $this->dataProvider->setContextDispatchType($contextData->getContextDispatchType());
-        $this->dataProvider->setIndexOptions($this->configuration);
+        $this->setupDataProvider($contextData);
 
         $this->dataProvider->fetchListData();
     }
@@ -133,29 +139,32 @@ class TrinityDataProvider implements DataProviderInterface
     protected function configureAlwaysOptions(OptionsResolver $resolver)
     {
         $defaults = [
-            'index_asset'                   => false,
-            'asset_data_builder_identifier' => 'default',
-            'asset_types'                   => array_filter(Asset::$types, function ($type) {
+            // assets
+            'index_asset'                      => false,
+            'asset_data_builder_identifier'    => 'default',
+            'asset_additional_params'          => [],
+            'asset_types'                      => array_filter(Asset::$types, function ($type) {
                 return $type !== 'folder';
             }),
-            'asset_additional_params'       => [],
-
-            'index_object'                   => false,
-            'object_ignore_unpublished'      => true,
-            'object_data_builder_identifier' => 'default',
-            'object_types'                   => array_filter(DataObject::$types, function ($type) {
+            // objects
+            'index_object'                     => false,
+            'object_ignore_unpublished'        => true,
+            'object_data_builder_identifier'   => 'default',
+            'object_class_names'               => [],
+            'object_additional_params'         => [],
+            'object_proxy_identifier'          => 'default',
+            'object_proxy_settings'            => [/* defined in given proxy resolver */],
+            'object_types'                     => array_filter(DataObject::$types, function ($type) {
                 return $type !== 'folder';
             }),
-            'object_class_names'             => [],
-            'object_additional_params'       => [],
-
+            // documents
             'index_document'                   => false,
             'document_ignore_unpublished'      => true,
             'document_data_builder_identifier' => 'default',
+            'document_additional_params'       => [],
             'document_types'                   => array_filter(Document::$types, function ($type) {
                 return $type !== 'folder';
             }),
-            'document_additional_params'       => [],
         ];
 
         $resolver->setDefaults($defaults);
@@ -187,4 +196,15 @@ class TrinityDataProvider implements DataProviderInterface
         $resolver->setDefaults($defaults);
         $resolver->setRequired(array_keys($defaults));
     }
+
+    /**
+     * @param ContextDataInterface $contextData
+     */
+    protected function setupDataProvider(ContextDataInterface $contextData)
+    {
+        $this->dataProvider->setContextName($contextData->getName());
+        $this->dataProvider->setContextDispatchType($contextData->getContextDispatchType());
+        $this->dataProvider->setIndexOptions($this->configuration);
+    }
+
 }
