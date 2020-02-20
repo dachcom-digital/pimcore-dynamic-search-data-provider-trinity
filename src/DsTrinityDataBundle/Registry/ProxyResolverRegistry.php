@@ -36,7 +36,7 @@ class ProxyResolverRegistry implements ProxyResolverRegistryInterface
             );
         }
 
-        if (!isset($this->builder[$type])) {
+        if (!isset($this->proxyResolver[$type])) {
             $this->proxyResolver[$type] = [];
         }
 
