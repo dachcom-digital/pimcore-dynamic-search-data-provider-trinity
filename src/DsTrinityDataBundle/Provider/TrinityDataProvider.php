@@ -4,12 +4,12 @@ namespace DsTrinityDataBundle\Provider;
 
 use DsTrinityDataBundle\Service\DataProviderServiceInterface;
 use DynamicSearchBundle\Context\ContextDataInterface;
-use DynamicSearchBundle\EventDispatcher\DynamicSearchEventDispatcherInterface;
 use DynamicSearchBundle\Normalizer\Resource\ResourceMetaInterface;
 use DynamicSearchBundle\Provider\DataProviderInterface;
 use Pimcore\Model\Asset;
 use Pimcore\Model\DataObject;
 use Pimcore\Model\Document;
+use Pimcore\Model\Element\ElementInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
 class TrinityDataProvider implements DataProviderInterface
@@ -20,24 +20,15 @@ class TrinityDataProvider implements DataProviderInterface
     protected $configuration;
 
     /**
-     * @var DynamicSearchEventDispatcherInterface
-     */
-    protected $eventDispatcher;
-
-    /**
      * @var DataProviderServiceInterface
      */
     protected $dataProvider;
 
     /**
-     * @param DynamicSearchEventDispatcherInterface $eventDispatcher
-     * @param DataProviderServiceInterface          $dataProvider
+     * @param DataProviderServiceInterface $dataProvider
      */
-    public function __construct(
-        DynamicSearchEventDispatcherInterface $eventDispatcher,
-        DataProviderServiceInterface $dataProvider
-    ) {
-        $this->eventDispatcher = $eventDispatcher;
+    public function __construct(DataProviderServiceInterface $dataProvider)
+    {
         $this->dataProvider = $dataProvider;
     }
 
@@ -82,6 +73,11 @@ class TrinityDataProvider implements DataProviderInterface
      */
     public function checkUntrustedResourceProxy(ContextDataInterface $contextData, $resource)
     {
+        // we're only able to validate elements here
+        if (!$resource instanceof ElementInterface) {
+            return null;
+        }
+
         $this->setupDataProvider($contextData);
 
         return $this->dataProvider->checkResourceProxy($resource);
@@ -92,6 +88,11 @@ class TrinityDataProvider implements DataProviderInterface
      */
     public function validateUntrustedResource(ContextDataInterface $contextData, $resource)
     {
+        // we're only able to validate elements here
+        if (!$resource instanceof ElementInterface) {
+            return false;
+        }
+
         $this->setupDataProvider($contextData);
 
         return $this->dataProvider->validate($resource);

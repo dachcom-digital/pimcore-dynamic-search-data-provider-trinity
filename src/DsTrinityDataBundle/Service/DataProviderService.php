@@ -102,53 +102,48 @@ class DataProviderService implements DataProviderServiceInterface
     /**
      * {@inheritdoc}
      */
-    public function checkResourceProxy($resource)
+    public function checkResourceProxy(ElementInterface $resource)
     {
-        if (!$resource instanceof ElementInterface) {
-            return $resource;
-        }
-
         $proxyResolver = null;
+
         $type = $this->getResourceType($resource);
 
         if ($type === null) {
-            return $resource;
+            return null;
         }
 
         if ($this->indexOptions[sprintf('index_%s', $type)] === false) {
-            return $resource;
+            return null;
         }
 
         $proxyIdentifier = sprintf('%s_proxy_identifier', $type);
         $proxyOptionsIdentifier = sprintf('%s_proxy_settings', $type);
 
         if (!isset($this->indexOptions[$proxyIdentifier])) {
-            return $resource;
+            return null;
         }
 
         $options = $this->getTypeOptions($type);
         if (!isset($options[$proxyOptionsIdentifier])) {
-            return $resource;
+            return null;
         }
 
         $proxyResolver = $this->proxyResolverRegistry->getByTypeAndIdentifier($type, $this->indexOptions[$proxyIdentifier]);
 
         if (!$proxyResolver instanceof ProxyResolverInterface) {
-            return $resource;
+            return null;
         }
 
         $optionsResolver = new OptionsResolver();
         $proxyResolver->configureOptions($optionsResolver);
 
-        $options = $optionsResolver->resolve($options['object_proxy_settings']);
-
-        return $proxyResolver->resolveProxy($resource, $options);
+        return $proxyResolver->resolveProxy($resource, $options, ['contextDispatchType' => $this->contextDispatchType, 'contextName' => $this->contextName]);
     }
 
     /**
      * {@inheritdoc}
      */
-    public function validate($resource)
+    public function validate(ElementInterface $resource)
     {
         if (!$resource instanceof ElementInterface) {
             return false;

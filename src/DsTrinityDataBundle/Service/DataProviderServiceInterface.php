@@ -3,6 +3,7 @@
 namespace DsTrinityDataBundle\Service;
 
 use DynamicSearchBundle\Normalizer\Resource\ResourceMetaInterface;
+use DynamicSearchBundle\Resource\Proxy\ProxyResourceInterface;
 use Pimcore\Model\Element\ElementInterface;
 
 interface DataProviderServiceInterface
@@ -27,9 +28,9 @@ interface DataProviderServiceInterface
      *
      * @param ElementInterface $resource
      *
-     * @return ElementInterface
+     * @return ProxyResourceInterface|null
      */
-    public function checkResourceProxy($resource);
+    public function checkResourceProxy(ElementInterface $resource);
 
     /**
      * This method only gets executed on untrusted events like insert, update or delete
@@ -38,7 +39,7 @@ interface DataProviderServiceInterface
      *
      * @return bool
      */
-    public function validate($resource);
+    public function validate(ElementInterface $resource);
 
     public function fetchListData();
 
