@@ -3,7 +3,7 @@
 namespace DsTrinityDataBundle\Provider;
 
 use DsTrinityDataBundle\Service\DataProviderServiceInterface;
-use DynamicSearchBundle\Context\ContextDataInterface;
+use DynamicSearchBundle\Context\ContextDefinitionInterface;
 use DynamicSearchBundle\Normalizer\Resource\ResourceMetaInterface;
 use DynamicSearchBundle\Provider\DataProviderInterface;
 use Pimcore\Model\Asset;
@@ -15,14 +15,14 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
 class TrinityDataProvider implements DataProviderInterface
 {
     /**
-     * @var array
-     */
-    protected $configuration;
-
-    /**
      * @var DataProviderServiceInterface
      */
     protected $dataProvider;
+
+    /**
+     * @var array
+     */
+    protected $options;
 
     /**
      * @param DataProviderServiceInterface $dataProvider
@@ -35,50 +35,110 @@ class TrinityDataProvider implements DataProviderInterface
     /**
      * {@inheritdoc}
      */
-    public function setOptions(array $configuration)
+    public static function configureOptions(OptionsResolver $resolver)
     {
-        $this->configuration = $configuration;
+        $options = [
+            'always'                                 => function (OptionsResolver $spoolResolver) {
+
+                $options = [
+                    // assets
+                    'index_asset'                      => false,
+                    'asset_data_builder_identifier'    => 'default',
+                    'asset_additional_params'          => [],
+                    'asset_types'                      => array_filter(Asset::$types, function ($type) {
+                        return $type !== 'folder';
+                    }),
+                    // objects
+                    'index_object'                     => false,
+                    'object_ignore_unpublished'        => true,
+                    'object_data_builder_identifier'   => 'default',
+                    'object_class_names'               => [],
+                    'object_additional_params'         => [],
+                    'object_proxy_identifier'          => 'default',
+                    'object_proxy_settings'            => [/* defined in given proxy resolver */],
+                    'object_types'                     => array_filter(DataObject::$types, function ($type) {
+                        return $type !== 'folder';
+                    }),
+                    // documents
+                    'index_document'                   => false,
+                    'document_ignore_unpublished'      => true,
+                    'document_data_builder_identifier' => 'default',
+                    'document_additional_params'       => [],
+                    'document_types'                   => array_filter(Document::$types, function ($type) {
+                        return $type !== 'folder';
+                    })
+                ];
+
+                $spoolResolver->setDefaults($options);
+                $spoolResolver->setRequired(array_keys($options));
+            },
+            self::PROVIDER_BEHAVIOUR_FULL_DISPATCH   => function (OptionsResolver $spoolResolver) {
+
+                $options = [
+                    'asset_limit'    => 0,
+                    'object_limit'   => 0,
+                    'document_limit' => 0,
+                ];
+
+                $spoolResolver->setDefaults($options);
+                $spoolResolver->setRequired(array_keys($options));
+            },
+            self::PROVIDER_BEHAVIOUR_SINGLE_DISPATCH => function (OptionsResolver $spoolResolver) {
+                $spoolResolver->setDefaults([]);
+            }
+        ];
+
+        $resolver->setDefaults($options);
+        $resolver->setRequired(array_keys($options));
     }
 
     /**
      * {@inheritdoc}
      */
-    public function warmUp(ContextDataInterface $contextData)
+    public function setOptions(array $options)
+    {
+        $this->options = $options;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function warmUp(ContextDefinitionInterface $contextDefinition)
     {
     }
 
     /**
      * {@inheritdoc}
      */
-    public function coolDown(ContextDataInterface $contextData)
+    public function coolDown(ContextDefinitionInterface $contextDefinition)
     {
     }
 
     /**
      * {@inheritdoc}
      */
-    public function cancelledShutdown(ContextDataInterface $contextData)
+    public function cancelledShutdown(ContextDefinitionInterface $contextDefinition)
     {
     }
 
     /**
      * {@inheritdoc}
      */
-    public function emergencyShutdown(ContextDataInterface $contextData)
+    public function emergencyShutdown(ContextDefinitionInterface $contextDefinition)
     {
     }
 
     /**
      * {@inheritdoc}
      */
-    public function checkUntrustedResourceProxy(ContextDataInterface $contextData, $resource)
+    public function checkUntrustedResourceProxy(ContextDefinitionInterface $contextDefinition, $resource)
     {
         // we're only able to validate elements here
         if (!$resource instanceof ElementInterface) {
             return null;
         }
 
-        $this->setupDataProvider($contextData);
+        $this->setupDataProvider($contextDefinition);
 
         return $this->dataProvider->checkResourceProxy($resource);
     }
@@ -86,14 +146,14 @@ class TrinityDataProvider implements DataProviderInterface
     /**
      * {@inheritdoc}
      */
-    public function validateUntrustedResource(ContextDataInterface $contextData, $resource)
+    public function validateUntrustedResource(ContextDefinitionInterface $contextDefinition, $resource)
     {
         // we're only able to validate elements here
         if (!$resource instanceof ElementInterface) {
             return false;
         }
 
-        $this->setupDataProvider($contextData);
+        $this->setupDataProvider($contextDefinition);
 
         return $this->dataProvider->validate($resource);
     }
@@ -101,9 +161,9 @@ class TrinityDataProvider implements DataProviderInterface
     /**
      * {@inheritdoc}
      */
-    public function provideAll(ContextDataInterface $contextData)
+    public function provideAll(ContextDefinitionInterface $contextDefinition)
     {
-        $this->setupDataProvider($contextData);
+        $this->setupDataProvider($contextDefinition);
 
         $this->dataProvider->fetchListData();
     }
@@ -111,101 +171,23 @@ class TrinityDataProvider implements DataProviderInterface
     /**
      * {@inheritdoc}
      */
-    public function provideSingle(ContextDataInterface $contextData, ResourceMetaInterface $resourceMeta)
+    public function provideSingle(ContextDefinitionInterface $contextDefinition, ResourceMetaInterface $resourceMeta)
     {
-        $this->dataProvider->setContextName($contextData->getName());
-        $this->dataProvider->setContextDispatchType($contextData->getContextDispatchType());
-        $this->dataProvider->setIndexOptions($this->configuration);
+        $this->dataProvider->setContextName($contextDefinition->getName());
+        $this->dataProvider->setContextDispatchType($contextDefinition->getContextDispatchType());
+        $this->dataProvider->setIndexOptions($this->options);
 
         $this->dataProvider->fetchSingleData($resourceMeta);
     }
 
     /**
-     * {@inheritdoc}
+     * @param ContextDefinitionInterface $contextDefinition
      */
-    public function configureOptions(OptionsResolver $resolver, string $providerBehaviour)
+    protected function setupDataProvider(ContextDefinitionInterface $contextDefinition)
     {
-        $this->configureAlwaysOptions($resolver);
-
-        if ($providerBehaviour === self::PROVIDER_BEHAVIOUR_FULL_DISPATCH) {
-            $this->configureFullDispatchOptions($resolver);
-        } elseif ($providerBehaviour === self::PROVIDER_BEHAVIOUR_SINGLE_DISPATCH) {
-            $this->configureSingleDispatchOptions($resolver);
-        }
-    }
-
-    /**
-     * @param OptionsResolver $resolver
-     */
-    protected function configureAlwaysOptions(OptionsResolver $resolver)
-    {
-        $defaults = [
-            // assets
-            'index_asset'                      => false,
-            'asset_data_builder_identifier'    => 'default',
-            'asset_additional_params'          => [],
-            'asset_types'                      => array_filter(Asset::$types, function ($type) {
-                return $type !== 'folder';
-            }),
-            // objects
-            'index_object'                     => false,
-            'object_ignore_unpublished'        => true,
-            'object_data_builder_identifier'   => 'default',
-            'object_class_names'               => [],
-            'object_additional_params'         => [],
-            'object_proxy_identifier'          => 'default',
-            'object_proxy_settings'            => [/* defined in given proxy resolver */],
-            'object_types'                     => array_filter(DataObject::$types, function ($type) {
-                return $type !== 'folder';
-            }),
-            // documents
-            'index_document'                   => false,
-            'document_ignore_unpublished'      => true,
-            'document_data_builder_identifier' => 'default',
-            'document_additional_params'       => [],
-            'document_types'                   => array_filter(Document::$types, function ($type) {
-                return $type !== 'folder';
-            }),
-        ];
-
-        $resolver->setDefaults($defaults);
-        $resolver->setRequired(array_keys($defaults));
-    }
-
-    /**
-     * @param OptionsResolver $resolver
-     */
-    protected function configureFullDispatchOptions(OptionsResolver $resolver)
-    {
-        $defaults = [
-            'asset_limit'    => 0,
-            'object_limit'   => 0,
-            'document_limit' => 0,
-        ];
-
-        $resolver->setDefaults($defaults);
-        $resolver->setRequired(array_keys($defaults));
-    }
-
-    /**
-     * @param OptionsResolver $resolver
-     */
-    protected function configureSingleDispatchOptions(OptionsResolver $resolver)
-    {
-        $defaults = [];
-
-        $resolver->setDefaults($defaults);
-        $resolver->setRequired(array_keys($defaults));
-    }
-
-    /**
-     * @param ContextDataInterface $contextData
-     */
-    protected function setupDataProvider(ContextDataInterface $contextData)
-    {
-        $this->dataProvider->setContextName($contextData->getName());
-        $this->dataProvider->setContextDispatchType($contextData->getContextDispatchType());
-        $this->dataProvider->setIndexOptions($this->configuration);
+        $this->dataProvider->setContextName($contextDefinition->getName());
+        $this->dataProvider->setContextDispatchType($contextDefinition->getContextDispatchType());
+        $this->dataProvider->setIndexOptions($this->options);
     }
 
 }

@@ -13,7 +13,7 @@ class ProxyResolverRegistry implements ProxyResolverRegistryInterface
 
     /**
      * @param ProxyResolverInterface $service
-     * @param array                  $identifier
+     * @param string                 $identifier
      * @param array                  $type
      */
     public function register($service, $identifier, $type)

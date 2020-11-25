@@ -8,7 +8,8 @@
 A Data Fetch Extension for [Pimcore Dynamic Search](https://github.com/dachcom-digital/pimcore-dynamic-search). Crawl Pimcore Data `assets`, `documents` and `objects`.
 
 ## Requirements
-- Pimcore >= 5.8.0
+- Pimcore >= 6.3
+- Symfony >= 4.4
 - Pimcore Dynamic Search
 
 ***

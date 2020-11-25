@@ -2,7 +2,7 @@
 
 namespace DsTrinityDataBundle\Normalizer;
 
-use DynamicSearchBundle\Context\ContextDataInterface;
+use DynamicSearchBundle\Context\ContextDefinitionInterface;
 use DynamicSearchBundle\Manager\DataManagerInterface;
 use DynamicSearchBundle\Manager\TransformerManagerInterface;
 use DynamicSearchBundle\Normalizer\ResourceNormalizerInterface;
@@ -44,7 +44,7 @@ abstract class AbstractResourceNormalizer implements ResourceNormalizerInterface
     /**
      * {@inheritdoc}
      */
-    public function normalizeToResourceStack(ContextDataInterface $contextData, ResourceContainerInterface $resourceContainer): array
+    public function normalizeToResourceStack(ContextDefinitionInterface $contextDefinition, ResourceContainerInterface $resourceContainer): array
     {
         $resource = $resourceContainer->getResource();
 
@@ -53,41 +53,41 @@ abstract class AbstractResourceNormalizer implements ResourceNormalizerInterface
         }
 
         if ($resource instanceof Document) {
-            return $this->normalizeDocument($contextData, $resourceContainer);
+            return $this->normalizeDocument($contextDefinition, $resourceContainer);
         }
 
         if ($resource instanceof Asset) {
-            return $this->normalizeAsset($contextData, $resourceContainer);
+            return $this->normalizeAsset($contextDefinition, $resourceContainer);
         }
 
         if ($resource instanceof DataObject) {
-            return $this->normalizeDataObject($contextData, $resourceContainer);
+            return $this->normalizeDataObject($contextDefinition, $resourceContainer);
         }
 
         return [];
     }
 
     /**
-     * @param ContextDataInterface       $contextData
+     * @param ContextDefinitionInterface $contextDefinition
      * @param ResourceContainerInterface $resourceContainer
      *
      * @return array
      */
-    abstract protected function normalizeDocument(ContextDataInterface $contextData, ResourceContainerInterface $resourceContainer);
+    abstract protected function normalizeDocument(ContextDefinitionInterface $contextDefinition, ResourceContainerInterface $resourceContainer);
 
     /**
-     * @param ContextDataInterface       $contextData
+     * @param ContextDefinitionInterface $contextDefinition
      * @param ResourceContainerInterface $resourceContainer
      *
      * @return array
      */
-    abstract protected function normalizeAsset(ContextDataInterface $contextData, ResourceContainerInterface $resourceContainer);
+    abstract protected function normalizeAsset(ContextDefinitionInterface $contextDefinition, ResourceContainerInterface $resourceContainer);
 
     /**
-     * @param ContextDataInterface       $contextData
+     * @param ContextDefinitionInterface $contextDefinition
      * @param ResourceContainerInterface $resourceContainer
      *
      * @return array
      */
-    abstract protected function normalizeDataObject(ContextDataInterface $contextData, ResourceContainerInterface $resourceContainer);
+    abstract protected function normalizeDataObject(ContextDefinitionInterface $contextDefinition, ResourceContainerInterface $resourceContainer);
 }

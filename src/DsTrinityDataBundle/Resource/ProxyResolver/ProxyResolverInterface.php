@@ -16,9 +16,9 @@ interface ProxyResolverInterface
     /**
      * @param ElementInterface $resource
      * @param array            $proxyOptions
-     * @param array            $contextDataOptions
+     * @param array            $contextDefinitionOptions
      *
      * @return ProxyResourceInterface|null
      */
-    public function resolveProxy(ElementInterface $resource, array $proxyOptions, array $contextDataOptions);
+    public function resolveProxy(ElementInterface $resource, array $proxyOptions, array $contextDefinitionOptions);
 }

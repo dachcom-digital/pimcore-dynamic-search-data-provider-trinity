@@ -13,7 +13,7 @@ class DataBuilderRegistry implements DataBuilderRegistryInterface
 
     /**
      * @param DataBuilderInterface $service
-     * @param array                $identifier
+     * @param string               $identifier
      * @param array                $type
      */
     public function register($service, $identifier, $type)

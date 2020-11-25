@@ -40,7 +40,7 @@ class ObjectProxyResolver implements ProxyResolverInterface
     /**
      * {@inheritdoc}
      */
-    public function resolveProxy(ElementInterface $resource, array $proxyOptions, array $contextDataOptions)
+    public function resolveProxy(ElementInterface $resource, array $proxyOptions, array $contextDefinitionOptions)
     {
         if (!$resource instanceof DataObject) {
             return null;
@@ -59,7 +59,7 @@ class ObjectProxyResolver implements ProxyResolverInterface
             $proxyObject = $resource->getParent();
         }
 
-        $proxyResource = new ProxyResource($resource, $contextDataOptions['contextDispatchType'], $contextDataOptions['contextName']);
+        $proxyResource = new ProxyResource($resource, $contextDefinitionOptions['contextDispatchType'], $contextDefinitionOptions['contextName']);
         $proxyResource->setProxyResource($proxyObject);
 
         $proxyEvent = new DataProxyEvent('object', $proxyResource);

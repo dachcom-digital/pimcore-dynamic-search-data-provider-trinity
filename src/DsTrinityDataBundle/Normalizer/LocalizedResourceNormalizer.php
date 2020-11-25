@@ -2,7 +2,7 @@
 
 namespace DsTrinityDataBundle\Normalizer;
 
-use DynamicSearchBundle\Context\ContextDataInterface;
+use DynamicSearchBundle\Context\ContextDefinitionInterface;
 use DynamicSearchBundle\Exception\NormalizerException;
 use DynamicSearchBundle\Normalizer\Resource\NormalizedDataResource;
 use DynamicSearchBundle\Normalizer\Resource\ResourceMeta;
@@ -22,13 +22,11 @@ class LocalizedResourceNormalizer extends AbstractResourceNormalizer
     /**
      * {@inheritdoc}
      */
-    public function configureOptions(OptionsResolver $resolver)
+    public static function configureOptions(OptionsResolver $resolver)
     {
         $resolver->setRequired(['locales', 'skip_not_localized_documents']);
-
         $resolver->setAllowedTypes('locales', ['string[]']);
         $resolver->setAllowedTypes('skip_not_localized_documents', ['bool']);
-
         $resolver->setDefaults(['skip_not_localized_documents' => true]);
         $resolver->setDefaults(['locales' => \Pimcore\Tool::getValidLanguages()]);
     }
@@ -42,14 +40,14 @@ class LocalizedResourceNormalizer extends AbstractResourceNormalizer
     }
 
     /**
-     * @param ContextDataInterface       $contextData
+     * @param ContextDefinitionInterface $contextDefinition
      * @param ResourceContainerInterface $resourceContainer
      *
      * @return array
      *
      * @throws NormalizerException
      */
-    protected function normalizeDocument(ContextDataInterface $contextData, ResourceContainerInterface $resourceContainer)
+    protected function normalizeDocument(ContextDefinitionInterface $contextDefinition, ResourceContainerInterface $resourceContainer)
     {
         /** @var Document $document */
         $document = $resourceContainer->getResource();
@@ -73,36 +71,36 @@ class LocalizedResourceNormalizer extends AbstractResourceNormalizer
 
         $documentId = sprintf('%s_%s_%d', 'document', $documentLocale, $document->getId());
         $resourceMeta = new ResourceMeta($documentId, $document->getId(), 'document', $document->getType(), null, [], ['locale' => $documentLocale]);
-        $returnResourceContainer = $contextData->getContextDispatchType() === ContextDataInterface::CONTEXT_DISPATCH_TYPE_DELETE ? null : $resourceContainer;
+        $returnResourceContainer = $contextDefinition->getContextDispatchType() === ContextDefinitionInterface::CONTEXT_DISPATCH_TYPE_DELETE ? null : $resourceContainer;
 
         return [new NormalizedDataResource($returnResourceContainer, $resourceMeta)];
     }
 
     /**
-     * @param ContextDataInterface       $contextData
+     * @param ContextDefinitionInterface $contextDefinition
      * @param ResourceContainerInterface $resourceContainer
      *
      * @return array
      */
-    protected function normalizeAsset(ContextDataInterface $contextData, ResourceContainerInterface $resourceContainer)
+    protected function normalizeAsset(ContextDefinitionInterface $contextDefinition, ResourceContainerInterface $resourceContainer)
     {
         /** @var Asset $asset */
         $asset = $resourceContainer->getResource();
 
         $documentId = sprintf('%s_%d', 'asset', $asset->getId());
         $resourceMeta = new ResourceMeta($documentId, $asset->getId(), 'asset', $asset->getType(), null, [], ['locale' => null]);
-        $returnResourceContainer = $contextData->getContextDispatchType() === ContextDataInterface::CONTEXT_DISPATCH_TYPE_DELETE ? null : $resourceContainer;
+        $returnResourceContainer = $contextDefinition->getContextDispatchType() === ContextDefinitionInterface::CONTEXT_DISPATCH_TYPE_DELETE ? null : $resourceContainer;
 
         return [new NormalizedDataResource($returnResourceContainer, $resourceMeta)];
     }
 
     /**
-     * @param ContextDataInterface       $contextData
+     * @param ContextDefinitionInterface $contextDefinition
      * @param ResourceContainerInterface $resourceContainer
      *
      * @return array
      */
-    protected function normalizeDataObject(ContextDataInterface $contextData, ResourceContainerInterface $resourceContainer)
+    protected function normalizeDataObject(ContextDefinitionInterface $contextDefinition, ResourceContainerInterface $resourceContainer)
     {
         /** @var DataObject\Concrete $object */
         $object = $resourceContainer->getResource();
@@ -111,7 +109,7 @@ class LocalizedResourceNormalizer extends AbstractResourceNormalizer
         foreach ($this->options['locales'] as $locale) {
             $documentId = sprintf('%s_%s_%d', 'object', $locale, $object->getId());
             $resourceMeta = new ResourceMeta($documentId, $object->getId(), 'object', $object->getType(), $object->getClassName(), [], ['locale' => $locale]);
-            $returnResourceContainer = $contextData->getContextDispatchType() === ContextDataInterface::CONTEXT_DISPATCH_TYPE_DELETE ? null : $resourceContainer;
+            $returnResourceContainer = $contextDefinition->getContextDispatchType() === ContextDefinitionInterface::CONTEXT_DISPATCH_TYPE_DELETE ? null : $resourceContainer;
             $normalizedResources[] = new NormalizedDataResource($returnResourceContainer, $resourceMeta);
         }
 

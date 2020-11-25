@@ -2,7 +2,7 @@
 
 namespace DsTrinityDataBundle\Resource\Scaffolder;
 
-use DynamicSearchBundle\Context\ContextDataInterface;
+use DynamicSearchBundle\Context\ContextDefinitionInterface;
 use DynamicSearchBundle\Resource\ResourceScaffolderInterface;
 use Pimcore\Model\Asset;
 use Pimcore\Model\DataObject;
@@ -11,9 +11,9 @@ use Pimcore\Model\Document;
 class TrinityDataScaffolder implements ResourceScaffolderInterface
 {
     /**
-     * @var ContextDataInterface
+     * @var ContextDefinitionInterface
      */
-    protected $contextData;
+    protected $contextDefinition;
 
     /**
      * {@inheritdoc}
@@ -42,9 +42,9 @@ class TrinityDataScaffolder implements ResourceScaffolderInterface
     /**
      * {@inheritdoc}
      */
-    public function setup(ContextDataInterface $contextData, $resource): array
+    public function setup(ContextDefinitionInterface $contextDefinition, $resource): array
     {
-        $this->contextData = $contextData;
+        $this->contextDefinition = $contextDefinition;
 
         $type = null;
         $dataType = null;

@@ -208,13 +208,12 @@ class DataProviderService implements DataProviderServiceInterface
      */
     protected function fetchByType(string $type, string $providerBehaviour)
     {
-        $builder = null;
-
         if ($this->indexOptions[sprintf('index_%s', $type)] === false) {
             return;
         }
 
         $builderIdentifier = sprintf('%s_data_builder_identifier', $type);
+
         $builder = $this->dataBuilderRegistry->getByTypeAndIdentifier($type, $this->indexOptions[$builderIdentifier]);
 
         if (!$builder instanceof DataBuilderInterface) {
@@ -237,8 +236,6 @@ class DataProviderService implements DataProviderServiceInterface
      */
     protected function fetchByTypeAndId(string $type, string $providerBehaviour, $id, ?ResourceMetaInterface $resourceMeta)
     {
-        $builder = null;
-
         if ($this->indexOptions[sprintf('index_%s', $type)] === false) {
             return;
         }
