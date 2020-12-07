@@ -2,13 +2,13 @@
 
 [![Software License](https://img.shields.io/badge/license-GPLv3-brightgreen.svg?style=flat-square)](LICENSE.md)
 [![Latest Release](https://img.shields.io/packagist/v/dachcom-digital/dynamic-search-data-provider-trinity.svg?style=flat-square)](https://packagist.org/packages/dachcom-digital/dynamic-search-data-provider-trinity)
-[![Travis](https://img.shields.io/travis/com/dachcom-digital/pimcore-dynamic-search-data-provider-trinity/master.svg?style=flat-square)](https://travis-ci.com/dachcom-digital/pimcore-dynamic-search-data-provider-trinity)
-[![PhpStan](https://img.shields.io/badge/PHPStan-level%202-brightgreen.svg?style=flat-square)](#)
+[![Tests](https://img.shields.io/github/workflow/status/dachcom-digital/pimcore-dynamic-search-data-provider-trinity/Codeception?style=flat-square&logo=github&label=codeception)](https://github.com/dachcom-digital/pimcore-dynamic-search-data-provider-trinity/actions?query=workflow%3A%22Codeception%22)
+[![PhpStan](https://img.shields.io/github/workflow/status/dachcom-digital/pimcore-dynamic-search-data-provider-trinity/PHP%20Stan?style=flat-square&logo=github&label=phpstan%20level%202)](https://github.com/dachcom-digital/pimcore-dynamic-search-data-provider-trinity/actions?query=workflow%3A%22PHP%20Stan%22)
 
 A Data Fetch Extension for [Pimcore Dynamic Search](https://github.com/dachcom-digital/pimcore-dynamic-search). Crawl Pimcore Data `assets`, `documents` and `objects`.
 
 ## Requirements
-- Pimcore >= 6.3
+- Pimcore >= 6.6
 - Symfony >= 4.4
 - Pimcore Dynamic Search
 
