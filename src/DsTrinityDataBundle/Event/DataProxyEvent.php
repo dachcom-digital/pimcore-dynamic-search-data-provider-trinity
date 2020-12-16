@@ -3,7 +3,7 @@
 namespace DsTrinityDataBundle\Event;
 
 use DynamicSearchBundle\Resource\Proxy\ProxyResourceInterface;
-use Symfony\Component\EventDispatcher\Event;
+use Symfony\Contracts\EventDispatcher\Event;
 
 class DataProxyEvent extends Event
 {

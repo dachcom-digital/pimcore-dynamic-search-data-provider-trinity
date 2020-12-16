@@ -95,7 +95,7 @@ class AssetListBuilder implements DataBuilderInterface
         $this->addAssetTypeRestriction($list, $allowedTypes);
 
         $event = new AssetListingQueryEvent($list, $options);
-        $this->eventDispatcher->dispatch(DsTrinityDataEvents::LISTING_QUERY_ASSETS, $event);
+        $this->eventDispatcher->dispatch($event, DsTrinityDataEvents::LISTING_QUERY_ASSETS);
 
         return $list;
     }

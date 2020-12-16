@@ -63,7 +63,7 @@ class ObjectProxyResolver implements ProxyResolverInterface
         $proxyResource->setProxyResource($proxyObject);
 
         $proxyEvent = new DataProxyEvent('object', $proxyResource);
-        $this->eventDispatcher->dispatch(DsTrinityDataEvents::PROXY_DEFAULT_DATA_OBJECT, $proxyEvent);
+        $this->eventDispatcher->dispatch($proxyEvent, DsTrinityDataEvents::PROXY_DEFAULT_DATA_OBJECT);
 
         return $proxyEvent->getProxyResource();
     }

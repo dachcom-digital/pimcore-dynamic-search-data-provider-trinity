@@ -272,7 +272,7 @@ class DataProviderService implements DataProviderServiceInterface
     {
         foreach ($elements as $element) {
             $newDataEvent = new NewDataEvent($this->contextDispatchType, $this->contextName, $element, $providerBehaviour, $resourceMeta);
-            $this->eventDispatcher->dispatch(DynamicSearchEvents::NEW_DATA_AVAILABLE, $newDataEvent);
+            $this->eventDispatcher->dispatch($newDataEvent, DynamicSearchEvents::NEW_DATA_AVAILABLE);
 
             $this->dispatchProcessControlSignal();
         }
@@ -308,7 +308,7 @@ class DataProviderService implements DataProviderServiceInterface
     public function handleSignal($signal)
     {
         $newDataEvent = new ErrorEvent($this->contextName, sprintf('crawler has been stopped by user (signal: %s)', $signal), DsTrinityDataBundle::PROVIDER_NAME);
-        $this->eventDispatcher->dispatch(DynamicSearchEvents::ERROR_DISPATCH_ABORT, $newDataEvent);
+        $this->eventDispatcher->dispatch($newDataEvent, DynamicSearchEvents::ERROR_DISPATCH_ABORT);
     }
 
     /**

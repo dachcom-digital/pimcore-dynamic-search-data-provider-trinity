@@ -102,7 +102,7 @@ class ObjectListBuilder implements DataBuilderInterface
         $this->addClassNameRestriction($list, $allowedClasses);
 
         $event = new ObjectListingQueryEvent($list, $options);
-        $this->eventDispatcher->dispatch(DsTrinityDataEvents::LISTING_QUERY_OBJECTS, $event);
+        $this->eventDispatcher->dispatch($event, DsTrinityDataEvents::LISTING_QUERY_OBJECTS);
 
         return $event->getListing();
     }

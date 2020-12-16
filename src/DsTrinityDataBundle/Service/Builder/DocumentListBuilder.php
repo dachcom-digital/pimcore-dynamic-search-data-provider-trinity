@@ -100,7 +100,7 @@ class DocumentListBuilder implements DataBuilderInterface
         $this->addDocumentTypeRestriction($list, $allowedTypes);
 
         $event = new DocumentListingQueryEvent($list, $options);
-        $this->eventDispatcher->dispatch(DsTrinityDataEvents::LISTING_QUERY_DOCUMENTS, $event);
+        $this->eventDispatcher->dispatch($event, DsTrinityDataEvents::LISTING_QUERY_DOCUMENTS);
 
         return $list;
     }

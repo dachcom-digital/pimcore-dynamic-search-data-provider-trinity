@@ -3,7 +3,7 @@
 namespace DsTrinityDataBundle\Event;
 
 use Pimcore\Model\Document;
-use Symfony\Component\EventDispatcher\Event;
+use Symfony\Contracts\EventDispatcher\Event;
 
 class DocumentListingQueryEvent extends Event
 {
