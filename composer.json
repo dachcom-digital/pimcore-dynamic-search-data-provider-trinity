@@ -1,7 +1,7 @@
 {
     "name": "dachcom-digital/dynamic-search-data-provider-trinity",
     "type": "dynamic-search-provider-bundle",
-    "license": "GPL-3.0+",
+    "license": "GPL-3.0-or-later",
     "description": "",
     "keywords": ["pimcore", "search", "dynamic-search", "data-provider","trinity", "assets", "documents", "objects"],
     "homepage": "https://github.com/dachcom-digital/pimcore-dynamic-search-data-provider-trinity",
@@ -23,8 +23,13 @@
             "": "src/"
         },
         "classmap": [
-            "app/AppKernel.php"
+            "app/TestKernel.php"
         ]
+    },
+    "extra": {
+        "branch-alias": {
+            "dev-master": "1.0-dev"
+        }
     },
     "require": {
         "symfony/symfony": "^4|^5",
@@ -36,10 +41,5 @@
         "phpstan/phpstan": "^0.12",
         "phpstan/phpstan-symfony": "^0.12",
         "symplify/easy-coding-standard": "^8.0"
-    },
-    "extra": {
-        "branch-alias": {
-            "dev-master": "1.0-dev"
-        }
     }
 }
