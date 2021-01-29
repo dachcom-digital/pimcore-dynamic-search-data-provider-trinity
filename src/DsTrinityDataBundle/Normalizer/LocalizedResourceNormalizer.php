@@ -25,10 +25,10 @@ class LocalizedResourceNormalizer extends AbstractResourceNormalizer
     public static function configureOptions(OptionsResolver $resolver)
     {
         $resolver->setRequired(['locales', 'skip_not_localized_documents']);
-        $resolver->setAllowedTypes('locales', ['string[]']);
+        $resolver->setAllowedTypes('locales', ['string[]', 'null']);
         $resolver->setAllowedTypes('skip_not_localized_documents', ['bool']);
         $resolver->setDefaults(['skip_not_localized_documents' => true]);
-        $resolver->setDefaults(['locales' => \Pimcore\Tool::getValidLanguages()]);
+        $resolver->setDefaults(['locales' => null]);
     }
 
     /**
@@ -106,7 +106,7 @@ class LocalizedResourceNormalizer extends AbstractResourceNormalizer
         $object = $resourceContainer->getResource();
 
         $normalizedResources = [];
-        foreach ($this->options['locales'] as $locale) {
+        foreach ($this->getLocales() as $locale) {
             $documentId = sprintf('%s_%s_%d', 'object', $locale, $object->getId());
             $resourceMeta = new ResourceMeta($documentId, $object->getId(), 'object', $object->getType(), $object->getClassName(), [], ['locale' => $locale]);
             $returnResourceContainer = $contextDefinition->getContextDispatchType() === ContextDefinitionInterface::CONTEXT_DISPATCH_TYPE_DELETE ? null : $resourceContainer;
@@ -114,5 +114,17 @@ class LocalizedResourceNormalizer extends AbstractResourceNormalizer
         }
 
         return $normalizedResources;
+    }
+
+    /**
+     * @return string[]
+     */
+    protected function getLocales()
+    {
+        if($this->options['locale'] === null) {
+            return \Pimcore\Tool::getValidLanguages();
+        }
+
+        return $this->options['locale'];
     }
 }
