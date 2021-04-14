@@ -56,7 +56,7 @@ class ObjectProxyResolver implements ProxyResolverInterface
 
         $proxyObject = $resource;
         while ($proxyObject->getType() === DataObject\AbstractObject::OBJECT_TYPE_VARIANT) {
-            $proxyObject = $resource->getParent();
+            $proxyObject = $proxyObject->getParent();
         }
 
         $proxyResource = new ProxyResource($resource, $contextDefinitionOptions['contextDispatchType'], $contextDefinitionOptions['contextName']);
