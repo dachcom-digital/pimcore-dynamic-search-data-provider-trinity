@@ -10,7 +10,7 @@ A Data Fetch Extension for [Pimcore Dynamic Search](https://github.com/dachcom-d
 ## Requirements
 - Pimcore >= 6.6
 - Symfony >= 4.4
-- Pimcore Dynamic Search
+- Pimcore Dynamic Search 1.0
 
 ***
 
