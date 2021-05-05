@@ -60,7 +60,7 @@ class ObjectRelationsGetterExtractor implements FieldTransformerInterface
                 return null;
             }
 
-            $values[] = call_user_func([$relation, $this->options['method'], $this->options['arguments']]);
+            $values[] = call_user_func([$relation, $this->options['method']], $this->options['arguments']);
         }
 
         return $values;
