@@ -7,6 +7,9 @@ use Symfony\Component\DependencyInjection\Compiler\CompilerPassInterface;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\Reference;
 
+/**
+ * @deprecated since 1.0.0 and will be removed in 2.0.0.
+ */
 final class ProxyResolverPass implements CompilerPassInterface
 {
     /**
