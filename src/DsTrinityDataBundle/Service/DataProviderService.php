@@ -116,14 +116,14 @@ class DataProviderService implements DataProviderServiceInterface
             return null;
         }
 
+        $options = $this->getTypeOptions($type);
         $proxyIdentifier = sprintf('%s_proxy_identifier', $type);
         $proxyOptionsIdentifier = sprintf('%s_proxy_settings', $type);
 
-        if (!isset($this->indexOptions[$proxyIdentifier])) {
+        if (!isset($options[$proxyIdentifier])) {
             return null;
         }
 
-        $options = $this->getTypeOptions($type);
         if (!isset($options[$proxyOptionsIdentifier])) {
             return null;
         }
@@ -137,7 +137,9 @@ class DataProviderService implements DataProviderServiceInterface
         $optionsResolver = new OptionsResolver();
         $proxyResolver->configureOptions($optionsResolver);
 
-        return $proxyResolver->resolveProxy($resource, $options, ['contextDispatchType' => $this->contextDispatchType, 'contextName' => $this->contextName]);
+        $proxyOptions = $optionsResolver->resolve($options[$proxyOptionsIdentifier]);
+
+        return $proxyResolver->resolveProxy($resource, $proxyOptions, ['contextDispatchType' => $this->contextDispatchType, 'contextName' => $this->contextName]);
     }
 
     /**
@@ -229,10 +231,10 @@ class DataProviderService implements DataProviderServiceInterface
     }
 
     /**
-     * @param string                $type
-     * @param string                $providerBehaviour
-     * @param int                   $id
-     * @param ResourceMetaInterface $resourceMeta
+     * @param string                     $type
+     * @param string                     $providerBehaviour
+     * @param int                        $id
+     * @param ResourceMetaInterface|null $resourceMeta
      */
     protected function fetchByTypeAndId(string $type, string $providerBehaviour, $id, ?ResourceMetaInterface $resourceMeta)
     {

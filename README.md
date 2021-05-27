@@ -201,3 +201,6 @@ Returns real full path of document
 
 Return Type: `string|null`   
 Options: none   
+
+## Upgrade Info
+Before updating, please [check our upgrade notes!](UPGRADE.md)  

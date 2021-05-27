@@ -6,13 +6,15 @@ use DsTrinityDataBundle\Service\DataProviderServiceInterface;
 use DynamicSearchBundle\Context\ContextDefinitionInterface;
 use DynamicSearchBundle\Normalizer\Resource\ResourceMetaInterface;
 use DynamicSearchBundle\Provider\DataProviderInterface;
+use DynamicSearchBundle\Provider\DataProviderValidationAwareInterface;
+use DynamicSearchBundle\Resource\ResourceCandidateInterface;
 use Pimcore\Model\Asset;
 use Pimcore\Model\DataObject;
 use Pimcore\Model\Document;
 use Pimcore\Model\Element\ElementInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
-class TrinityDataProvider implements DataProviderInterface
+class TrinityDataProvider implements DataProviderInterface, DataProviderValidationAwareInterface
 {
     /**
      * @var DataProviderServiceInterface
@@ -156,6 +158,31 @@ class TrinityDataProvider implements DataProviderInterface
         $this->setupDataProvider($contextDefinition);
 
         return $this->dataProvider->validate($resource);
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function validateResource(ContextDefinitionInterface $contextDefinition, ResourceCandidateInterface $resourceCandidate)
+    {
+        // we're only able to validate elements here
+        $resource = $resourceCandidate->getResource();
+
+        if (!$resource instanceof ElementInterface) {
+            $resourceCandidate->setResource(null);
+
+            return $resourceCandidate;
+        }
+
+        $this->setupDataProvider($contextDefinition);
+
+        $isValidResource = $this->dataProvider->validate($resource);
+
+        if ($isValidResource === false) {
+            $resourceCandidate->setResource(null);
+        }
+
+        return $resourceCandidate;
     }
 
     /**
