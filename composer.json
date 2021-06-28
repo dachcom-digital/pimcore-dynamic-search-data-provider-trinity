@@ -28,8 +28,8 @@
     },
     "require": {
         "symfony/symfony": "^4|^5",
-        "pimcore/pimcore": "^6.6",
-        "dachcom-digital/dynamic-search": "^1.0"
+        "pimcore/pimcore": "^10.0",
+        "dachcom-digital/dynamic-search": "dev-develop"
     },
     "require-dev": {
         "codeception/codeception": "~2.4.0",

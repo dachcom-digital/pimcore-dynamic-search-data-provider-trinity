@@ -21,14 +21,14 @@ class DefaultResourceNormalizer extends AbstractResourceNormalizer
     /**
      * {@inheritdoc}
      */
-    public static function configureOptions(OptionsResolver $resolver)
+    public static function configureOptions(OptionsResolver $resolver): void
     {
     }
 
     /**
      * {@inheritdoc}
      */
-    public function setOptions(array $options)
+    public function setOptions(array $options): void
     {
         $this->options = $options;
     }

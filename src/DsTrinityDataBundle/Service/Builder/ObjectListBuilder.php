@@ -6,7 +6,7 @@ use DsTrinityDataBundle\DsTrinityDataEvents;
 use DsTrinityDataBundle\Event\ObjectListingQueryEvent;
 use Pimcore\Db\Connection;
 use Pimcore\Model\DataObject;
-use Symfony\Component\EventDispatcher\EventDispatcherInterface;
+use Symfony\Contracts\EventDispatcher\EventDispatcherInterface;
 
 class ObjectListBuilder implements DataBuilderInterface
 {

@@ -18,7 +18,7 @@ class TrinityDataScaffolder implements ResourceScaffolderInterface
     /**
      * {@inheritdoc}
      */
-    public function isBaseResource($resource)
+    public function isBaseResource($resource): bool
     {
         return true;
     }
@@ -30,9 +30,13 @@ class TrinityDataScaffolder implements ResourceScaffolderInterface
     {
         if ($resource instanceof Asset) {
             return true;
-        } elseif ($resource instanceof Document) {
+        }
+
+        if ($resource instanceof Document) {
             return true;
-        } elseif ($resource instanceof DataObject\Concrete) {
+        }
+
+        if ($resource instanceof DataObject\Concrete) {
             return true;
         }
 

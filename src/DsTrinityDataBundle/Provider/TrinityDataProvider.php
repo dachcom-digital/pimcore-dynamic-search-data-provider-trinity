@@ -7,6 +7,8 @@ use DynamicSearchBundle\Context\ContextDefinitionInterface;
 use DynamicSearchBundle\Normalizer\Resource\ResourceMetaInterface;
 use DynamicSearchBundle\Provider\DataProviderInterface;
 use DynamicSearchBundle\Provider\DataProviderValidationAwareInterface;
+use DynamicSearchBundle\Resource\Proxy\ProxyResourceInterface;
+use DynamicSearchBundle\Resource\ResourceCandidate;
 use DynamicSearchBundle\Resource\ResourceCandidateInterface;
 use Pimcore\Model\Asset;
 use Pimcore\Model\DataObject;
@@ -37,7 +39,7 @@ class TrinityDataProvider implements DataProviderInterface, DataProviderValidati
     /**
      * {@inheritdoc}
      */
-    public static function configureOptions(OptionsResolver $resolver)
+    public static function configureOptions(OptionsResolver $resolver): void
     {
         $options = [
             'always'                                 => function (OptionsResolver $spoolResolver) {
@@ -97,7 +99,7 @@ class TrinityDataProvider implements DataProviderInterface, DataProviderValidati
     /**
      * {@inheritdoc}
      */
-    public function setOptions(array $options)
+    public function setOptions(array $options): void
     {
         $this->options = $options;
     }
@@ -105,35 +107,35 @@ class TrinityDataProvider implements DataProviderInterface, DataProviderValidati
     /**
      * {@inheritdoc}
      */
-    public function warmUp(ContextDefinitionInterface $contextDefinition)
+    public function warmUp(ContextDefinitionInterface $contextDefinition): void
     {
     }
 
     /**
      * {@inheritdoc}
      */
-    public function coolDown(ContextDefinitionInterface $contextDefinition)
+    public function coolDown(ContextDefinitionInterface $contextDefinition): void
     {
     }
 
     /**
      * {@inheritdoc}
      */
-    public function cancelledShutdown(ContextDefinitionInterface $contextDefinition)
+    public function cancelledShutdown(ContextDefinitionInterface $contextDefinition): void
     {
     }
 
     /**
      * {@inheritdoc}
      */
-    public function emergencyShutdown(ContextDefinitionInterface $contextDefinition)
+    public function emergencyShutdown(ContextDefinitionInterface $contextDefinition): void
     {
     }
 
     /**
      * {@inheritdoc}
      */
-    public function checkUntrustedResourceProxy(ContextDefinitionInterface $contextDefinition, $resource)
+    public function checkUntrustedResourceProxy(ContextDefinitionInterface $contextDefinition, $resource): ?ProxyResourceInterface
     {
         // we're only able to validate elements here
         if (!$resource instanceof ElementInterface) {
@@ -148,7 +150,7 @@ class TrinityDataProvider implements DataProviderInterface, DataProviderValidati
     /**
      * {@inheritdoc}
      */
-    public function validateUntrustedResource(ContextDefinitionInterface $contextDefinition, $resource)
+    public function validateUntrustedResource(ContextDefinitionInterface $contextDefinition, $resource): bool
     {
         // we're only able to validate elements here
         if (!$resource instanceof ElementInterface) {
@@ -163,7 +165,7 @@ class TrinityDataProvider implements DataProviderInterface, DataProviderValidati
     /**
      * {@inheritdoc}
      */
-    public function validateResource(ContextDefinitionInterface $contextDefinition, ResourceCandidateInterface $resourceCandidate)
+    public function validateResource(ContextDefinitionInterface $contextDefinition, ResourceCandidateInterface $resourceCandidate): ResourceCandidateInterface
     {
         // we're only able to validate elements here
         $resource = $resourceCandidate->getResource();
@@ -188,7 +190,7 @@ class TrinityDataProvider implements DataProviderInterface, DataProviderValidati
     /**
      * {@inheritdoc}
      */
-    public function provideAll(ContextDefinitionInterface $contextDefinition)
+    public function provideAll(ContextDefinitionInterface $contextDefinition): void
     {
         $this->setupDataProvider($contextDefinition);
 
@@ -198,7 +200,7 @@ class TrinityDataProvider implements DataProviderInterface, DataProviderValidati
     /**
      * {@inheritdoc}
      */
-    public function provideSingle(ContextDefinitionInterface $contextDefinition, ResourceMetaInterface $resourceMeta)
+    public function provideSingle(ContextDefinitionInterface $contextDefinition, ResourceMetaInterface $resourceMeta): void
     {
         $this->dataProvider->setContextName($contextDefinition->getName());
         $this->dataProvider->setContextDispatchType($contextDefinition->getContextDispatchType());
@@ -210,7 +212,7 @@ class TrinityDataProvider implements DataProviderInterface, DataProviderValidati
     /**
      * @param ContextDefinitionInterface $contextDefinition
      */
-    protected function setupDataProvider(ContextDefinitionInterface $contextDefinition)
+    protected function setupDataProvider(ContextDefinitionInterface $contextDefinition): void
     {
         $this->dataProvider->setContextName($contextDefinition->getName());
         $this->dataProvider->setContextDispatchType($contextDefinition->getContextDispatchType());

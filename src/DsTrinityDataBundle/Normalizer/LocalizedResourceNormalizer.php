@@ -22,7 +22,7 @@ class LocalizedResourceNormalizer extends AbstractResourceNormalizer
     /**
      * {@inheritdoc}
      */
-    public static function configureOptions(OptionsResolver $resolver)
+    public static function configureOptions(OptionsResolver $resolver): void
     {
         $resolver->setRequired(['locales', 'skip_not_localized_documents']);
         $resolver->setAllowedTypes('locales', ['string[]', 'null']);
@@ -34,7 +34,7 @@ class LocalizedResourceNormalizer extends AbstractResourceNormalizer
     /**
      * {@inheritdoc}
      */
-    public function setOptions(array $options)
+    public function setOptions(array $options): void
     {
         $this->options = $options;
     }

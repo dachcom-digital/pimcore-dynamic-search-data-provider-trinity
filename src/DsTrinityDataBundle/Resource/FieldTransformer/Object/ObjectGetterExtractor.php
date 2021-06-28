@@ -16,7 +16,7 @@ class ObjectGetterExtractor implements FieldTransformerInterface
     /**
      * {@inheritdoc}
      */
-    public function configureOptions(OptionsResolver $resolver)
+    public function configureOptions(OptionsResolver $resolver): void
     {
         $resolver->setRequired(['method', 'arguments', 'clean_string']);
         $resolver->setAllowedTypes('method', ['string']);
@@ -32,7 +32,7 @@ class ObjectGetterExtractor implements FieldTransformerInterface
     /**
      * {@inheritdoc}
      */
-    public function setOptions(array $options)
+    public function setOptions(array $options): void
     {
         $this->options = $options;
     }
