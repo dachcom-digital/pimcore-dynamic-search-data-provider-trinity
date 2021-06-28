@@ -6,7 +6,7 @@ use DsTrinityDataBundle\DsTrinityDataEvents;
 use DsTrinityDataBundle\Event\AssetListingQueryEvent;
 use Pimcore\Db\Connection;
 use Pimcore\Model\Asset;
-use Symfony\Component\EventDispatcher\EventDispatcherInterface;
+use Symfony\Contracts\EventDispatcher\EventDispatcherInterface;
 
 class AssetListBuilder implements DataBuilderInterface
 {

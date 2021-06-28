@@ -17,15 +17,15 @@ class ElementKeyExtractor implements FieldTransformerInterface
     /**
      * {@inheritdoc}
      */
-    public function configureOptions(OptionsResolver $resolver)
+    public function configureOptions(OptionsResolver $resolver): void
     {
-        return false;
+        return;
     }
 
     /**
      * {@inheritdoc}
      */
-    public function setOptions(array $options)
+    public function setOptions(array $options): void
     {
         $this->options = $options;
     }
@@ -44,8 +44,6 @@ class ElementKeyExtractor implements FieldTransformerInterface
             return null;
         }
 
-        $value = $element->getKey();
-
-        return $value;
+        return $element->getKey();
     }
 }

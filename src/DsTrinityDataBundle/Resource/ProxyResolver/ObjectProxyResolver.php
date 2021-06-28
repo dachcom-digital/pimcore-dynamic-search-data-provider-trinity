@@ -7,7 +7,7 @@ use DsTrinityDataBundle\Event\DataProxyEvent;
 use DynamicSearchBundle\Resource\Proxy\ProxyResource;
 use Pimcore\Model\DataObject;
 use Pimcore\Model\Element\ElementInterface;
-use Symfony\Component\EventDispatcher\EventDispatcherInterface;
+use Symfony\Contracts\EventDispatcher\EventDispatcherInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
 /**

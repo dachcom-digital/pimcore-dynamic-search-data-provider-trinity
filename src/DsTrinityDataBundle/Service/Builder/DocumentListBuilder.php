@@ -6,7 +6,7 @@ use DsTrinityDataBundle\DsTrinityDataEvents;
 use DsTrinityDataBundle\Event\DocumentListingQueryEvent;
 use Pimcore\Db\Connection;
 use Pimcore\Model\Document;
-use Symfony\Component\EventDispatcher\EventDispatcherInterface;
+use Symfony\Contracts\EventDispatcher\EventDispatcherInterface;
 
 class DocumentListBuilder implements DataBuilderInterface
 {

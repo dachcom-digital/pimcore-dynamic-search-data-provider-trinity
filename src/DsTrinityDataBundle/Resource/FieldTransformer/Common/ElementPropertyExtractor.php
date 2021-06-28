@@ -18,7 +18,7 @@ class ElementPropertyExtractor implements FieldTransformerInterface
     /**
      * {@inheritdoc}
      */
-    public function configureOptions(OptionsResolver $resolver)
+    public function configureOptions(OptionsResolver $resolver): void
     {
         $resolver->setRequired(['property', 'object_getter', 'allow_inherited_value']);
         $resolver->setAllowedTypes('property', ['string']);
@@ -34,7 +34,7 @@ class ElementPropertyExtractor implements FieldTransformerInterface
     /**
      * {@inheritdoc}
      */
-    public function setOptions(array $options)
+    public function setOptions(array $options): void
     {
         $this->options = $options;
     }
