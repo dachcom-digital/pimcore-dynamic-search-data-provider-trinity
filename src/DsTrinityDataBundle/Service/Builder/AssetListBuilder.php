@@ -37,7 +37,7 @@ class AssetListBuilder implements DataBuilderInterface
     {
         $list = $this->getList($options);
 
-        $idList = $list->getAssets();
+        $idList = $list->loadIdList();
 
         foreach ($idList as $id) {
             if ($asset = Asset::getById($id)) {
