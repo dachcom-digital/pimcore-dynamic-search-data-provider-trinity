@@ -37,12 +37,18 @@ class ObjectListBuilder implements DataBuilderInterface
     {
         $list = $this->getList($options);
 
-        $idList = $list->loadIdList();
-
-        foreach ($idList as $id) {
+        $c = 0;
+        foreach ($list->loadIdList() as $id) {
             if ($object = DataObject::getById($id)) {
                 yield $object;
             }
+
+            // call the garbage collector if memory consumption is > 100MB
+            if (memory_get_usage() > 100000000 && ($c % 300 === 0)) {
+                \Pimcore::collectGarbage();
+            }
+
+            $c++;
         }
     }
 
