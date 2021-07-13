@@ -33,11 +33,17 @@ class AssetListBuilder implements DataBuilderInterface
     /**
      * {@inheritdoc}
      */
-    public function buildByList(array $options): array
+    public function buildByList(array $options): \Generator
     {
         $list = $this->getList($options);
 
-        return $list->getAssets();
+        $idList = $list->getAssets();
+
+        foreach ($idList as $id) {
+            if ($asset = Asset::getById($id)) {
+                yield $asset;
+            }
+        }
     }
 
     /**
