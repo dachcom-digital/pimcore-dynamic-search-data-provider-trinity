@@ -9,15 +9,9 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
 
 class AssetMetaExtractor implements FieldTransformerInterface
 {
-    /**
-     * @var array
-     */
-    protected $options;
+    protected array $options;
 
-    /**
-     * {@inheritdoc}
-     */
-    public function configureOptions(OptionsResolver $resolver)
+    public function configureOptions(OptionsResolver $resolver): void
     {
         $resolver->setRequired(['name', 'locale']);
         $resolver->setAllowedTypes('name', ['string']);
@@ -27,22 +21,15 @@ class AssetMetaExtractor implements FieldTransformerInterface
         ]);
     }
 
-    /**
-     * {@inheritdoc}
-     */
-    public function setOptions(array $options)
+    public function setOptions(array $options): void
     {
         $this->options = $options;
     }
 
-    /**+
-     * @param string                     $dispatchTransformerName
-     * @param ResourceContainerInterface $resourceContainer
-     *
-     * @return int|mixed|null
+    /**
      * @throws \Exception
      */
-    public function transformData(string $dispatchTransformerName, ResourceContainerInterface $resourceContainer)
+    public function transformData(string $dispatchTransformerName, ResourceContainerInterface $resourceContainer): mixed
     {
         $asset = $resourceContainer->getResource();
         if (!$asset instanceof Asset) {

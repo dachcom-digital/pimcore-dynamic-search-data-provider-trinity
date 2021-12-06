@@ -9,17 +9,9 @@ use DsTrinityDataBundle\Resource\ProxyResolver\ProxyResolverInterface;
  */
 class ProxyResolverRegistry implements ProxyResolverRegistryInterface
 {
-    /**
-     * @var array|ProxyResolverInterface[]
-     */
-    protected $proxyResolver;
+    protected array $proxyResolver;
 
-    /**
-     * @param ProxyResolverInterface $service
-     * @param string                 $identifier
-     * @param array                  $type
-     */
-    public function register($service, $identifier, $type)
+    public function register(ProxyResolverInterface $service, string $identifier, string $type): void
     {
         if (!is_string($type)) {
             throw new \InvalidArgumentException(
@@ -46,10 +38,7 @@ class ProxyResolverRegistry implements ProxyResolverRegistryInterface
         $this->proxyResolver[$type][$identifier] = $service;
     }
 
-    /**
-     * {@inheritdoc}
-     */
-    public function getByTypeAndIdentifier(string $type, string $identifier)
+    public function getByTypeAndIdentifier(string $type, string $identifier): ProxyResolverInterface
     {
         return $this->proxyResolver[$type][$identifier];
     }

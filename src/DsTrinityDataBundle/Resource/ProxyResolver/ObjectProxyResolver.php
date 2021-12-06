@@ -5,6 +5,7 @@ namespace DsTrinityDataBundle\Resource\ProxyResolver;
 use DsTrinityDataBundle\DsTrinityDataEvents;
 use DsTrinityDataBundle\Event\DataProxyEvent;
 use DynamicSearchBundle\Resource\Proxy\ProxyResource;
+use DynamicSearchBundle\Resource\Proxy\ProxyResourceInterface;
 use Pimcore\Model\DataObject;
 use Pimcore\Model\Element\ElementInterface;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
@@ -15,23 +16,14 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
  */
 class ObjectProxyResolver implements ProxyResolverInterface
 {
-    /**
-     * @var EventDispatcherInterface
-     */
-    protected $eventDispatcher;
+    protected EventDispatcherInterface $eventDispatcher;
 
-    /**
-     * @param EventDispatcherInterface $eventDispatcher
-     */
     public function __construct(EventDispatcherInterface $eventDispatcher)
     {
         $this->eventDispatcher = $eventDispatcher;
     }
 
-    /**
-     * {@inheritdoc}
-     */
-    public function configureOptions(OptionsResolver $resolver)
+    public function configureOptions(OptionsResolver $resolver): void
     {
         $resolver->setRequired(['fetch_variant_parent_until_reach_object']);
         $resolver->setAllowedTypes('fetch_variant_parent_until_reach_object', ['bool']);
@@ -40,10 +32,7 @@ class ObjectProxyResolver implements ProxyResolverInterface
         ]);
     }
 
-    /**
-     * {@inheritdoc}
-     */
-    public function resolveProxy(ElementInterface $resource, array $proxyOptions, array $contextDefinitionOptions)
+    public function resolveProxy(ElementInterface $resource, array $proxyOptions, array $contextDefinitionOptions): ?ProxyResourceInterface
     {
         if (!$resource instanceof DataObject) {
             return null;

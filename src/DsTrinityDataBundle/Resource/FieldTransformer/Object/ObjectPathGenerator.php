@@ -12,15 +12,9 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
 
 class ObjectPathGenerator implements FieldTransformerInterface
 {
-    /**
-     * @var array
-     */
-    protected $options;
+    protected array $options;
 
-    /**
-     * {@inheritdoc}
-     */
-    public function configureOptions(OptionsResolver $resolver)
+    public function configureOptions(OptionsResolver $resolver): void
     {
         $resolver->setRequired([
             'arguments',
@@ -36,18 +30,12 @@ class ObjectPathGenerator implements FieldTransformerInterface
         ]);
     }
 
-    /**
-     * {@inheritdoc}
-     */
-    public function setOptions(array $options)
+    public function setOptions(array $options): void
     {
         $this->options = $options;
     }
 
-    /**
-     * {@inheritdoc}
-     */
-    public function transformData(string $dispatchTransformerName, ResourceContainerInterface $resourceContainer)
+    public function transformData(string $dispatchTransformerName, ResourceContainerInterface $resourceContainer): mixed
     {
         $object = $resourceContainer->getResource();
         if (!$object instanceof DataObject) {
@@ -64,7 +52,7 @@ class ObjectPathGenerator implements FieldTransformerInterface
             return null;
         }
 
-        $linkGenerator = $object->getClass()->getLinkGenerator();
+        $linkGenerator = $object->getClass()?->getLinkGenerator();
 
         if (!$linkGenerator instanceof LinkGeneratorInterface) {
             return null;

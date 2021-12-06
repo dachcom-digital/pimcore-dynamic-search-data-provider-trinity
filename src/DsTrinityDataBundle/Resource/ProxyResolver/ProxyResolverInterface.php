@@ -11,17 +11,7 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
  */
 interface ProxyResolverInterface
 {
-    /**
-     * @param OptionsResolver $resolver
-     */
-    public function configureOptions(OptionsResolver $resolver);
+    public function configureOptions(OptionsResolver $resolver): void;
 
-    /**
-     * @param ElementInterface $resource
-     * @param array            $proxyOptions
-     * @param array            $contextDefinitionOptions
-     *
-     * @return ProxyResourceInterface|null
-     */
-    public function resolveProxy(ElementInterface $resource, array $proxyOptions, array $contextDefinitionOptions);
+    public function resolveProxy(ElementInterface $resource, array $proxyOptions, array $contextDefinitionOptions): ?ProxyResourceInterface;
 }

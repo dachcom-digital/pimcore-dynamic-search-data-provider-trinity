@@ -10,12 +10,9 @@ use Symfony\Component\DependencyInjection\ContainerBuilder;
 
 class DsTrinityDataBundle extends Bundle implements ProviderBundleInterface
 {
-    const PROVIDER_NAME = 'trinity_data';
+    public const PROVIDER_NAME = 'trinity_data';
 
-    /**
-     * @param ContainerBuilder $container
-     */
-    public function build(ContainerBuilder $container)
+    public function build(ContainerBuilder $container): void
     {
         parent::build($container);
 
@@ -23,9 +20,6 @@ class DsTrinityDataBundle extends Bundle implements ProviderBundleInterface
         $container->addCompilerPass(new ProxyResolverPass());
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function getProviderName(): string
     {
         return self::PROVIDER_NAME;

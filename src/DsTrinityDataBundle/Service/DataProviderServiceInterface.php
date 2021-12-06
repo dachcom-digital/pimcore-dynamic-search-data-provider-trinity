@@ -3,46 +3,24 @@
 namespace DsTrinityDataBundle\Service;
 
 use DynamicSearchBundle\Normalizer\Resource\ResourceMetaInterface;
-use DynamicSearchBundle\Resource\Proxy\ProxyResourceInterface;
 use Pimcore\Model\Element\ElementInterface;
 
 interface DataProviderServiceInterface
 {
-    /**
-     * @param string $contextName
-     */
-    public function setContextName(string $contextName);
+    public function setContextName(string $contextName): void;
+
+    public function setContextDispatchType(string $dispatchType): void;
+
+    public function setIndexOptions(array $indexOptions): void;
 
     /**
-     * @param string $dispatchType
-     */
-    public function setContextDispatchType(string $dispatchType);
-
-    /**
-     * @param array $indexOptions
-     */
-    public function setIndexOptions(array $indexOptions);
-
-    /**
-     * @param ElementInterface $resource
-     *
-     * @return ProxyResourceInterface|null
-     *
      * @deprecated since 1.0.0 and will be removed in 2.0.0
      */
     public function checkResourceProxy(ElementInterface $resource);
 
-    /**
-     * @param ElementInterface $resource
-     *
-     * @return bool
-     */
-    public function validate(ElementInterface $resource);
+    public function validate(ElementInterface $resource): bool;
 
-    public function fetchListData();
+    public function fetchListData(): void;
 
-    /**
-     * @param ResourceMetaInterface $resourceMeta
-     */
-    public function fetchSingleData(ResourceMetaInterface $resourceMeta);
+    public function fetchSingleData(ResourceMetaInterface $resourceMeta): void;
 }

@@ -9,10 +9,7 @@ use Symfony\Component\DependencyInjection\Reference;
 
 final class DataBuilderPass implements CompilerPassInterface
 {
-    /**
-     * {@inheritdoc}
-     */
-    public function process(ContainerBuilder $container)
+    public function process(ContainerBuilder $container): void
     {
         foreach ($container->findTaggedServiceIds('ds_trinity_data.data_builder', true) as $id => $tags) {
             $definition = $container->getDefinition(DataBuilderRegistry::class);

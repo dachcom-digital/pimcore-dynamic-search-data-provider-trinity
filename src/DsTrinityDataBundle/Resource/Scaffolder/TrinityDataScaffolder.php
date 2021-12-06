@@ -10,22 +10,13 @@ use Pimcore\Model\Document;
 
 class TrinityDataScaffolder implements ResourceScaffolderInterface
 {
-    /**
-     * @var ContextDefinitionInterface
-     */
-    protected $contextDefinition;
+    protected ContextDefinitionInterface $contextDefinition;
 
-    /**
-     * {@inheritdoc}
-     */
-    public function isBaseResource($resource)
+    public function isBaseResource($resource): bool
     {
         return true;
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function isApplicable($resource): bool
     {
         if ($resource instanceof Asset) {
@@ -39,9 +30,6 @@ class TrinityDataScaffolder implements ResourceScaffolderInterface
         return false;
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function setup(ContextDefinitionInterface $contextDefinition, $resource): array
     {
         $this->contextDefinition = $contextDefinition;

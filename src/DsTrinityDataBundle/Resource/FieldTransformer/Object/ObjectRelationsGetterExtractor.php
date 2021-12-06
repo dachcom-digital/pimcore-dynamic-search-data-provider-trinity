@@ -8,15 +8,9 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
 
 class ObjectRelationsGetterExtractor implements FieldTransformerInterface
 {
-    /**
-     * @var array
-     */
-    protected $options;
+    protected array $options;
 
-    /**
-     * {@inheritdoc}
-     */
-    public function configureOptions(OptionsResolver $resolver)
+    public function configureOptions(OptionsResolver $resolver): void
     {
         $resolver->setRequired(['relations', 'arguments', 'method']);
         $resolver->setAllowedTypes('relations', ['string']);
@@ -28,18 +22,12 @@ class ObjectRelationsGetterExtractor implements FieldTransformerInterface
         ]);
     }
 
-    /**
-     * {@inheritdoc}
-     */
-    public function setOptions(array $options)
+    public function setOptions(array $options): void
     {
         $this->options = $options;
     }
 
-    /**
-     * {@inheritdoc}
-     */
-    public function transformData(string $dispatchTransformerName, ResourceContainerInterface $resourceContainer)
+    public function transformData(string $dispatchTransformerName, ResourceContainerInterface $resourceContainer): ?array
     {
         $data = $resourceContainer->getResource();
 

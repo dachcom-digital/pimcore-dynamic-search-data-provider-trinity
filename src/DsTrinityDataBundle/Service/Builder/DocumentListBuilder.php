@@ -6,33 +6,20 @@ use DsTrinityDataBundle\DsTrinityDataEvents;
 use DsTrinityDataBundle\Event\DocumentListingQueryEvent;
 use Pimcore\Db\Connection;
 use Pimcore\Model\Document;
+use Pimcore\Model\Element\ElementInterface;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 
 class DocumentListBuilder implements DataBuilderInterface
 {
-    /**
-     * @var Connection
-     */
-    protected $db;
+    protected Connection $db;
+    protected EventDispatcherInterface $eventDispatcher;
 
-    /**
-     * @var EventDispatcherInterface
-     */
-    protected $eventDispatcher;
-
-    /**
-     * @param Connection               $db
-     * @param EventDispatcherInterface $eventDispatcher
-     */
     public function __construct(Connection $db, EventDispatcherInterface $eventDispatcher)
     {
         $this->db = $db;
         $this->eventDispatcher = $eventDispatcher;
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function buildByList(array $options): array
     {
         $list = $this->getList($options);
@@ -40,10 +27,7 @@ class DocumentListBuilder implements DataBuilderInterface
         return $list->getDocuments();
     }
 
-    /**
-     * {@inheritdoc}
-     */
-    public function buildByIdList(int $id, array $options)
+    public function buildByIdList(int $id, array $options): ?ElementInterface
     {
         $list = $this->getList($options);
 
@@ -63,20 +47,12 @@ class DocumentListBuilder implements DataBuilderInterface
         return $documents[0];
     }
 
-    /**
-     * {@inheritdoc}
-     */
-    public function buildById(int $id)
+    public function buildById(int $id): ?ElementInterface
     {
         return Document::getById($id);
     }
 
-    /**
-     * @param array $options
-     *
-     * @return Document\Listing
-     */
-    protected function getList(array $options)
+    protected function getList(array $options): Document\Listing
     {
         $allowedTypes = $options['document_types'];
         $includeUnpublished = $options['document_ignore_unpublished'] === false;
@@ -105,13 +81,7 @@ class DocumentListBuilder implements DataBuilderInterface
         return $list;
     }
 
-    /**
-     * @param Document\Listing $listing
-     * @param array            $allowedTypes
-     *
-     * @return Document\Listing
-     */
-    protected function addDocumentTypeRestriction(Document\Listing $listing, array $allowedTypes)
+    protected function addDocumentTypeRestriction(Document\Listing $listing, array $allowedTypes): Document\Listing
     {
         if (count($allowedTypes) === 0) {
             return $listing;

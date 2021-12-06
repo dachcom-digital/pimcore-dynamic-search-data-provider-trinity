@@ -13,33 +13,18 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
 
 class DefaultResourceNormalizer extends AbstractResourceNormalizer
 {
-    /**
-     * @var array
-     */
-    protected $options;
+    protected array $options;
 
-    /**
-     * {@inheritdoc}
-     */
-    public static function configureOptions(OptionsResolver $resolver)
+    public static function configureOptions(OptionsResolver $resolver): void
     {
     }
 
-    /**
-     * {@inheritdoc}
-     */
-    public function setOptions(array $options)
+    public function setOptions(array $options): void
     {
         $this->options = $options;
     }
 
-    /**
-     * @param ContextDefinitionInterface $contextDefinition
-     * @param ResourceContainerInterface $resourceContainer
-     *
-     * @return array
-     */
-    protected function normalizeDocument(ContextDefinitionInterface $contextDefinition, ResourceContainerInterface $resourceContainer)
+    protected function normalizeDocument(ContextDefinitionInterface $contextDefinition, ResourceContainerInterface $resourceContainer): array
     {
         /** @var Document $document */
         $document = $resourceContainer->getResource();
@@ -55,13 +40,7 @@ class DefaultResourceNormalizer extends AbstractResourceNormalizer
         return [new NormalizedDataResource($returnResourceContainer, $resourceMeta)];
     }
 
-    /**
-     * @param ContextDefinitionInterface $contextDefinition
-     * @param ResourceContainerInterface $resourceContainer
-     *
-     * @return array
-     */
-    protected function normalizeAsset(ContextDefinitionInterface $contextDefinition, ResourceContainerInterface $resourceContainer)
+    protected function normalizeAsset(ContextDefinitionInterface $contextDefinition, ResourceContainerInterface $resourceContainer): array
     {
         /** @var Asset $asset */
         $asset = $resourceContainer->getResource();
@@ -73,13 +52,7 @@ class DefaultResourceNormalizer extends AbstractResourceNormalizer
         return [new NormalizedDataResource($returnResourceContainer, $resourceMeta)];
     }
 
-    /**
-     * @param ContextDefinitionInterface $contextDefinition
-     * @param ResourceContainerInterface $resourceContainer
-     *
-     * @return array
-     */
-    protected function normalizeDataObject(ContextDefinitionInterface $contextDefinition, ResourceContainerInterface $resourceContainer)
+    protected function normalizeDataObject(ContextDefinitionInterface $contextDefinition, ResourceContainerInterface $resourceContainer): array
     {
         /** @var DataObject\Concrete $object */
         $object = $resourceContainer->getResource();

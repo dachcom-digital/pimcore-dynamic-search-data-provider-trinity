@@ -9,15 +9,9 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
 
 class DocumentMetaExtractor implements FieldTransformerInterface
 {
-    /**
-     * @var array
-     */
-    protected $options;
+    protected array $options;
 
-    /**
-     * {@inheritdoc}
-     */
-    public function configureOptions(OptionsResolver $resolver)
+    public function configureOptions(OptionsResolver $resolver): void
     {
         $resolver->setRequired(['type']);
         $resolver->setAllowedTypes('type', ['string']);
@@ -27,18 +21,12 @@ class DocumentMetaExtractor implements FieldTransformerInterface
         ]);
     }
 
-    /**
-     * {@inheritdoc}
-     */
-    public function setOptions(array $options)
+    public function setOptions(array $options): void
     {
         $this->options = $options;
     }
 
-    /**
-     * {@inheritdoc}
-     */
-    public function transformData(string $dispatchTransformerName, ResourceContainerInterface $resourceContainer)
+    public function transformData(string $dispatchTransformerName, ResourceContainerInterface $resourceContainer): mixed
     {
         if (!$resourceContainer->hasAttribute('type')) {
             return null;
@@ -51,7 +39,9 @@ class DocumentMetaExtractor implements FieldTransformerInterface
 
         if ($this->options['type'] === 'description') {
             return $data->getDescription();
-        } elseif ($this->options['type'] === 'title') {
+        }
+
+        if ($this->options['type'] === 'title') {
             return $data->getTitle();
         }
 
