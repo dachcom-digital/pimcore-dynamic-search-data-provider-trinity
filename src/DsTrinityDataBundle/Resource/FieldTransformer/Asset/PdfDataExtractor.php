@@ -56,7 +56,7 @@ class PdfDataExtractor implements FieldTransformerInterface
         $verboseCommand = \Pimcore::inDebugMode() ? '-q' : '';
 
         try {
-            $cmd = sprintf('%s "%s" "%s"', $verboseCommand, $data->getFileSystemPath(), $tmpFile);
+            $cmd = sprintf('%s "%s" "%s"', $verboseCommand, $data->getLocalFile(), $tmpFile);
             exec($pdfToTextBin . ' ' . $cmd);
         } catch (\Exception $e) {
             return null;
