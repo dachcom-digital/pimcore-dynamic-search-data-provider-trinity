@@ -75,7 +75,7 @@ jobs:
                     ls -al pimcore-codeception-framework
                     chmod +x ./pimcore-codeception-framework/src/_etc/scripts/setup.sh
                     ./pimcore-codeception-framework/src/_etc/scripts/setup.sh
-                    sed -i 's,\("dachcom-digital\/dynamic-search"\): "\(.*\)",\1: "dev-master",g' ${{ github.workspace }}/lib/test-bundle/composer.json
+                    sed -i 's,\("dachcom-digital\/dynamic-search"\): "\(.*\)",\1: "2.*@dev",g' ${{ github.workspace }}/lib/test-bundle/composer.json
 
             -   name: Install PHP
                 uses: shivammathur/setup-php@v2
