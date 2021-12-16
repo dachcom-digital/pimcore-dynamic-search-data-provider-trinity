@@ -4,8 +4,6 @@ namespace DsTrinityDataBundle\Service;
 
 use DsTrinityDataBundle\DsTrinityDataBundle;
 use DsTrinityDataBundle\Registry\DataBuilderRegistryInterface;
-use DsTrinityDataBundle\Registry\ProxyResolverRegistryInterface;
-use DsTrinityDataBundle\Resource\ProxyResolver\ProxyResolverInterface;
 use DsTrinityDataBundle\Service\Builder\DataBuilderInterface;
 use DynamicSearchBundle\DynamicSearchEvents;
 use DynamicSearchBundle\Event\ErrorEvent;
@@ -18,14 +16,12 @@ use Pimcore\Model\DataObject;
 use Pimcore\Model\Document;
 use Pimcore\Model\Element\ElementInterface;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
-use Symfony\Component\OptionsResolver\OptionsResolver;
 
 class DataProviderService implements DataProviderServiceInterface
 {
     protected EventDispatcherInterface $eventDispatcher;
     protected LoggerInterface $logger;
     protected DataBuilderRegistryInterface $dataBuilderRegistry;
-    protected ProxyResolverRegistryInterface $proxyResolverRegistry;
     protected string $contextName;
     protected string $contextDispatchType;
     protected array $indexOptions;
@@ -33,13 +29,11 @@ class DataProviderService implements DataProviderServiceInterface
     public function __construct(
         LoggerInterface $logger,
         EventDispatcherInterface $eventDispatcher,
-        DataBuilderRegistryInterface $dataBuilderRegistry,
-        ProxyResolverRegistryInterface $proxyResolverRegistry
+        DataBuilderRegistryInterface $dataBuilderRegistry
     ) {
         $this->logger = $logger;
         $this->eventDispatcher = $eventDispatcher;
         $this->dataBuilderRegistry = $dataBuilderRegistry;
-        $this->proxyResolverRegistry = $proxyResolverRegistry;
     }
 
     public function setContextName(string $contextName): void
@@ -55,49 +49,6 @@ class DataProviderService implements DataProviderServiceInterface
     public function setIndexOptions(array $indexOptions): void
     {
         $this->indexOptions = $indexOptions;
-    }
-
-    /**
-     * @deprecated
-     */
-    public function checkResourceProxy(ElementInterface $resource)
-    {
-        $proxyResolver = null;
-
-        $type = $this->getResourceType($resource);
-
-        if ($type === null) {
-            return null;
-        }
-
-        if ($this->indexOptions[sprintf('index_%s', $type)] === false) {
-            return null;
-        }
-
-        $options = $this->getTypeOptions($type);
-        $proxyIdentifier = sprintf('%s_proxy_identifier', $type);
-        $proxyOptionsIdentifier = sprintf('%s_proxy_settings', $type);
-
-        if (!isset($options[$proxyIdentifier])) {
-            return null;
-        }
-
-        if (!isset($options[$proxyOptionsIdentifier])) {
-            return null;
-        }
-
-        $proxyResolver = $this->proxyResolverRegistry->getByTypeAndIdentifier($type, $this->indexOptions[$proxyIdentifier]);
-
-        if (!$proxyResolver instanceof ProxyResolverInterface) {
-            return null;
-        }
-
-        $optionsResolver = new OptionsResolver();
-        $proxyResolver->configureOptions($optionsResolver);
-
-        $proxyOptions = $optionsResolver->resolve($options[$proxyOptionsIdentifier]);
-
-        return $proxyResolver->resolveProxy($resource, $proxyOptions, ['contextDispatchType' => $this->contextDispatchType, 'contextName' => $this->contextName]);
     }
 
     public function validate(ElementInterface $resource): bool
