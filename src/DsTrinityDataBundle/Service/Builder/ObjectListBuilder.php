@@ -56,7 +56,7 @@ class ObjectListBuilder implements DataBuilderInterface
     {
         $allowedTypes = $options['object_types'];
         $allowedClasses = $options['object_class_names'];
-        $limit = $options['object_limit'];
+        $limit = $options['object_limit'] ?? 0;
         $additionalParams = $options['object_additional_params'];
 
         $list = new DataObject\Listing();

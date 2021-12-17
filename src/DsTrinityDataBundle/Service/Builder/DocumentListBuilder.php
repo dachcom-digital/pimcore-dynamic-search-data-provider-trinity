@@ -55,7 +55,7 @@ class DocumentListBuilder implements DataBuilderInterface
     protected function getList(array $options): Document\Listing
     {
         $allowedTypes = $options['document_types'];
-        $limit = $options['document_limit'];
+        $limit = $options['document_limit'] ?? 0;
         $additionalParams = $options['document_additional_params'];
 
         $list = new Document\Listing();
