@@ -56,15 +56,11 @@ class ObjectListBuilder implements DataBuilderInterface
     {
         $allowedTypes = $options['object_types'];
         $allowedClasses = $options['object_class_names'];
-        $includeUnpublished = $options['object_ignore_unpublished'] === false;
         $limit = $options['object_limit'];
         $additionalParams = $options['object_additional_params'];
 
         $list = new DataObject\Listing();
-
-        if ($includeUnpublished === true) {
-            $list->setUnpublished(true);
-        }
+        $list->setUnpublished(true);
 
         foreach ($additionalParams as $additionalParam => $additionalValue) {
             $list->addConditionParam($additionalParam, $additionalValue);

@@ -39,7 +39,6 @@ class TrinityDataProvider implements DataProviderInterface, DataProviderValidati
                     }),
                     // objects
                     'index_object'                     => false,
-                    'object_ignore_unpublished'        => true,
                     'object_data_builder_identifier'   => 'default',
                     'object_class_names'               => [],
                     'object_additional_params'         => [],
@@ -48,7 +47,6 @@ class TrinityDataProvider implements DataProviderInterface, DataProviderValidati
                     }),
                     // documents
                     'index_document'                   => false,
-                    'document_ignore_unpublished'      => true,
                     'document_data_builder_identifier' => 'default',
                     'document_additional_params'       => [],
                     'document_types'                   => array_filter(Document::$types, static function ($type) {

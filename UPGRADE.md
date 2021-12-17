@@ -9,6 +9,14 @@
     - Method `checkResourceProxy` from `DataProviderService` has been removed
     - Option `object_proxy_identifier` and `object_proxy_settings` in provider configuration have been removed
     - Event `DataProxyEvent` via `DsTrinityDataEvents::PROXY_DEFAULT_DATA_OBJECT` has been removed
+- The option `object_ignore_unpublished` and `object_ignore_unpublished` has [been removed](https://github.com/dachcom-digital/pimcore-dynamic-search-data-provider-trinity/issues/16)
+- By default, unpublished elements will be fetched **by default**. Read more about this problematic fact [here](./docs/10_publishUnpublishedElements.md)
+
+### Fixes
+--
+
+### New Features
+--
 
 ***
 

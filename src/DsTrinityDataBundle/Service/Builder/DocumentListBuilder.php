@@ -55,15 +55,11 @@ class DocumentListBuilder implements DataBuilderInterface
     protected function getList(array $options): Document\Listing
     {
         $allowedTypes = $options['document_types'];
-        $includeUnpublished = $options['document_ignore_unpublished'] === false;
         $limit = $options['document_limit'];
         $additionalParams = $options['document_additional_params'];
 
         $list = new Document\Listing();
-
-        if ($includeUnpublished === true) {
-            $list->setUnpublished(true);
-        }
+        $list->setUnpublished(true);
 
         foreach ($additionalParams as $additionalParam => $additionalValue) {
             $list->addConditionParam($additionalParam, $additionalValue);

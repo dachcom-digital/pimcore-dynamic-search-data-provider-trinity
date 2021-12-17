@@ -24,7 +24,7 @@ Fetch pimcore elements by listings: `assets`, `documents` and `objects`.
 }
 ```
 
-# Dynamic Search Bundle
+### Dynamic Search Bundle
 You need to install / enable the Dynamic Search Bundle first.
 Read more about it [here](https://github.com/dachcom-digital/pimcore-dynamic-search#installation).
 After that, proceed as followed:
@@ -56,6 +56,10 @@ class Kernel extends \Pimcore\Kernel
 ```
 
 ***
+
+## Publishing State
+**This Bundle will fetch unpublished elements by default**. This is crucial and also a problematic fact.
+Read more about it [here](./docs/10_publishUnpublishedElements.md) to learn how to handle the publishing state of pimcore elements.
 
 ## Basic Setup
 
@@ -93,14 +97,12 @@ dynamic_search:
 | `asset_additional_params`          | []                                    |             |
 |                                    |                                       |             |
 | `index_object`                     | false                                 |             |
-| `object_ignore_unpublished`        | true                                  |             |
 | `object_data_builder_identifier`   | 'default'                             |             |
 | `object_types`                     | `DataObject::$types[]`, except folder |             |
 | `object_class_names`               | []                                    |             |
 | `object_additional_params`         | []                                    |             |
 |                                    |                                       |             |
 | `index_document`                   | false                                 |             |
-| `document_ignore_unpublished`      | true                                  |             |
 | `document_data_builder_identifier` | 'default'                             |             |
 | `document_types`                   | `Document::$types`, except folder     |             |
 | `document_additional_params`       | []                                    |             |
