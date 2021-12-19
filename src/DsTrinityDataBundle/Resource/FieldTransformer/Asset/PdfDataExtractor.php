@@ -10,30 +10,18 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
 
 class PdfDataExtractor implements FieldTransformerInterface
 {
-    /**
-     * @var array
-     */
-    protected $options;
+    protected array $options;
 
-    /**
-     * {@inheritdoc}
-     */
-    public function configureOptions(OptionsResolver $resolver)
+    public function configureOptions(OptionsResolver $resolver): void
     {
     }
 
-    /**
-     * {@inheritdoc}
-     */
-    public function setOptions(array $options)
+    public function setOptions(array $options): void
     {
         $this->options = $options;
     }
 
-    /**
-     * {@inheritdoc}
-     */
-    public function transformData(string $dispatchTransformerName, ResourceContainerInterface $resourceContainer)
+    public function transformData(string $dispatchTransformerName, ResourceContainerInterface $resourceContainer): ?string
     {
         if (!$resourceContainer->hasAttribute('type')) {
             return null;
@@ -44,17 +32,10 @@ class PdfDataExtractor implements FieldTransformerInterface
             return null;
         }
 
-        $data = $this->extractPdfData($data);
-
-        return $data;
+        return $this->extractPdfData($data);
     }
 
-    /**
-     * @param Document $data
-     *
-     * @return string|null
-     */
-    protected function extractPdfData(Document $data)
+    protected function extractPdfData(Document $data): ?string
     {
         $assetTmpDir = PIMCORE_SYSTEM_TEMP_DIRECTORY;
 
@@ -75,7 +56,7 @@ class PdfDataExtractor implements FieldTransformerInterface
         $verboseCommand = \Pimcore::inDebugMode() ? '-q' : '';
 
         try {
-            $cmd = sprintf('%s "%s" "%s"', $verboseCommand, $data->getFileSystemPath(), $tmpFile);
+            $cmd = sprintf('%s "%s" "%s"', $verboseCommand, $data->getLocalFile(), $tmpFile);
             exec($pdfToTextBin . ' ' . $cmd);
         } catch (\Exception $e) {
             return null;

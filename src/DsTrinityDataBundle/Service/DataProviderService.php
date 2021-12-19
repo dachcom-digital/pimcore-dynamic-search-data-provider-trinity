@@ -4,8 +4,6 @@ namespace DsTrinityDataBundle\Service;
 
 use DsTrinityDataBundle\DsTrinityDataBundle;
 use DsTrinityDataBundle\Registry\DataBuilderRegistryInterface;
-use DsTrinityDataBundle\Registry\ProxyResolverRegistryInterface;
-use DsTrinityDataBundle\Resource\ProxyResolver\ProxyResolverInterface;
 use DsTrinityDataBundle\Service\Builder\DataBuilderInterface;
 use DynamicSearchBundle\DynamicSearchEvents;
 use DynamicSearchBundle\Event\ErrorEvent;
@@ -18,140 +16,47 @@ use Pimcore\Model\DataObject;
 use Pimcore\Model\Document;
 use Pimcore\Model\Element\ElementInterface;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
-use Symfony\Component\OptionsResolver\OptionsResolver;
 
 class DataProviderService implements DataProviderServiceInterface
 {
-    /**
-     * @var EventDispatcherInterface
-     */
-    protected $eventDispatcher;
+    protected EventDispatcherInterface $eventDispatcher;
+    protected LoggerInterface $logger;
+    protected DataBuilderRegistryInterface $dataBuilderRegistry;
+    protected string $contextName;
+    protected string $contextDispatchType;
+    protected array $indexOptions;
 
-    /**
-     * @var LoggerInterface
-     */
-    protected $logger;
-
-    /**
-     * @var DataBuilderRegistryInterface
-     */
-    protected $dataBuilderRegistry;
-
-    /**
-     * @var ProxyResolverRegistryInterface
-     */
-    protected $proxyResolverRegistry;
-
-    /**
-     * @var string
-     */
-    protected $contextName;
-
-    /**
-     * @var string
-     */
-    protected $contextDispatchType;
-
-    /**
-     * @var array
-     */
-    protected $indexOptions;
-
-    /**
-     * @param LoggerInterface                $logger
-     * @param EventDispatcherInterface       $eventDispatcher
-     * @param DataBuilderRegistryInterface   $dataBuilderRegistry
-     * @param ProxyResolverRegistryInterface $proxyResolverRegistry
-     */
     public function __construct(
         LoggerInterface $logger,
         EventDispatcherInterface $eventDispatcher,
-        DataBuilderRegistryInterface $dataBuilderRegistry,
-        ProxyResolverRegistryInterface $proxyResolverRegistry
+        DataBuilderRegistryInterface $dataBuilderRegistry
     ) {
         $this->logger = $logger;
         $this->eventDispatcher = $eventDispatcher;
         $this->dataBuilderRegistry = $dataBuilderRegistry;
-        $this->proxyResolverRegistry = $proxyResolverRegistry;
     }
 
-    /**
-     * {@inheritdoc}
-     */
-    public function setContextName(string $contextName)
+    public function setContextName(string $contextName): void
     {
         $this->contextName = $contextName;
     }
 
-    /**
-     * {@inheritdoc}
-     */
-    public function setContextDispatchType(string $dispatchType)
+    public function setContextDispatchType(string $dispatchType): void
     {
         $this->contextDispatchType = $dispatchType;
     }
 
-    /**
-     * {@inheritdoc}
-     */
-    public function setIndexOptions(array $indexOptions)
+    public function setIndexOptions(array $indexOptions): void
     {
         $this->indexOptions = $indexOptions;
     }
 
-    /**
-     * {@inheritdoc}
-     */
-    public function checkResourceProxy(ElementInterface $resource)
-    {
-        $proxyResolver = null;
-
-        $type = $this->getResourceType($resource);
-
-        if ($type === null) {
-            return null;
-        }
-
-        if ($this->indexOptions[sprintf('index_%s', $type)] === false) {
-            return null;
-        }
-
-        $options = $this->getTypeOptions($type);
-        $proxyIdentifier = sprintf('%s_proxy_identifier', $type);
-        $proxyOptionsIdentifier = sprintf('%s_proxy_settings', $type);
-
-        if (!isset($options[$proxyIdentifier])) {
-            return null;
-        }
-
-        if (!isset($options[$proxyOptionsIdentifier])) {
-            return null;
-        }
-
-        $proxyResolver = $this->proxyResolverRegistry->getByTypeAndIdentifier($type, $this->indexOptions[$proxyIdentifier]);
-
-        if (!$proxyResolver instanceof ProxyResolverInterface) {
-            return null;
-        }
-
-        $optionsResolver = new OptionsResolver();
-        $proxyResolver->configureOptions($optionsResolver);
-
-        $proxyOptions = $optionsResolver->resolve($options[$proxyOptionsIdentifier]);
-
-        return $proxyResolver->resolveProxy($resource, $proxyOptions, ['contextDispatchType' => $this->contextDispatchType, 'contextName' => $this->contextName]);
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function validate(ElementInterface $resource)
+    public function validate(ElementInterface $resource): bool
     {
         if (!$resource instanceof ElementInterface) {
             return false;
         }
 
-        $builder = null;
         $type = $this->getResourceType($resource);
 
         if ($type === null) {
@@ -175,10 +80,7 @@ class DataProviderService implements DataProviderServiceInterface
         return $element instanceof ElementInterface;
     }
 
-    /**
-     * {@inheritdoc}
-     */
-    public function fetchListData()
+    public function fetchListData(): void
     {
         $this->addSignalListener();
 
@@ -187,10 +89,7 @@ class DataProviderService implements DataProviderServiceInterface
         }
     }
 
-    /**
-     * {@inheritdoc}
-     */
-    public function fetchSingleData(ResourceMetaInterface $resourceMeta)
+    public function fetchSingleData(ResourceMetaInterface $resourceMeta): void
     {
         $elementType = $resourceMeta->getResourceCollectionType();
         $elementId = $resourceMeta->getResourceId();
@@ -204,11 +103,7 @@ class DataProviderService implements DataProviderServiceInterface
         $this->fetchByTypeAndId($elementType, DataProviderInterface::PROVIDER_BEHAVIOUR_SINGLE_DISPATCH, $elementId, $resourceMeta);
     }
 
-    /**
-     * @param string $type
-     * @param string $providerBehaviour
-     */
-    protected function fetchByType(string $type, string $providerBehaviour)
+    protected function fetchByType(string $type, string $providerBehaviour): void
     {
         if ($this->indexOptions[sprintf('index_%s', $type)] === false) {
             return;
@@ -230,13 +125,7 @@ class DataProviderService implements DataProviderServiceInterface
         $this->dispatchData($elements, $providerBehaviour);
     }
 
-    /**
-     * @param string                     $type
-     * @param string                     $providerBehaviour
-     * @param int                        $id
-     * @param ResourceMetaInterface|null $resourceMeta
-     */
-    protected function fetchByTypeAndId(string $type, string $providerBehaviour, $id, ?ResourceMetaInterface $resourceMeta)
+    protected function fetchByTypeAndId(string $type, string $providerBehaviour, int $id, ?ResourceMetaInterface $resourceMeta): void
     {
         if ($this->indexOptions[sprintf('index_%s', $type)] === false) {
             return;
@@ -251,26 +140,17 @@ class DataProviderService implements DataProviderServiceInterface
             return;
         }
 
-        $element = $builder->buildById((int) $id);
+        $element = $builder->buildById($id);
 
         $this->dispatchData([$element], $providerBehaviour, $resourceMeta);
     }
 
-    /**
-     * @param string $level
-     * @param string $message
-     */
-    protected function log($level, $message)
+    protected function log(string $level, string $message): void
     {
         $this->logger->log($level, $message, DsTrinityDataBundle::PROVIDER_NAME, $this->contextName);
     }
 
-    /**
-     * @param array                      $elements
-     * @param string                     $providerBehaviour
-     * @param ResourceMetaInterface|null $resourceMeta
-     */
-    protected function dispatchData(array $elements, string $providerBehaviour, ?ResourceMetaInterface $resourceMeta = null)
+    protected function dispatchData(array $elements, string $providerBehaviour, ?ResourceMetaInterface $resourceMeta = null): void
     {
         foreach ($elements as $element) {
             $newDataEvent = new NewDataEvent($this->contextDispatchType, $this->contextName, $element, $providerBehaviour, $resourceMeta);
@@ -280,7 +160,7 @@ class DataProviderService implements DataProviderServiceInterface
         }
     }
 
-    protected function addSignalListener()
+    protected function addSignalListener(): void
     {
         if (php_sapi_name() !== 'cli') {
             return;
@@ -298,7 +178,7 @@ class DataProviderService implements DataProviderServiceInterface
         pcntl_signal(SIGQUIT, [$this, 'handleSignal']);
     }
 
-    protected function dispatchProcessControlSignal()
+    protected function dispatchProcessControlSignal(): void
     {
         if (!function_exists('pcntl_signal')) {
             return;
@@ -307,18 +187,13 @@ class DataProviderService implements DataProviderServiceInterface
         pcntl_signal_dispatch();
     }
 
-    public function handleSignal($signal)
+    public function handleSignal($signal): void
     {
         $newDataEvent = new ErrorEvent($this->contextName, sprintf('crawler has been stopped by user (signal: %s)', $signal), DsTrinityDataBundle::PROVIDER_NAME);
         $this->eventDispatcher->dispatch($newDataEvent, DynamicSearchEvents::ERROR_DISPATCH_ABORT);
     }
 
-    /**
-     * @param ElementInterface $resource
-     *
-     * @return string|null
-     */
-    protected function getResourceType(ElementInterface $resource)
+    protected function getResourceType(ElementInterface $resource): ?string
     {
         $type = null;
 
@@ -333,15 +208,10 @@ class DataProviderService implements DataProviderServiceInterface
         return $type;
     }
 
-    /**
-     * @param string $type
-     *
-     * @return array
-     */
-    protected function getTypeOptions(string $type)
+    protected function getTypeOptions(string $type): array
     {
-        return array_filter($this->indexOptions, function ($option) use ($type) {
-            return strpos($option, sprintf('%s_', $type)) !== false;
+        return array_filter($this->indexOptions, static function ($option) use ($type) {
+            return str_contains($option, sprintf('%s_', $type));
         }, ARRAY_FILTER_USE_KEY);
     }
 }

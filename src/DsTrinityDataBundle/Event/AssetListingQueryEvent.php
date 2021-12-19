@@ -7,38 +7,22 @@ use Symfony\Contracts\EventDispatcher\Event;
 
 class AssetListingQueryEvent extends Event
 {
-    /**
-     * @var Asset\Listing
-     */
-    protected $listing;
+    protected Asset\Listing $listing;
 
-    /**
-     * @var array
-     */
-    protected $options;
+    protected array $options;
 
-    /**
-     * @param Asset\Listing $listing
-     * @param array         $options
-     */
     public function __construct(Asset\Listing $listing, array $options)
     {
         $this->listing = $listing;
         $this->options = $options;
     }
 
-    /**
-     * @return Asset\Listing
-     */
-    public function getListing()
+    public function getListing(): Asset\Listing
     {
         return $this->listing;
     }
 
-    /**
-     * @return array
-     */
-    public function getOptions()
+    public function getOptions(): array
     {
         return $this->options;
     }

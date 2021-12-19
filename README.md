@@ -2,17 +2,64 @@
 
 [![Software License](https://img.shields.io/badge/license-GPLv3-brightgreen.svg?style=flat-square)](LICENSE.md)
 [![Latest Release](https://img.shields.io/packagist/v/dachcom-digital/dynamic-search-data-provider-trinity.svg?style=flat-square)](https://packagist.org/packages/dachcom-digital/dynamic-search-data-provider-trinity)
-[![Tests](https://img.shields.io/github/workflow/status/dachcom-digital/pimcore-dynamic-search-data-provider-trinity/Codeception?style=flat-square&logo=github&label=codeception)](https://github.com/dachcom-digital/pimcore-dynamic-search-data-provider-trinity/actions?query=workflow%3A%22Codeception%22)
-[![PhpStan](https://img.shields.io/github/workflow/status/dachcom-digital/pimcore-dynamic-search-data-provider-trinity/PHP%20Stan?style=flat-square&logo=github&label=phpstan%20level%202)](https://github.com/dachcom-digital/pimcore-dynamic-search-data-provider-trinity/actions?query=workflow%3A%22PHP%20Stan%22)
+[![Tests](https://img.shields.io/github/workflow/status/dachcom-digital/pimcore-dynamic-search-data-provider-trinity/Codeception/master?style=flat-square&logo=github&label=codeception)](https://github.com/dachcom-digital/pimcore-dynamic-search-data-provider-trinity/actions?query=workflow%3ACodeception+branch%3Amaster)
+[![PhpStan](https://img.shields.io/github/workflow/status/dachcom-digital/pimcore-dynamic-search-data-provider-trinity/PHP%20Stan/master?style=flat-square&logo=github&label=phpstan%20level%204)](https://github.com/dachcom-digital/pimcore-dynamic-search-data-provider-trinity/actions?query=workflow%3A"PHP+Stan"+branch%3Amaster)
 
-A Data Fetch Extension for [Pimcore Dynamic Search](https://github.com/dachcom-digital/pimcore-dynamic-search). Crawl Pimcore Data `assets`, `documents` and `objects`.
+A data fetch extension for [Pimcore Dynamic Search](https://github.com/dachcom-digital/pimcore-dynamic-search). 
+Fetch pimcore elements by listings: `assets`, `documents` and `objects`.
 
-## Requirements
-- Pimcore >= 6.6
-- Symfony >= 4.4
-- Pimcore Dynamic Search 1.0
+## Release Plan
+| Release | Supported Pimcore Versions        | Supported Symfony Versions | Release Date | Maintained                       | Branch     |
+|---------|-----------------------------------|----------------------------|--------------|----------------------------------|------------|
+| **2.x** | `10.0`                            | `^5.4`                     | no release   | Yes (Bugs, Features)             | master     |
+| **1.x** | `6.6` - `6.9`                     | `^4.4`                     | 18.04.2021   | No | [1.x](https://github.com/dachcom-digital/pimcore-dynamic-search-data-provider-trinity/tree/1.x) |
 
 ***
+
+## Installation  
+```json
+"require" : {
+    "dachcom-digital/dynamic-search" : "~2.0.0",
+    "dachcom-digital/dynamic-search-data-provider-trinity" : "~2.0.0"
+}
+```
+
+### Dynamic Search Bundle
+You need to install / enable the Dynamic Search Bundle first.
+Read more about it [here](https://github.com/dachcom-digital/pimcore-dynamic-search#installation).
+After that, proceed as followed:
+
+### Enabling via `config/bundles.php`:
+```php
+<?php
+
+return [
+    \DsTrinityDataBundle\DsTrinityDataBundle::class => ['all' => true],
+];
+```
+
+### Enabling via `Kernel.php`:
+```php
+<?php
+
+namespace App;
+
+use Pimcore\HttpKernel\BundleCollection\BundleCollection;
+
+class Kernel extends \Pimcore\Kernel
+{
+    public function registerBundlesToCollection(BundleCollection $collection): void
+    {
+        $collection->addBundle(new \DsTrinityDataBundle\DsTrinityDataBundle());
+    }
+}
+```
+
+***
+
+## Publishing State
+**This Bundle will fetch unpublished elements by default**. This is crucial and also a problematic fact.
+Read more about it [here](./docs/10_publishUnpublishedElements.md) to learn how to handle the publishing state of pimcore elements.
 
 ## Basic Setup
 
@@ -50,14 +97,12 @@ dynamic_search:
 | `asset_additional_params`          | []                                    |             |
 |                                    |                                       |             |
 | `index_object`                     | false                                 |             |
-| `object_ignore_unpublished`        | true                                  |             |
 | `object_data_builder_identifier`   | 'default'                             |             |
 | `object_types`                     | `DataObject::$types[]`, except folder |             |
 | `object_class_names`               | []                                    |             |
 | `object_additional_params`         | []                                    |             |
 |                                    |                                       |             |
 | `index_document`                   | false                                 |             |
-| `document_ignore_unpublished`      | true                                  |             |
 | `document_data_builder_identifier` | 'default'                             |             |
 | `document_types`                   | `Document::$types`, except folder     |             |
 | `document_additional_params`       | []                                    |             |
@@ -202,5 +247,11 @@ Returns real full path of document
 Return Type: `string|null`   
 Options: none   
 
+***
+
+## Copyright and License
+Copyright: [DACHCOM.DIGITAL](http://dachcom-digital.com)  
+For licensing details please visit [LICENSE.md](./LICENSE.md)
+
 ## Upgrade Info
-Before updating, please [check our upgrade notes!](UPGRADE.md)  
+Before updating, please [check our upgrade notes!](./UPGRADE.md)  

@@ -6,33 +6,20 @@ use DsTrinityDataBundle\DsTrinityDataEvents;
 use DsTrinityDataBundle\Event\ObjectListingQueryEvent;
 use Pimcore\Db\Connection;
 use Pimcore\Model\DataObject;
+use Pimcore\Model\Element\ElementInterface;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 
 class ObjectListBuilder implements DataBuilderInterface
 {
-    /**
-     * @var Connection
-     */
-    protected $db;
+    protected Connection $db;
+    protected EventDispatcherInterface $eventDispatcher;
 
-    /**
-     * @var EventDispatcherInterface
-     */
-    protected $eventDispatcher;
-
-    /**
-     * @param Connection               $db
-     * @param EventDispatcherInterface $eventDispatcher
-     */
     public function __construct(Connection $db, EventDispatcherInterface $eventDispatcher)
     {
         $this->db = $db;
         $this->eventDispatcher = $eventDispatcher;
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function buildByList(array $options): array
     {
         $list = $this->getList($options);
@@ -40,10 +27,7 @@ class ObjectListBuilder implements DataBuilderInterface
         return $list->getObjects();
     }
 
-    /**
-     * {@inheritdoc}
-     */
-    public function buildByIdList(int $id, array $options)
+    public function buildByIdList(int $id, array $options): ?ElementInterface
     {
         $list = $this->getList($options);
 
@@ -63,32 +47,20 @@ class ObjectListBuilder implements DataBuilderInterface
         return $objects[0];
     }
 
-    /**
-     * {@inheritdoc}
-     */
-    public function buildById(int $id)
+    public function buildById(int $id): ?ElementInterface
     {
         return DataObject::getById($id);
     }
 
-    /**
-     * @param array $options
-     *
-     * @return DataObject\Listing
-     */
-    protected function getList(array $options)
+    protected function getList(array $options): DataObject\Listing
     {
         $allowedTypes = $options['object_types'];
         $allowedClasses = $options['object_class_names'];
-        $includeUnpublished = $options['object_ignore_unpublished'] === false;
-        $limit = $options['object_limit'];
+        $limit = $options['object_limit'] ?? 0;
         $additionalParams = $options['object_additional_params'];
 
         $list = new DataObject\Listing();
-
-        if ($includeUnpublished === true) {
-            $list->setUnpublished(true);
-        }
+        $list->setUnpublished(true);
 
         foreach ($additionalParams as $additionalParam => $additionalValue) {
             $list->addConditionParam($additionalParam, $additionalValue);
@@ -107,13 +79,7 @@ class ObjectListBuilder implements DataBuilderInterface
         return $event->getListing();
     }
 
-    /**
-     * @param DataObject\Listing $listing
-     * @param array              $allowedTypes
-     *
-     * @return DataObject\Listing
-     */
-    protected function addObjectTypeRestriction(DataObject\Listing $listing, array $allowedTypes)
+    protected function addObjectTypeRestriction(DataObject\Listing $listing, array $allowedTypes): DataObject\Listing
     {
         if (count($allowedTypes) === 0) {
             return $listing;
@@ -124,13 +90,7 @@ class ObjectListBuilder implements DataBuilderInterface
         return $listing;
     }
 
-    /**
-     * @param DataObject\Listing $listing
-     * @param array              $allowedClasses
-     *
-     * @return DataObject\Listing
-     */
-    protected function addClassNameRestriction(DataObject\Listing $listing, array $allowedClasses)
+    protected function addClassNameRestriction(DataObject\Listing $listing, array $allowedClasses): DataObject\Listing
     {
         if (count($allowedClasses) === 0) {
             return $listing;

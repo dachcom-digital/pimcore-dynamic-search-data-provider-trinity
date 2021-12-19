@@ -6,33 +6,20 @@ use DsTrinityDataBundle\DsTrinityDataEvents;
 use DsTrinityDataBundle\Event\AssetListingQueryEvent;
 use Pimcore\Db\Connection;
 use Pimcore\Model\Asset;
+use Pimcore\Model\Element\ElementInterface;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 
 class AssetListBuilder implements DataBuilderInterface
 {
-    /**
-     * @var Connection
-     */
-    protected $db;
+    protected Connection $db;
+    protected EventDispatcherInterface $eventDispatcher;
 
-    /**
-     * @var EventDispatcherInterface
-     */
-    protected $eventDispatcher;
-
-    /**
-     * @param Connection               $db
-     * @param EventDispatcherInterface $eventDispatcher
-     */
     public function __construct(Connection $db, EventDispatcherInterface $eventDispatcher)
     {
         $this->db = $db;
         $this->eventDispatcher = $eventDispatcher;
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function buildByList(array $options): array
     {
         $list = $this->getList($options);
@@ -40,10 +27,7 @@ class AssetListBuilder implements DataBuilderInterface
         return $list->getAssets();
     }
 
-    /**
-     * {@inheritdoc}
-     */
-    public function buildByIdList(int $id, array $options)
+    public function buildByIdList(int $id, array $options): ?ElementInterface
     {
         $list = $this->getList($options);
 
@@ -63,20 +47,12 @@ class AssetListBuilder implements DataBuilderInterface
         return $assets[0];
     }
 
-    /**
-     * {@inheritdoc}
-     */
-    public function buildById(int $id)
+    public function buildById(int $id): ?ElementInterface
     {
         return Asset::getById($id);
     }
 
-    /**
-     * @param array $options
-     *
-     * @return Asset\Listing
-     */
-    protected function getList(array $options)
+    protected function getList(array $options): Asset\Listing
     {
         $allowedTypes = $options['asset_types'];
         $limit = $options['asset_limit'];
@@ -100,13 +76,7 @@ class AssetListBuilder implements DataBuilderInterface
         return $list;
     }
 
-    /**
-     * @param Asset\Listing $listing
-     * @param array         $allowedTypes
-     *
-     * @return Asset\Listing
-     */
-    protected function addAssetTypeRestriction(Asset\Listing $listing, array $allowedTypes)
+    protected function addAssetTypeRestriction(Asset\Listing $listing, array $allowedTypes): Asset\Listing
     {
         if (count($allowedTypes) === 0) {
             return $listing;

@@ -6,17 +6,9 @@ use DsTrinityDataBundle\Service\Builder\DataBuilderInterface;
 
 class DataBuilderRegistry implements DataBuilderRegistryInterface
 {
-    /**
-     * @var array|DataBuilderInterface[]
-     */
-    protected $builder;
+    protected array $builder;
 
-    /**
-     * @param DataBuilderInterface $service
-     * @param string               $identifier
-     * @param array                $type
-     */
-    public function register($service, $identifier, $type)
+    public function register(DataBuilderInterface $service, string $identifier, string $type): void
     {
         if (!is_string($type)) {
             throw new \InvalidArgumentException(
@@ -43,10 +35,7 @@ class DataBuilderRegistry implements DataBuilderRegistryInterface
         $this->builder[$type][$identifier] = $service;
     }
 
-    /**
-     * {@inheritdoc}
-     */
-    public function getByTypeAndIdentifier(string $type, string $identifier)
+    public function getByTypeAndIdentifier(string $type, string $identifier): DataBuilderInterface
     {
         return $this->builder[$type][$identifier];
     }

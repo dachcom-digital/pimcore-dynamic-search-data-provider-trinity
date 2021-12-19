@@ -14,25 +14,10 @@ use Pimcore\Model\Element\ElementInterface;
 
 abstract class AbstractResourceNormalizer implements ResourceNormalizerInterface
 {
-    /**
-     * @var array
-     */
-    protected $options;
+    protected array $options;
+    protected TransformerManagerInterface $transformerManager;
+    protected DataManagerInterface $dataManager;
 
-    /**
-     * @var TransformerManagerInterface
-     */
-    protected $transformerManager;
-
-    /**
-     * @var DataManagerInterface
-     */
-    protected $dataManager;
-
-    /**
-     * @param TransformerManagerInterface $transformerManager
-     * @param DataManagerInterface        $dataManager
-     */
     public function __construct(
         TransformerManagerInterface $transformerManager,
         DataManagerInterface $dataManager
@@ -41,9 +26,6 @@ abstract class AbstractResourceNormalizer implements ResourceNormalizerInterface
         $this->dataManager = $dataManager;
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function normalizeToResourceStack(ContextDefinitionInterface $contextDefinition, ResourceContainerInterface $resourceContainer): array
     {
         $resource = $resourceContainer->getResource();
@@ -67,27 +49,9 @@ abstract class AbstractResourceNormalizer implements ResourceNormalizerInterface
         return [];
     }
 
-    /**
-     * @param ContextDefinitionInterface $contextDefinition
-     * @param ResourceContainerInterface $resourceContainer
-     *
-     * @return array
-     */
-    abstract protected function normalizeDocument(ContextDefinitionInterface $contextDefinition, ResourceContainerInterface $resourceContainer);
+    abstract protected function normalizeDocument(ContextDefinitionInterface $contextDefinition, ResourceContainerInterface $resourceContainer): array;
 
-    /**
-     * @param ContextDefinitionInterface $contextDefinition
-     * @param ResourceContainerInterface $resourceContainer
-     *
-     * @return array
-     */
-    abstract protected function normalizeAsset(ContextDefinitionInterface $contextDefinition, ResourceContainerInterface $resourceContainer);
+    abstract protected function normalizeAsset(ContextDefinitionInterface $contextDefinition, ResourceContainerInterface $resourceContainer): array;
 
-    /**
-     * @param ContextDefinitionInterface $contextDefinition
-     * @param ResourceContainerInterface $resourceContainer
-     *
-     * @return array
-     */
-    abstract protected function normalizeDataObject(ContextDefinitionInterface $contextDefinition, ResourceContainerInterface $resourceContainer);
+    abstract protected function normalizeDataObject(ContextDefinitionInterface $contextDefinition, ResourceContainerInterface $resourceContainer): array;
 }

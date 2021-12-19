@@ -9,31 +9,18 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
 
 class ElementIdExtractor implements FieldTransformerInterface
 {
-    /**
-     * @var array
-     */
-    protected $options;
+    protected array $options;
 
-    /**
-     * {@inheritdoc}
-     */
-    public function configureOptions(OptionsResolver $resolver)
+    public function configureOptions(OptionsResolver $resolver): void
     {
-        return false;
     }
 
-    /**
-     * {@inheritdoc}
-     */
-    public function setOptions(array $options)
+    public function setOptions(array $options): void
     {
         $this->options = $options;
     }
 
-    /**
-     * {@inheritdoc}
-     */
-    public function transformData(string $dispatchTransformerName, ResourceContainerInterface $resourceContainer)
+    public function transformData(string $dispatchTransformerName, ResourceContainerInterface $resourceContainer): mixed
     {
         if (!$resourceContainer->hasAttribute('type')) {
             return null;
@@ -44,8 +31,6 @@ class ElementIdExtractor implements FieldTransformerInterface
             return null;
         }
 
-        $value = $element->getId();
-
-        return $value;
+        return $element->getId();
     }
 }
