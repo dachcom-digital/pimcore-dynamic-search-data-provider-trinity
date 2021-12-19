@@ -247,9 +247,11 @@ Returns real full path of document
 Return Type: `string|null`   
 Options: none   
 
+***
+
 ## Copyright and License
 Copyright: [DACHCOM.DIGITAL](http://dachcom-digital.com)  
-For licensing details please visit [LICENSE.md](LICENSE.md)
+For licensing details please visit [LICENSE.md](./LICENSE.md)
 
 ## Upgrade Info
-Before updating, please [check our upgrade notes!](UPGRADE.md)  
+Before updating, please [check our upgrade notes!](./UPGRADE.md)  
