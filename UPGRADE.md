@@ -1,5 +1,8 @@
 # Upgrade Notes
 
+#### 1.0.3
+- **[BUGFIX]**: fix wrong options key in localized resource normalizer
+
 #### Update from Version 1.0.1 to Version 1.0.2
 - **[IMPROVEMENT]**: Fix missing Resource Proxy Option Resolver [@dpfaffenbauer](https://github.com/dachcom-digital/pimcore-dynamic-search-data-provider-trinity/pull/5)
 

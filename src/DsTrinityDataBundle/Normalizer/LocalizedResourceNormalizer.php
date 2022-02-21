@@ -121,10 +121,10 @@ class LocalizedResourceNormalizer extends AbstractResourceNormalizer
      */
     protected function getLocales()
     {
-        if($this->options['locale'] === null) {
+        if($this->options['locales'] === null) {
             return \Pimcore\Tool::getValidLanguages();
         }
 
-        return $this->options['locale'];
+        return $this->options['locales'];
     }
 }
