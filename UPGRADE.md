@@ -1,5 +1,8 @@
 # Upgrade Notes
 
+## 2.0.1
+- [BUGFIX] Add null coalescing operator to `$options['asset_limit']` in `AssetListBuilder:getList()`
+
 ## Migrating from Version 1.x to Version 2.0.0
 
 ### Global Changes
