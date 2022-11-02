@@ -55,7 +55,7 @@ class AssetListBuilder implements DataBuilderInterface
     protected function getList(array $options): Asset\Listing
     {
         $allowedTypes = $options['asset_types'];
-        $limit = $options['asset_limit'];
+        $limit = $options['asset_limit'] ?? 0;
         $additionalParams = $options['asset_additional_params'];
 
         $list = new Asset\Listing();
