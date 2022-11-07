@@ -13,7 +13,7 @@ class NormalizerValueCallback implements FieldTransformerInterface
     public function configureOptions(OptionsResolver $resolver): void
     {
         $resolver->setRequired(['value']);
-        $resolver->setAllowedTypes('value', ['string']);
+        $resolver->setAllowedTypes('value', ['string', 'null']);
         $resolver->setDefaults(['value' => null]);
     }
 
