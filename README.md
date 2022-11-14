@@ -9,10 +9,10 @@ A data fetch extension for [Pimcore Dynamic Search](https://github.com/dachcom-d
 Fetch pimcore elements by listings: `assets`, `documents` and `objects`.
 
 ## Release Plan
-| Release | Supported Pimcore Versions        | Supported Symfony Versions | Release Date | Maintained                       | Branch     |
-|---------|-----------------------------------|----------------------------|--------------|----------------------------------|------------|
-| **2.x** | `10.0`                            | `^5.4`                     | 19.12.2021   | Yes (Bugs, Features)             | master     |
-| **1.x** | `6.6` - `6.9`                     | `^4.4`                     | 18.04.2021   | No | [1.x](https://github.com/dachcom-digital/pimcore-dynamic-search-data-provider-trinity/tree/1.x) |
+| Release | Supported Pimcore Versions | Supported Symfony Versions | Release Date | Maintained           | Branch                                                                                          |
+|---------|----------------------------|----------------------------|--------------|----------------------|-------------------------------------------------------------------------------------------------|
+| **2.x** | `10.0` - `10.5`            | `^5.4`                     | 19.12.2021   | Yes (Bugs, Features) | master                                                                                          |
+| **1.x** | `6.6` - `6.9`              | `^4.4`                     | 18.04.2021   | No                   | [1.x](https://github.com/dachcom-digital/pimcore-dynamic-search-data-provider-trinity/tree/1.x) |
 
 ***
 
