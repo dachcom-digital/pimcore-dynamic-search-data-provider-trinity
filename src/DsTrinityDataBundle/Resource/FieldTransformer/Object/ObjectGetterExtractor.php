@@ -2,6 +2,7 @@
 
 namespace DsTrinityDataBundle\Resource\FieldTransformer\Object;
 
+use DynamicSearchBundle\Exception\TransformerException;
 use DynamicSearchBundle\Resource\Container\ResourceContainerInterface;
 use DynamicSearchBundle\Resource\FieldTransformerInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
@@ -12,16 +13,16 @@ class ObjectGetterExtractor implements FieldTransformerInterface
 
     public function configureOptions(OptionsResolver $resolver): void
     {
-        $resolver->setRequired(['method', 'arguments', 'clean_string', 'format']);
+        $resolver->setRequired(['method', 'arguments', 'clean_string', 'transform_callback']);
         $resolver->setAllowedTypes('method', ['string']);
         $resolver->setAllowedTypes('arguments', ['array']);
         $resolver->setAllowedTypes('clean_string', ['boolean']);
-        $resolver->setAllowedTypes('format', ['null', 'string']);
+        $resolver->setAllowedTypes('transform_callback', ['null', 'closure']);
         $resolver->setDefaults([
             'method'       => 'id',
             'clean_string' => true,
             'arguments'    => [],
-            'format'       => null
+            'transform_callback'       => null,
         ]);
     }
 
@@ -43,29 +44,18 @@ class ObjectGetterExtractor implements FieldTransformerInterface
 
         $value = call_user_func_array([$data, $this->options['method']], $this->options['arguments']);
         
-        if ($value instanceof \DateTimeInterface) {
-            return $this->options['format'] ? $value->format($this->options['format']) : $value->getTimestamp();
+        if (is_callable($this->options['transform_callback'])) {
+            try {
+                $value = $this->options['transform_callback']($value);
+            } catch (\Throwable $e) {
+                throw new TransformerException(
+                    sprintf('error while executing transform_callback: %s',  $e->getMessage())
+                );
+            }
         }
         
-        if (is_bool($value)) {
-            return $value;
-        }
-        
-        if (is_numeric($value)) {
-            $value = (float) $value;
-            if (floor($value) === $value) {
-                return (int) $value;
-            }
-            return $value;
-        }
-        
-        if (is_string($value)) {
-            if ($this->options['format'] === 'nl2br') {
-                return nl2br($value);
-            }
-            if ($this->options['clean_string'] === true) {
-                return trim(preg_replace('/\s+/', ' ', strip_tags($value)));
-            }
+        if (is_string($value) && $this->options['clean_string'] === true) {
+            return trim(preg_replace('/\s+/', ' ', strip_tags($value)));
         }
 
         return $value;
