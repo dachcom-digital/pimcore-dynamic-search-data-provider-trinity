@@ -182,13 +182,15 @@ Options:
 Identifier: `object_getter_extractor`   
 Returns value of object getter.   
 
-Return Type: `string|null`   
+Return Type: `bool|int|float|string|array|null`   
 Options:   
 
-| Name                         | Default Value | Allowed Type   | Description |
-|:-----------------------------|:--------------|:---------------|:------------|
-|`method`                      | id            | string         |             |
-|`arguments`                   | []            | array          |             |
+| Name                         | Default Value | Allowed Type   | Description                                     |
+|:-----------------------------|:--------------|:---------------|:------------------------------------------------|
+|`method`                      | id            | string         |                                                 |
+|`arguments`                   | []            | array          |                                                 |
+|`clean_string`                | true          | bool           | cleans HTML and whitespace (if value is string) |
+|`transform_callback`          | null          | null\|closure   | a callback function for further value transform |
 
 ##### ObjectRelationsGetterExtractor
 Identifier: `object_relations_getter_extractor`   
@@ -201,6 +203,7 @@ Options:
 |:-----------------------------|:--------------|:---------------|:------------|
 |`relations`                   | null          | string         |             |
 |`method`                      | id            | string         |             |
+|`arguments`                   | []            | array          |             |
 
 
 ##### ObjectPathGenerator
