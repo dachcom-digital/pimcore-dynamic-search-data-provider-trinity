@@ -1,5 +1,8 @@
 # Upgrade Notes
 
+## 2.0.2
+- [BUGFIX] `object_relations_getter_extractor` respect arguments (#23)
+
 ## 2.0.1
 - [BUGFIX] Add null coalescing operator to `$options['asset_limit']` in `AssetListBuilder:getList()`
 - [BUGFIX] Allow `null` as locale value `normalizer_value_callback`
