@@ -2,6 +2,9 @@
 
 ## 2.0.2
 - [BUGFIX] `object_relations_getter_extractor` respect arguments (#23)
+- [FEATURE] `object_getter_extractor` more flexibility (#24)
+  - support mixed types
+  - `transform_callback` option 
 
 ## 2.0.1
 - [BUGFIX] Add null coalescing operator to `$options['asset_limit']` in `AssetListBuilder:getList()`
