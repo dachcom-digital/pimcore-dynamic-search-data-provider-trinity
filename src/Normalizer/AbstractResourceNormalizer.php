@@ -15,15 +15,11 @@ use Pimcore\Model\Element\ElementInterface;
 abstract class AbstractResourceNormalizer implements ResourceNormalizerInterface
 {
     protected array $options;
-    protected TransformerManagerInterface $transformerManager;
-    protected DataManagerInterface $dataManager;
 
     public function __construct(
-        TransformerManagerInterface $transformerManager,
-        DataManagerInterface $dataManager
+        protected TransformerManagerInterface $transformerManager,
+        protected DataManagerInterface $dataManager
     ) {
-        $this->transformerManager = $transformerManager;
-        $this->dataManager = $dataManager;
     }
 
     public function normalizeToResourceStack(ContextDefinitionInterface $contextDefinition, ResourceContainerInterface $resourceContainer): array

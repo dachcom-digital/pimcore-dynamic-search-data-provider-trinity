@@ -4,20 +4,18 @@ namespace DsTrinityDataBundle\Service\Builder;
 
 use DsTrinityDataBundle\DsTrinityDataEvents;
 use DsTrinityDataBundle\Event\DocumentListingQueryEvent;
-use Pimcore\Db\Connection;
+use Doctrine\DBAL\Connection;
 use Pimcore\Model\Document;
 use Pimcore\Model\Element\ElementInterface;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 
 class DocumentListBuilder implements DataBuilderInterface
 {
-    protected Connection $db;
-    protected EventDispatcherInterface $eventDispatcher;
 
-    public function __construct(Connection $db, EventDispatcherInterface $eventDispatcher)
-    {
-        $this->db = $db;
-        $this->eventDispatcher = $eventDispatcher;
+    public function __construct(
+        protected Connection $db,
+        protected EventDispatcherInterface $eventDispatcher
+    ) {
     }
 
     public function buildByList(array $options): array

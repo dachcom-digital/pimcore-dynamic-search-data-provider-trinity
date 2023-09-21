@@ -7,13 +7,8 @@ use Symfony\Contracts\EventDispatcher\Event;
 
 class DocumentListingQueryEvent extends Event
 {
-    protected Document\Listing $listing;
-    protected array $options;
-
-    public function __construct(Document\Listing $listing, array $options)
+    public function __construct(protected Document\Listing $listing, protected array $options)
     {
-        $this->listing = $listing;
-        $this->options = $options;
     }
 
     public function getListing(): Document\Listing

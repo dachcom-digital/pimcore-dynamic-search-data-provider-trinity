@@ -19,21 +19,15 @@ use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 
 class DataProviderService implements DataProviderServiceInterface
 {
-    protected EventDispatcherInterface $eventDispatcher;
-    protected LoggerInterface $logger;
-    protected DataBuilderRegistryInterface $dataBuilderRegistry;
     protected string $contextName;
     protected string $contextDispatchType;
     protected array $indexOptions;
 
     public function __construct(
-        LoggerInterface $logger,
-        EventDispatcherInterface $eventDispatcher,
-        DataBuilderRegistryInterface $dataBuilderRegistry
+        protected LoggerInterface $logger,
+        protected EventDispatcherInterface $eventDispatcher,
+        protected DataBuilderRegistryInterface $dataBuilderRegistry
     ) {
-        $this->logger = $logger;
-        $this->eventDispatcher = $eventDispatcher;
-        $this->dataBuilderRegistry = $dataBuilderRegistry;
     }
 
     public function setContextName(string $contextName): void

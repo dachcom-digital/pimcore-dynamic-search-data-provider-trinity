@@ -4,20 +4,17 @@ namespace DsTrinityDataBundle\Service\Builder;
 
 use DsTrinityDataBundle\DsTrinityDataEvents;
 use DsTrinityDataBundle\Event\ObjectListingQueryEvent;
-use Pimcore\Db\Connection;
+use Doctrine\DBAL\Connection;
 use Pimcore\Model\DataObject;
 use Pimcore\Model\Element\ElementInterface;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 
 class ObjectListBuilder implements DataBuilderInterface
 {
-    protected Connection $db;
-    protected EventDispatcherInterface $eventDispatcher;
-
-    public function __construct(Connection $db, EventDispatcherInterface $eventDispatcher)
-    {
-        $this->db = $db;
-        $this->eventDispatcher = $eventDispatcher;
+    public function __construct(
+        protected Connection $db,
+        protected EventDispatcherInterface $eventDispatcher
+    ) {
     }
 
     public function buildByList(array $options): array
@@ -31,7 +28,7 @@ class ObjectListBuilder implements DataBuilderInterface
     {
         $list = $this->getList($options);
 
-        $list->addConditionParam('o_id = ?', $id);
+        $list->addConditionParam('id = ?', $id);
         $list->setLimit(1);
 
         $objects = $list->getObjects();
@@ -101,7 +98,7 @@ class ObjectListBuilder implements DataBuilderInterface
             $quotedClassNames[] = $this->db->quote($cName);
         }
 
-        $listing->addConditionParam(sprintf('o_className IN (%s)', implode(',', $quotedClassNames)), '');
+        $listing->addConditionParam(sprintf('className IN (%s)', implode(',', $quotedClassNames)), '');
 
         return $listing;
     }

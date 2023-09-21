@@ -16,12 +16,10 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
 
 class TrinityDataProvider implements DataProviderInterface, DataProviderValidationAwareInterface
 {
-    protected DataProviderServiceInterface $dataProvider;
     protected array $options;
 
-    public function __construct(DataProviderServiceInterface $dataProvider)
+    public function __construct(protected DataProviderServiceInterface $dataProvider)
     {
-        $this->dataProvider = $dataProvider;
     }
 
     public static function configureOptions(OptionsResolver $resolver): void
@@ -34,7 +32,7 @@ class TrinityDataProvider implements DataProviderInterface, DataProviderValidati
                     'index_asset'                      => false,
                     'asset_data_builder_identifier'    => 'default',
                     'asset_additional_params'          => [],
-                    'asset_types'                      => array_filter(Asset::$types, static function ($type) {
+                    'asset_types'                      => array_filter(Asset::getTypes(), static function ($type) {
                         return $type !== 'folder';
                     }),
                     // objects
@@ -42,14 +40,14 @@ class TrinityDataProvider implements DataProviderInterface, DataProviderValidati
                     'object_data_builder_identifier'   => 'default',
                     'object_class_names'               => [],
                     'object_additional_params'         => [],
-                    'object_types'                     => array_filter(DataObject::$types, static function ($type) {
+                    'object_types'                     => array_filter(DataObject::getTypes(), static function ($type) {
                         return $type !== 'folder';
                     }),
                     // documents
                     'index_document'                   => false,
                     'document_data_builder_identifier' => 'default',
                     'document_additional_params'       => [],
-                    'document_types'                   => array_filter(Document::$types, static function ($type) {
+                    'document_types'                   => array_filter(Document::getTypes(), static function ($type) {
                         return $type !== 'folder';
                     })
                 ];
