@@ -11,7 +11,8 @@ Fetch pimcore elements by listings: `assets`, `documents` and `objects`.
 ## Release Plan
 | Release | Supported Pimcore Versions | Supported Symfony Versions | Release Date | Maintained           | Branch                                                                                          |
 |---------|----------------------------|----------------------------|--------------|----------------------|-------------------------------------------------------------------------------------------------|
-| **2.x** | `10.0` - `10.6`            | `^5.4`                     | 19.12.2021   | Yes (Bugs, Features) | master                                                                                          |
+| **3.x** | `11.0`                     | `^6.2`                     | --           | Yes (Bugs, Features) | master                                                                                          |
+| **2.x** | `10.0` - `10.6`            | `^5.4`                     | 19.12.2021   | No                   | [1.x](https://github.com/dachcom-digital/pimcore-dynamic-search-data-provider-trinity/tree/2.x) |
 | **1.x** | `6.6` - `6.9`              | `^4.4`                     | 18.04.2021   | No                   | [1.x](https://github.com/dachcom-digital/pimcore-dynamic-search-data-provider-trinity/tree/1.x) |
 
 ***
@@ -19,8 +20,8 @@ Fetch pimcore elements by listings: `assets`, `documents` and `objects`.
 ## Installation  
 ```json
 "require" : {
-    "dachcom-digital/dynamic-search" : "~2.0.0",
-    "dachcom-digital/dynamic-search-data-provider-trinity" : "~2.0.0"
+    "dachcom-digital/dynamic-search" : "~3.0.0",
+    "dachcom-digital/dynamic-search-data-provider-trinity" : "~3.0.0"
 }
 ```
 
@@ -29,30 +30,13 @@ You need to install / enable the Dynamic Search Bundle first.
 Read more about it [here](https://github.com/dachcom-digital/pimcore-dynamic-search#installation).
 After that, proceed as followed:
 
-### Enabling via `config/bundles.php`:
+Add Bundle to `bundles.php`:
 ```php
 <?php
 
 return [
     \DsTrinityDataBundle\DsTrinityDataBundle::class => ['all' => true],
 ];
-```
-
-### Enabling via `Kernel.php`:
-```php
-<?php
-
-namespace App;
-
-use Pimcore\HttpKernel\BundleCollection\BundleCollection;
-
-class Kernel extends \Pimcore\Kernel
-{
-    public function registerBundlesToCollection(BundleCollection $collection): void
-    {
-        $collection->addBundle(new \DsTrinityDataBundle\DsTrinityDataBundle());
-    }
-}
 ```
 
 ***
@@ -109,11 +93,11 @@ dynamic_search:
 
 ### full_dispatch
 
-| Name                                 | Default Value | Description |
-|:-------------------------------------|:--------------|:------------|
-|`asset_limit`                         | 0             |             |
-|`object_limit`                        | 0             |             |
-|`document_limit`                      | 0             |             |
+| Name             | Default Value | Description |
+|:-----------------|:--------------|:------------|
+| `asset_limit`    | 0             |             |
+| `object_limit`   | 0             |             |
+| `document_limit` | 0             |             |
 
 ***
 
@@ -128,10 +112,10 @@ Scaffold localized documents
 
 Options:
 
-| Name                          | Default Value                           | Allowed Type    | Description |
-|:------------------------------|:----------------------------------------|:----------------|:------------|
-|`locales`                      | all pimcore enabled languages           | array           |             |
-|`skip_not_localized_documents` | true                                    | bool            | if false, an exception rises if a document/object has no valid locale |
+| Name                           | Default Value                 | Allowed Type | Description                                                           |
+|:-------------------------------|:------------------------------|:-------------|:----------------------------------------------------------------------|
+| `locales`                      | all pimcore enabled languages | array        |                                                                       |
+| `skip_not_localized_documents` | true                          | bool         | if false, an exception rises if a document/object has no valid locale |
 
 ***
 
@@ -160,11 +144,11 @@ Returns element property.
 Return Type: `string|null`   
 Options:   
 
-| Name                         | Default Value | Allowed Type   | Description |
-|:-----------------------------|:--------------|:---------------|:------------|
-|`property`                    | null          | string         |             |
-|`object_getter`               | null          | null|string    |             |
-|`allow_inherited_value`       | true          | bool           |             |
+| Name                    | Default Value | Allowed Type | Description |
+|:------------------------|:--------------|:-------------|:------------|
+| `property`              | null          | string       |             |
+| `object_getter`         | null          | null         | string      |
+| `allow_inherited_value` | true          | bool         |             |
 
 
 ##### NormalizerValueCallback
@@ -174,9 +158,9 @@ Returns given option `value`.
 Return Type: `string|null`   
 Options:   
 
-| Name                         | Default Value | Allowed Type   | Description |
-|:-----------------------------|:--------------|:---------------|:------------|
-|`value`                       | null          | string         |             |
+| Name    | Default Value | Allowed Type | Description |
+|:--------|:--------------|:-------------|:------------|
+| `value` | null          | string       |             |
 
 ##### ObjectGetterExtractor
 Identifier: `object_getter_extractor`   
@@ -185,12 +169,12 @@ Returns value of object getter.
 Return Type: `bool|int|float|string|array|null`   
 Options:   
 
-| Name                         | Default Value | Allowed Type   | Description                                     |
-|:-----------------------------|:--------------|:---------------|:------------------------------------------------|
-|`method`                      | id            | string         |                                                 |
-|`arguments`                   | []            | array          |                                                 |
-|`clean_string`                | true          | bool           | cleans HTML and whitespace (if value is string) |
-|`transform_callback`          | null          | null\|closure   | a callback function for further value transform |
+| Name                 | Default Value | Allowed Type  | Description                                     |
+|:---------------------|:--------------|:--------------|:------------------------------------------------|
+| `method`             | id            | string        |                                                 |
+| `arguments`          | []            | array         |                                                 |
+| `clean_string`       | true          | bool          | cleans HTML and whitespace (if value is string) |
+| `transform_callback` | null          | null\|closure | a callback function for further value transform |
 
 ##### ObjectRelationsGetterExtractor
 Identifier: `object_relations_getter_extractor`   
@@ -199,11 +183,11 @@ Returns values of object relations getter.
 Return Type: `array|null`   
 Options:   
 
-| Name                         | Default Value | Allowed Type   | Description |
-|:-----------------------------|:--------------|:---------------|:------------|
-|`relations`                   | null          | string         |             |
-|`method`                      | id            | string         |             |
-|`arguments`                   | []            | array          |             |
+| Name        | Default Value | Allowed Type | Description |
+|:------------|:--------------|:-------------|:------------|
+| `relations` | null          | string       |             |
+| `method`    | id            | string       |             |
+| `arguments` | []            | array        |             |
 
 
 ##### ObjectPathGenerator
@@ -213,10 +197,10 @@ Returns object path generated by link generator.
 Return Type: `string|null`   
 Options:   
 
-| Name                         | Default Value | Allowed Type   | Description |
-|:-----------------------------|:--------------|:---------------|:------------|
-|`arguments`                   | []            | array          |             |
-|`fetch_object_for_variant`    | false         | bool           | If true and object is type of `variant` the next parent gets fetched first until type `object` has been reached |
+| Name                       | Default Value | Allowed Type | Description                                                                                                     |
+|:---------------------------|:--------------|:-------------|:----------------------------------------------------------------------------------------------------------------|
+| `arguments`                | []            | array        |                                                                                                                 |
+| `fetch_object_for_variant` | false         | bool         | If true and object is type of `variant` the next parent gets fetched first until type `object` has been reached |
 
 ##### DocumentMetaExtractor
 Identifier: `document_meta_extractor`   
@@ -225,9 +209,9 @@ Returns documents meta title or description.
 Return Type: `string|null`   
 Options:   
 
-| Name                         | Default Value | Allowed Type   | Description |
-|:-----------------------------|:--------------|:---------------|:------------|
-|`type`                        | title         | string         | Possible Types: `title` or `description` |
+| Name   | Default Value | Allowed Type | Description                              |
+|:-------|:--------------|:-------------|:-----------------------------------------|
+| `type` | title         | string       | Possible Types: `title` or `description` |
 
 ##### DocumentPathGenerator
 Identifier: `document_path_generator`   
