@@ -52,8 +52,7 @@ class ObjectPathGenerator implements FieldTransformerInterface
             return null;
         }
 
-        $linkGenerator = $object->getClass()?->getLinkGenerator();
-
+        $linkGenerator = $object->getClass()->getLinkGenerator();
         if (!$linkGenerator instanceof LinkGeneratorInterface) {
             return null;
         }
