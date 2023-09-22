@@ -32,24 +32,18 @@ class TrinityDataProvider implements DataProviderInterface, DataProviderValidati
                     'index_asset'                      => false,
                     'asset_data_builder_identifier'    => 'default',
                     'asset_additional_params'          => [],
-                    'asset_types'                      => array_filter(Asset::getTypes(), static function ($type) {
-                        return $type !== 'folder';
-                    }),
+                    'asset_types'                      => null,
                     // objects
                     'index_object'                     => false,
                     'object_data_builder_identifier'   => 'default',
                     'object_class_names'               => [],
                     'object_additional_params'         => [],
-                    'object_types'                     => array_filter(DataObject::getTypes(), static function ($type) {
-                        return $type !== 'folder';
-                    }),
+                    'object_types'                     => null,
                     // documents
                     'index_document'                   => false,
                     'document_data_builder_identifier' => 'default',
                     'document_additional_params'       => [],
-                    'document_types'                   => array_filter(Document::getTypes(), static function ($type) {
-                        return $type !== 'folder';
-                    })
+                    'document_types'                   => null
                 ];
 
                 $spoolResolver->setDefaults($options);
@@ -138,5 +132,4 @@ class TrinityDataProvider implements DataProviderInterface, DataProviderValidati
         $this->dataProvider->setContextDispatchType($contextDefinition->getContextDispatchType());
         $this->dataProvider->setIndexOptions($this->options);
     }
-
 }

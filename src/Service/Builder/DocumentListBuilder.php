@@ -75,8 +75,14 @@ class DocumentListBuilder implements DataBuilderInterface
         return $list;
     }
 
-    protected function addDocumentTypeRestriction(Document\Listing $listing, array $allowedTypes): Document\Listing
+    protected function addDocumentTypeRestriction(Document\Listing $listing, ?array $allowedTypes): Document\Listing
     {
+        if ($allowedTypes === null) {
+            $allowedTypes = array_filter(Document::getTypes(), static function ($type) {
+                return $type !== 'folder';
+            });
+        }
+
         if (count($allowedTypes) === 0) {
             return $listing;
         }

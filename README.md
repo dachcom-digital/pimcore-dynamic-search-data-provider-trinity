@@ -73,23 +73,23 @@ dynamic_search:
 
 ### always
 
-| Name                               | Default Value                         | Description |
-|:-----------------------------------|:--------------------------------------|:------------|
-| `index_asset`                      | false                                 |             |
-| `asset_data_builder_identifier`    | true                                  |             |
-| `asset_types`                      | `Asset::$types[]`, except folder      |             |
-| `asset_additional_params`          | []                                    |             |
-|                                    |                                       |             |
-| `index_object`                     | false                                 |             |
-| `object_data_builder_identifier`   | 'default'                             |             |
-| `object_types`                     | `DataObject::$types[]`, except folder |             |
-| `object_class_names`               | []                                    |             |
-| `object_additional_params`         | []                                    |             |
-|                                    |                                       |             |
-| `index_document`                   | false                                 |             |
-| `document_data_builder_identifier` | 'default'                             |             |
-| `document_types`                   | `Document::$types`, except folder     |             |
-| `document_additional_params`       | []                                    |             |
+| Name                               | Default Value                           | Description |
+|:-----------------------------------|:----------------------------------------|:------------|
+| `index_asset`                      | false                                   |             |
+| `asset_data_builder_identifier`    | true                                    |             |
+| `asset_types`                      | `Asset::getTypes()`, except folder      |             |
+| `asset_additional_params`          | []                                      |             |
+|                                    |                                         |             |
+| `index_object`                     | false                                   |             |
+| `object_data_builder_identifier`   | 'default'                               |             |
+| `object_types`                     | `DataObject::getTypes()`, except folder |             |
+| `object_class_names`               | []                                      |             |
+| `object_additional_params`         | []                                      |             |
+|                                    |                                         |             |
+| `index_document`                   | false                                   |             |
+| `document_data_builder_identifier` | 'default'                               |             |
+| `document_types`                   | `Document::getTypes()`, except folder   |             |
+| `document_additional_params`       | []                                      |             |
 
 ### full_dispatch
 
