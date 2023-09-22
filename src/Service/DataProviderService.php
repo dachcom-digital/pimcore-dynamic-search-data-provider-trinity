@@ -136,7 +136,9 @@ class DataProviderService implements DataProviderServiceInterface
 
         $element = $builder->buildById($id);
 
-        $this->dispatchData([$element], $providerBehaviour, $resourceMeta);
+        if ($element instanceof ElementInterface) {
+            $this->dispatchElement($element, $providerBehaviour, $resourceMeta);
+        }
     }
 
     protected function log(string $level, string $message): void
@@ -144,14 +146,19 @@ class DataProviderService implements DataProviderServiceInterface
         $this->logger->log($level, $message, DsTrinityDataBundle::PROVIDER_NAME, $this->contextName);
     }
 
-    protected function dispatchData(array $elements, string $providerBehaviour, ?ResourceMetaInterface $resourceMeta = null): void
+    protected function dispatchData(\Generator $elements, string $providerBehaviour, ?ResourceMetaInterface $resourceMeta = null): void
     {
         foreach ($elements as $element) {
-            $newDataEvent = new NewDataEvent($this->contextDispatchType, $this->contextName, $element, $providerBehaviour, $resourceMeta);
-            $this->eventDispatcher->dispatch($newDataEvent, DynamicSearchEvents::NEW_DATA_AVAILABLE);
-
-            $this->dispatchProcessControlSignal();
+            $this->dispatchElement($element, $providerBehaviour, $resourceMeta);
         }
+    }
+
+    protected function dispatchElement(ElementInterface $element, string $providerBehaviour, ?ResourceMetaInterface $resourceMeta = null): void
+    {
+        $newDataEvent = new NewDataEvent($this->contextDispatchType, $this->contextName, $element, $providerBehaviour, $resourceMeta);
+        $this->eventDispatcher->dispatch($newDataEvent, DynamicSearchEvents::NEW_DATA_AVAILABLE);
+
+        $this->dispatchProcessControlSignal();
     }
 
     protected function addSignalListener(): void

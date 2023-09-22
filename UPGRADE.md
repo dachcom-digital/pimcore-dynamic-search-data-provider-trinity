@@ -4,6 +4,7 @@
 
 ### Global Changes
 - Recommended folder structure by symfony adopted
+- [IMPROVEMENT] Use Generator to index data which will increase processing speed significant
 
 ***
 
