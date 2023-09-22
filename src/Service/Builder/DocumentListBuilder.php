@@ -18,11 +18,15 @@ class DocumentListBuilder implements DataBuilderInterface
     ) {
     }
 
-    public function buildByList(array $options): array
+    public function buildByList(array $options): \Generator
     {
         $list = $this->getList($options);
 
-        return $list->getDocuments();
+        foreach ($list->loadIdList() as $id) {
+            if ($doc = Document::getById($id)) {
+                yield $doc;
+            }
+        }
     }
 
     public function buildByIdList(int $id, array $options): ?ElementInterface
@@ -33,10 +37,6 @@ class DocumentListBuilder implements DataBuilderInterface
         $list->setLimit(1);
 
         $documents = $list->getDocuments();
-
-        if (!is_array($documents)) {
-            return null;
-        }
 
         if (count($documents) === 0) {
             return null;

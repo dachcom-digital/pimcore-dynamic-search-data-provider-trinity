@@ -17,11 +17,15 @@ class ObjectListBuilder implements DataBuilderInterface
     ) {
     }
 
-    public function buildByList(array $options): array
+    public function buildByList(array $options): \Generator
     {
         $list = $this->getList($options);
 
-        return $list->getObjects();
+        foreach ($list->loadIdList() as $id) {
+            if ($object = DataObject::getById($id)) {
+                yield $object;
+            }
+        }
     }
 
     public function buildByIdList(int $id, array $options): ?ElementInterface
@@ -32,10 +36,6 @@ class ObjectListBuilder implements DataBuilderInterface
         $list->setLimit(1);
 
         $objects = $list->getObjects();
-
-        if (!is_array($objects)) {
-            return null;
-        }
 
         if (count($objects) === 0) {
             return null;

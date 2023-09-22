@@ -17,11 +17,15 @@ class AssetListBuilder implements DataBuilderInterface
     ) {
     }
 
-    public function buildByList(array $options): array
+    public function buildByList(array $options): \Generator
     {
         $list = $this->getList($options);
 
-        return $list->getAssets();
+        foreach ($list->loadIdList() as $id) {
+            if ($asset = Asset::getById($id)) {
+                yield $asset;
+            }
+        }
     }
 
     public function buildByIdList(int $id, array $options): ?ElementInterface
@@ -32,10 +36,6 @@ class AssetListBuilder implements DataBuilderInterface
         $list->setLimit(1);
 
         $assets = $list->getAssets();
-
-        if (!is_array($assets)) {
-            return null;
-        }
 
         if (count($assets) === 0) {
             return null;
