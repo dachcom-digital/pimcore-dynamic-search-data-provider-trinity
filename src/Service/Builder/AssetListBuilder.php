@@ -73,8 +73,14 @@ class AssetListBuilder implements DataBuilderInterface
         return $list;
     }
 
-    protected function addAssetTypeRestriction(Asset\Listing $listing, array $allowedTypes): Asset\Listing
+    protected function addAssetTypeRestriction(Asset\Listing $listing, ?array $allowedTypes): Asset\Listing
     {
+        if ($allowedTypes === null) {
+            $allowedTypes = array_filter(Asset::getTypes(), static function ($type) {
+                return $type !== 'folder';
+            });
+        }
+
         if (count($allowedTypes) === 0) {
             return $listing;
         }

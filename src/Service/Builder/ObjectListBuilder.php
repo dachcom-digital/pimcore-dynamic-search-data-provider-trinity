@@ -76,8 +76,14 @@ class ObjectListBuilder implements DataBuilderInterface
         return $event->getListing();
     }
 
-    protected function addObjectTypeRestriction(DataObject\Listing $listing, array $allowedTypes): DataObject\Listing
+    protected function addObjectTypeRestriction(DataObject\Listing $listing, ?array $allowedTypes): DataObject\Listing
     {
+        if ($allowedTypes === null) {
+            $allowedTypes = array_filter(DataObject::getTypes(), static function ($type) {
+                return $type !== 'folder';
+            });
+        }
+
         if (count($allowedTypes) === 0) {
             return $listing;
         }
