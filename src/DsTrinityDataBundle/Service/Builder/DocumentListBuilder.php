@@ -20,11 +20,15 @@ class DocumentListBuilder implements DataBuilderInterface
         $this->eventDispatcher = $eventDispatcher;
     }
 
-    public function buildByList(array $options): array
+    public function buildByList(array $options): \Generator
     {
         $list = $this->getList($options);
 
-        return $list->getDocuments();
+        foreach ($list->loadIdList() as $id) {
+            if ($doc = Document::getById($id)) {
+                yield $doc;
+            }
+        }
     }
 
     public function buildByIdList(int $id, array $options): ?ElementInterface

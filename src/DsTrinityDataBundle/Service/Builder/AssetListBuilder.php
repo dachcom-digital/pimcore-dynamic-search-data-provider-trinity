@@ -20,11 +20,15 @@ class AssetListBuilder implements DataBuilderInterface
         $this->eventDispatcher = $eventDispatcher;
     }
 
-    public function buildByList(array $options): array
+    public function buildByList(array $options): \Generator
     {
         $list = $this->getList($options);
 
-        return $list->getAssets();
+        foreach ($list->loadIdList() as $id) {
+            if ($asset = Asset::getById($id)) {
+                yield $asset;
+            }
+        }
     }
 
     public function buildByIdList(int $id, array $options): ?ElementInterface

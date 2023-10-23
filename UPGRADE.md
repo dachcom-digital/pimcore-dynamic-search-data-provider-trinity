@@ -1,5 +1,8 @@
 # Upgrade Notes
 
+## 2.0.3
+- [BACKPORT][IMPROVEMENT] Use Generator to index data which will increase processing speed significant
+
 ## 2.0.2
 - [BUGFIX] `object_relations_getter_extractor` respect arguments (#23)
 - [FEATURE] `object_getter_extractor` more flexibility (#24)
