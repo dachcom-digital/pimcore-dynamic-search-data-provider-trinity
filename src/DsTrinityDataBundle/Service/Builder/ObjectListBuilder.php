@@ -20,11 +20,15 @@ class ObjectListBuilder implements DataBuilderInterface
         $this->eventDispatcher = $eventDispatcher;
     }
 
-    public function buildByList(array $options): array
+    public function buildByList(array $options): \Generator
     {
         $list = $this->getList($options);
 
-        return $list->getObjects();
+        foreach ($list->loadIdList() as $id) {
+            if ($object = DataObject::getById($id)) {
+                yield $object;
+            }
+        }
     }
 
     public function buildByIdList(int $id, array $options): ?ElementInterface

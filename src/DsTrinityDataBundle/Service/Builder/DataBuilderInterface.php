@@ -6,7 +6,7 @@ use Pimcore\Model\Element\ElementInterface;
 
 interface DataBuilderInterface
 {
-    public function buildByList(array $options): array;
+    public function buildByList(array $options): \Generator;
 
     public function buildByIdList(int $id, array $options): ?ElementInterface;
 
