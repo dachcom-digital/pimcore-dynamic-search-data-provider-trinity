@@ -47,9 +47,6 @@ class ElementPropertyExtractor implements FieldTransformerInterface
         }
 
         $property = $properties[$this->options['property']];
-        if (!$property instanceof Property) {
-            return null;
-        }
 
         if ($property->isInherited() === true && $this->options['allow_inherited_value'] === false) {
             return null;

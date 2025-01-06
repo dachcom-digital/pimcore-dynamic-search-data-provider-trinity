@@ -35,10 +35,9 @@ class LocalizedResourceNormalizer extends AbstractResourceNormalizer
      */
     protected function normalizeDocument(ContextDefinitionInterface $contextDefinition, ResourceContainerInterface $resourceContainer): array
     {
-        /** @var Document $document */
         $document = $resourceContainer->getResource();
 
-        if (!method_exists($document, 'getProperty')) {
+        if (!$document instanceof Document) {
             return [];
         }
 
