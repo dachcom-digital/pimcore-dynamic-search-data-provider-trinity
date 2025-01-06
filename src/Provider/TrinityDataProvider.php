@@ -1,5 +1,16 @@
 <?php
 
+/*
+ * This source file is available under two different licenses:
+ *   - GNU General Public License version 3 (GPLv3)
+ *   - DACHCOM Commercial License (DCL)
+ * Full copyright and license information is available in
+ * LICENSE.md which is distributed with this source code.
+ *
+ * @copyright  Copyright (c) DACHCOM.DIGITAL AG (https://www.dachcom-digital.com)
+ * @license    GPLv3 and DCL
+ */
+
 namespace DsTrinityDataBundle\Provider;
 
 use DsTrinityDataBundle\Service\DataProviderServiceInterface;
@@ -8,9 +19,6 @@ use DynamicSearchBundle\Normalizer\Resource\ResourceMetaInterface;
 use DynamicSearchBundle\Provider\DataProviderInterface;
 use DynamicSearchBundle\Provider\DataProviderValidationAwareInterface;
 use DynamicSearchBundle\Resource\ResourceCandidateInterface;
-use Pimcore\Model\Asset;
-use Pimcore\Model\DataObject;
-use Pimcore\Model\Document;
 use Pimcore\Model\Element\ElementInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
@@ -26,7 +34,6 @@ class TrinityDataProvider implements DataProviderInterface, DataProviderValidati
     {
         $options = [
             'always'                                 => function (OptionsResolver $spoolResolver) {
-
                 $options = [
                     // assets
                     'index_asset'                      => false,
@@ -50,7 +57,6 @@ class TrinityDataProvider implements DataProviderInterface, DataProviderValidati
                 $spoolResolver->setRequired(array_keys($options));
             },
             self::PROVIDER_BEHAVIOUR_FULL_DISPATCH   => function (OptionsResolver $spoolResolver) {
-
                 $options = [
                     'asset_limit'    => 0,
                     'object_limit'   => 0,
