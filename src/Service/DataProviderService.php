@@ -47,10 +47,6 @@ class DataProviderService implements DataProviderServiceInterface
 
     public function validate(ElementInterface $resource): bool
     {
-        if (!$resource instanceof ElementInterface) {
-            return false;
-        }
-
         $type = $this->getResourceType($resource);
 
         if ($type === null) {
@@ -63,10 +59,6 @@ class DataProviderService implements DataProviderServiceInterface
 
         $builderIdentifier = sprintf('%s_data_builder_identifier', $type);
         $builder = $this->dataBuilderRegistry->getByTypeAndIdentifier($type, $this->indexOptions[$builderIdentifier]);
-
-        if (!$builder instanceof DataBuilderInterface) {
-            return false;
-        }
 
         $options = $this->getTypeOptions($type);
         $element = $builder->buildByIdList((int) $resource->getId(), $options);
@@ -107,12 +99,6 @@ class DataProviderService implements DataProviderServiceInterface
 
         $builder = $this->dataBuilderRegistry->getByTypeAndIdentifier($type, $this->indexOptions[$builderIdentifier]);
 
-        if (!$builder instanceof DataBuilderInterface) {
-            $this->log('error', sprintf('could not resolve data builder for type "%s"', $type));
-
-            return;
-        }
-
         $options = $this->getTypeOptions($type);
         $elements = $builder->buildByList($options);
 
@@ -127,12 +113,6 @@ class DataProviderService implements DataProviderServiceInterface
 
         $builderIdentifier = sprintf('%s_data_builder_identifier', $type);
         $builder = $this->dataBuilderRegistry->getByTypeAndIdentifier($type, $this->indexOptions[$builderIdentifier]);
-
-        if (!$builder instanceof DataBuilderInterface) {
-            $this->log('error', sprintf('could not resolve data builder for type "%s"', $type));
-
-            return;
-        }
 
         $element = $builder->buildById($id);
 

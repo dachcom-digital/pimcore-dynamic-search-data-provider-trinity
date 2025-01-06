@@ -10,12 +10,6 @@ class DataBuilderRegistry implements DataBuilderRegistryInterface
 
     public function register(DataBuilderInterface $service, string $identifier, string $type): void
     {
-        if (!is_string($type)) {
-            throw new \InvalidArgumentException(
-                sprintf('%s needs to define a valid builder type.', get_class($service))
-            );
-        }
-
         if (!in_array($type, ['document', 'asset', 'object'])) {
             throw new \InvalidArgumentException(
                 sprintf('Invalid builder type "%s. Needs to be one of %s.', $type, implode(', ', ['document', 'asset', 'object']))
