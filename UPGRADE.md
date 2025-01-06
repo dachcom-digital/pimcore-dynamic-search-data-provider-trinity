@@ -1,5 +1,10 @@
 # Upgrade Notes
 
+## 3.0.2
+- [LICENSE] Dual-License with GPL and Dachcom Commercial License (DCL) added
+## 3.0.1
+- [IMPROVEMENT] Allow dynamic search ^4.0
+
 ## Migrating from Version 2.x to Version 3.0.0
 
 ### Global Changes
