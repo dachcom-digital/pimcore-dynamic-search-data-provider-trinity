@@ -1,5 +1,7 @@
 # Upgrade Notes
 
+## 3.0.3
+- [IMPROVEMENT] fix memory issue when dealing with large object lists (#41)
 ## 3.0.2
 - [LICENSE] Dual-License with GPL and Dachcom Commercial License (DCL) added
 ## 3.0.1
