@@ -32,9 +32,13 @@ class DocumentListBuilder implements DataBuilderInterface
     {
         $list = $this->getList($options);
 
-        foreach ($list->loadIdList() as $id) {
-            if ($doc = Document::getById($id)) {
+        $idList = $list->loadIdList();
+        for ($i = 0; $i < count($idList); $i++) {
+            if ($doc = Document::getById($idList[$i])) {
                 yield $doc;
+            }
+            if ($i % 400 === 0) {
+                \Pimcore::collectGarbage();
             }
         }
     }
