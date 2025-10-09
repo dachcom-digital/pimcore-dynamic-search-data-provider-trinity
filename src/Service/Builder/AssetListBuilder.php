@@ -32,9 +32,14 @@ class AssetListBuilder implements DataBuilderInterface
     {
         $list = $this->getList($options);
 
-        foreach ($list->loadIdList() as $id) {
-            if ($asset = Asset::getById($id)) {
+        $idList = $list->loadIdList();
+        $length = count($idList);
+        for ($i = 0; $i < $length; $i++) {
+            if ($asset = Asset::getById($idList[$i])) {
                 yield $asset;
+            }
+            if ($i % 400 === 0) {
+                \Pimcore::collectGarbage();
             }
         }
     }

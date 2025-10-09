@@ -32,9 +32,14 @@ class ObjectListBuilder implements DataBuilderInterface
     {
         $list = $this->getList($options);
 
-        foreach ($list->loadIdList() as $id) {
-            if ($object = DataObject::getById($id)) {
+        $idList = $list->loadIdList();
+        $length = count($idList);
+        for ($i = 0; $i < $length; $i++) {
+            if ($object = DataObject::getById($idList[$i])) {
                 yield $object;
+            }
+            if ($i % 400 === 0) {
+                \Pimcore::collectGarbage();
             }
         }
     }
