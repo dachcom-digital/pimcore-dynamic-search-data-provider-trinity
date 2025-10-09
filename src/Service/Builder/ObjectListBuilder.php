@@ -33,7 +33,8 @@ class ObjectListBuilder implements DataBuilderInterface
         $list = $this->getList($options);
 
         $idList = $list->loadIdList();
-        for ($i = 0; $i < count($idList); $i++) {
+        $length = count($idList);
+        for ($i = 0; $i < $length; $i++) {
             if ($object = DataObject::getById($idList[$i])) {
                 yield $object;
             }
